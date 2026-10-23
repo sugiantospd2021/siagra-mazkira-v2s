@@ -1,4 +1,4 @@
-# siagra-mazkira-v.2.s
+# siagra-mazkira-v2s
 
 (SIAGRA) Sistem Informasi & Administrasi Guru Raudhatul Athfal — Mazkira Imani
 
