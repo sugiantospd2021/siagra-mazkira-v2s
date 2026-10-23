@@ -1,0 +1,22 @@
+1. buatkan intro card pada monitoring.html dan tambahkan ornament seperti pada file absensi.html
+2. isi intro card mengacu pada menu di kepsek.html
+3. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address pada semua tombolnya
+4.tampilkan bunyi beep untuk notifikasi/error/warn
+5. gabungkan sourcecode yang baru ke dalam file monitoring.html yang saya unggah, dan buatkan file fix/utuh nya tanpa merusak/merubah isi yang sudah ada
+
+
+
+
+
+====================================
+
+tambahkan card pada kedua tombol + Tambah Tugas & tombol 🗑️ Hapus Semua
+pindahkan tombol <-- Kembali yang ada pada header, Pindahkan kebawah card intro
+tambahkan teks/label: To Do dan pindahkan tombol kembali ke sebelah kanan teks To Do dan diganti namanya menjadi ← Kembali ke Menu dilengkapi dengan hover dan pencahayaan seperti pada absensi.html
+======================
+1. buatkan intro card pada todo.html dan tambahkan ornament seperti pada file absensi.html.
+2. isi intro card mengacu pada menu di kepsek.html
+3. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address pada semua tombolnya
+4.tampilkan bunyi beep untuk notifikasi/error/warn
+5. gabungkan sourcecode yang baru ke dalam file todo.html yang saya unggah, dan buatkan file fix/utuh nya tanpa merusak/merubah isi yang sudah ada
+

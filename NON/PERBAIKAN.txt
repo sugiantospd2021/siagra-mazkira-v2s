@@ -1,0 +1,166 @@
+Halo, saya lanjutkan proyek SIAGRA v.2.s untuk RA Mazkira Imani.
+Folder: SIAGRA/2025/menu-guru/
+
+MASALAH DI anekdot.html (hasil fix sebelumnya):
+1. Tombol "Cetak Semua" hanya muncul notifikasi "Menyiapkan logo & dokumen" lalu tidak ada reaksi. Word tidak terunduh.
+2. Tombol "Cetak Anak Ini" tidak ada reaksi apa pun saat diklik.
+3. Word tidak terunduh sama sekali.
+
+DUGAAN PENYEBAB:
+- Fungsi konversiLogoSinkron() mungkin stuck/gagal (Promise tidak resolve)
+- Atau ada error JS saat eksekusi
+- Atau event handler onclick tidak terpasang benar
+
+STANDAR SIAGRA (WAJIB DIPERTAHANKAN):
+- Font: Plus Jakarta Sans + Inter
+- Warna tema guru: Hijau (#10B981 / #34D399)
+- Ornamen 17 floating
+- Header sticky + jam WITA
+- Footer "~ SIAGRA v.2.s — © Sugianto, S.Pd., Gr. ~"
+- Dark mode default
+- Loader PWA
+
+YANG INGIN SAYA KERJAKAN:
+Perbaiki fungsi export Word di anekdot.html agar:
+1. Tombol "Cetak Anak Ini" berfungsi → unduh Word 1 anak
+2. Tombol "Cetak Semua" berfungsi → unduh Word batch semua anak
+3. Format Word mengacu penilaian.html (kop surat, logo base64, ttd 2 kolom, copyright footer)
+
+ATURAN PENTING:
+1. Jangan ubah file html yang sudah FIX
+2. Jangan buat file baru kalau tidak perlu
+3. Kalau source code >500 baris → potong jadi 3-4 BAGIAN
+4. Setiap perbaikan → berikan PATCH (cari X, ganti Y) bukan ulang semua
+5. Setelah kirim tiap BAGIAN → minta konfirmasi "lanjutkan"
+6. Kalau file UTUH/FIX → sebutkan "BAGIAN X dari Y" + minta konfirmasi
+7. Tanya dulu sebelum asumsi
+
+FILE YANG AKAN SAYA UNGGAH:
+- anekdot.html (file fix hasil sebelumnya yang bermasalah)
+- penilaian.html (sebagai acuan format Word)
+
+
+
+==================================
+
+
+=========================
+Halo, saya melanjutkan proyek SIAGRA v.2.s untuk RA Mazkira Imani.
+
+KONTEKS PROYEK:
+- Folder: SIAGRA/2025
+- File utama: index.html, admin.html, guru.html, kepsek.html, tendik.html, panggilan.js, service-worker.js
+- Folder: menu-guru/ (rpp.html, observasi.html, anekdot.html, penilaian.html, absensi.html)
+- Folder: menu-kepsek/ (supervisi.html, validasi-rpp.html, todo.html)
+
+STANDAR SIAGRA (WAJIB DIPERTAHANKAN):
+- Font: Plus Jakarta Sans + Inter
+- Warna tema per role:
+  * Admin   → Merah (#DC2626 / #EF4444)
+  * Kepsek  → Biru navy (#1E40AF / #3B82F6)
+  * Tendik  → Coklat/oranye (#B45309 / #D97706)
+  * Guru    → Hijau (#10B981 / #34D399)
+- Ornamen: 17 buah floating (♡ ❤ ♡ ★ ☆ ✦ 🍃 🌿 ✨ ✧ ◆ ● ✿ ❀ ✺ ✹ ♦)
+- Header sticky + jam WITA + footer "~ SIAGRA v.2.s — © Sugianto, S.Pd., Gr. ~"
+- Dark mode default
+- Loader PWA
+
+STATUS FILE SAAT INI:
+| File | Status |
+|------|--------|
+| admin.html | ✅ Sudah fix |
+| absensi.html | ✅ Selesai (3 bagian) |
+| kepsek.html | ✅ Selesai + logo Word sudah MUNCUL (base64 manual 200×200px, 26 KB) |
+| tendik.html | ✅ Sudah fix |
+| guru.html | ✅ Sudah fix |
+| observasi.html | ✅ Fix, tidak boleh diubah |
+| rpp.html | ✅ Fix, tidak boleh diubah |
+
+ATURAN PENTING:
+1. Jangan ubah file html yang sudah FIX
+2. Jangan buat file baru kalau tidak perlu
+3. Kalau source code >500 baris → potong jadi 3-4 BAGIAN
+4. Setiap perbaikan → berikan PATCH (cari X, ganti Y) bukan ulang semua
+5. Setelah kirim tiap BAGIAN → minta konfirmasi "lanjutkan" sebelum ke BAGIAN berikutnya
+6. Kalau file UTUH/FIX → sebutkan "BAGIAN X dari Y" + minta konfirmasi
+7. Tanya dulu sebelum asumsi (saya sering salah persepsi)
+
+YANG INGIN SAYA KERJAKAN DI CHAT BARU:
+ada beberapa hal yang diperlu diperbaiki pada tampilan anekdot.html:
+1. pada buat catatan dan anak yang terpilih, buatkan 1 card baru 📊
+Bukti Pendukung Bulan Ini, seperti pada penilaian.html 
+2. buatkan tombol Lihat Penilaian dan tombol Lihat Observasi seperti gambar yang saya kirimkan
+3. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address kedua tombolnya
+4. gabungkan sourcecode yang baru ke dalam file anekdot.html yang saya unggah, dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+
+=============================
+
+=================================
+Dokumen ini dibuat otomatis oleh Sistem Informasi & Administrasi Guru RA
+© 2026 Sugianto, S.Pd., Gr. ❤ — SIAGRA v.2.s 
+
+
+==========================
+ada beberapa hal yang diperlu diperbaiki pada tampilan observasi.html:
+1. pada penilaian baru, buatkan BUKTI PENDUKUNG BULAN INI dilengkapi dengan tombol Lihat Penilaian dan tombol Lihat Anekdot pada setiap anak (seperti pada gambar penilaian yang saya unggah)
+2. pada menu riwayat: buatkan 3 tombol ✏️ Edit
+📄 Word 🗑️ pada nama anak yang sudah di observasi (seperti pada gambar penilaian yang saya unggah)
+3. untuk pencetakan di ms. word baik pencetakan per anak atau pun untuk seluruh anak, setting pencetakannya mengacu pada penilaian.html
+4. gabungkan sourcecode yang baru ke dalam file observasi.html yang saya unggah, dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+
+====================
+ada beberapa hal yang diperlu diperbaiki pada tampilan observasi.html:
+1. pada penilaian baru, buatkan BUKTI PENDUKUNG BULAN INI ganti tombol Lihat Observasi dengan tombol Lihat Penilaian dan tempatkan kedua tombol tersebut dibawah cardnya (seperti pada gambar penilaian yang saya unggah). dan Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address semua tombolnya
+2. untuk pencetakan di ms. word baik pencetakan per anak atau pun untuk seluruh anak, setting pencetakannya mengacu pada penilaian.html
+3. gabungkan sourcecode yang baru ke dalam file observasi.html yang saya unggah, dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+=================================
+ada beberapa hal yang diperlu diperbaiki pada tampilan anekdot.html:
+1. pada tombol ✍️ Observasi Hari Ini - 📚 Riwayat - 📊 Rekap Anak - ☁️ Backup, Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address semua tombolnya
+
+pada tampilan print out ms. word, perbaiki hal-hal berikut:
+1. tambahkan kolom nama guru yang  mengobservasi dibawah nama anak, (berlaku untuk pencetakan 1 anak dan semua anak)
+2. untuk mencetak semua anak. berikan garis pembatas antara anak yang 1 dengan anak lainnya, agar guru lebih mudah dalam melihat laporan
+3. hilangkan Rombel B1 • 4 anak pada kop (untuk pencetakan semua anak)
+4. hilangkan nama anak • AHMAD NUR HAMDI (untuk pencetakan satu anak)
+==========================
+saya ingin mengganti logo yang ada di file index.html, dari logo.png menjadi logo-mazkira-200x200px.png dg ukuran 19 kb
+2. buatkan hover glow pada menu doropdown "login sebagai", dengan ketentuan:
+  * Admin   → Merah (#DC2626 / #EF4444)
+  * Kepsek  → Biru navy (#1E40AF / #3B82F6)
+  * Tendik  → Coklat/oranye (#B45309 / #D97706)
+  * Guru    → Hijau (#10B981 / #34D399)
+3. besarkan sekikit tulisn RA MAZKIRA Imani
+4. tombol cover, di rubah menjadi warna hijau disertai hover dan glow
+5. jika password salah, notifikasi ditambahkan  bunyi
+6. gabungkan sourcecode yang baru ke dalam file index.html yang saya unggah,  dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+7. buatkan 1 file fix index.html agar saya bisa menjalankan (run) dan melihat tampilannya
+
+FILE YANG SAYA UNGGAH
+
+==========================
+perbaikan pada anekdot.html:
+1. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address pada tombol 
+⭐ Nilai Baru
+📚 Riwayat
+📊 Rekap Anak
+☁️ Backup
+✏️ Nilai Baru
+👀 Lihat Observasi
+📔 Lihat Anekdot
+2. gabungkan sourcecode yang baru ke dalam file anekdot.html yang saya unggah, dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+3. buatkan 1 file fix penilaian.html agar saya bisa menjalankan (run) dan melihat tampilannya
+
+
+
+
+
+
+
+"Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address 
+pada SEMUA MENU di guru.html, kepsek.html, admin.html, tendik.html, dan menu internal 
+di folder menu-guru/ + menu-kepsek/."
+
+ada sedikit perbaikan dei observasi.html
+1. jika anak belum terpilih baik untuk pengisian observasi ataupun untuk pencetakan laporan, tampilkan notifikasi/error/warn, dan bunyi Beep 
+2. gabungkan sourcecode yang baru ke dalam file observasi.html yang saya unggah, dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+==============================

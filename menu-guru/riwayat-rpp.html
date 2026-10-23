@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<!--
+╔══════════════════════════════════════════════════════════════════════════╗
+║   RIWAYAT RPPH/RPPM + RIWAYAT LKPD — SIAGRA v.2.s                        ║
+║   © 2026 Sugianto, S.Pd., Gr.                                            ║
+║   Folder: menu-guru/riwayat-rpp.html                                     ║
+║   Standar: 2 Kolom (Profil Kiri + Konten Kanan), tema Hijau,             ║
+║            17 Ornamen (persis absensi.html), Header sticky + Jam WITA,   ║
+║            Dark mode default, Tanpa watermark                            ║
+╚══════════════════════════════════════════════════════════════════════════╝
+-->
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="author" content="Sugianto, S.Pd., Gr.">
+<meta name="copyright" content="© 2026 Sugianto, S.Pd., Gr.">
+<meta name="theme-color" content="#10B981">
+<link rel="icon" type="image/png" href="logo-siagra.png">
+<title>SIAGRA - Riwayat RPPH/RPPM &amp; LKPD</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#F0FBF6; --card:#FFFFFF; --card-inner:#F5FDF9;
+    --text:#0F2E22; --sub:#5A7A6B; --border:#D1FAE5;
+    --primary:#34D399; --primary-dark:#10B981; --primary-light:#D1FAE5;
+    --accent:#6EE7B7; --danger:#DC2626; --success:#10B981;
+    --warning:#D97706; --yellow:#B45309;
+    --card-border:#10B981; --card-border-glow:rgba(16,185,129,.3);
+
+    --role-primary:#10B981;
+    --role-primary-dark:#059669;
+    --role-accent:#6EE7B7;
+    --role-glow:rgba(16,185,129,.5);
+    --role-header-grad:linear-gradient(135deg,#064E3B,#0A1F17);
+    --role-header-border:#10B981;
+    --role-header-text:#A7F3D0;
+    --role-intro-grad:linear-gradient(135deg,#065F46,#10B981 60%,#34D399);
+    --role-bg-radial:
+      radial-gradient(circle at 10% 10%, rgba(52,211,153,.06) 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(110,231,183,.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(16,185,129,.03) 0%, transparent 40%);
+    --role-card:#0A1F17;
+    --role-card-inner:#0F2A20;
+    --role-border:#1F4A36;
+  }
+  body.dark{
+    --bg:#000000; --card:#0A1F17; --card-inner:#0F2A20;
+    --text:#D1FAE5; --sub:#86C7AA; --border:#1F4A36;
+    --primary:#34D399; --primary-dark:#10B981; --primary-light:#065F46;
+    --accent:#6EE7B7; --danger:#F87171; --success:#4ADE80;
+    --warning:#FBBF24; --yellow:#FCD34D;
+    --card-border:#10B981; --card-border-glow:rgba(52,211,153,.5);
+  }
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    background-image:var(--role-bg-radial);
+    background-attachment:fixed;
+    min-height:100vh;color:var(--text);
+    transition:background .3s,color .3s;
+    position:relative;overflow-x:hidden;
+    font-size:15px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============================================================
+     ORNAMEN 17 — PERSIS ABSENSI.HTML
+     ============================================================ */
+  .ornament{position:fixed;pointer-events:none;z-index:0;opacity:.35;animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(10deg)}}
+  @keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(-25px) rotate(-12deg) scale(1.08)}}
+  @keyframes floatFast{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(15deg)}}
+  .orn-love-1{top:8%;left:3%;font-size:38px;color:#86EFAC;animation-delay:0s}
+  .orn-love-2{top:45%;left:5%;font-size:30px;color:#A7F3D0;animation-delay:1.5s;animation-name:floatSlow}
+  .orn-love-3{bottom:12%;right:6%;font-size:34px;color:#6EE7B7;animation-delay:2.5s;animation-name:floatFast}
+  .orn-star-1{top:15%;right:4%;font-size:42px;color:#FCD34D;animation-delay:1s;animation-name:floatSlow}
+  .orn-star-2{top:62%;left:2%;font-size:36px;color:#FBBF24;animation-delay:3s}
+  .orn-star-3{bottom:35%;right:3%;font-size:30px;color:#FDE68A;animation-delay:.5s;animation-name:floatFast}
+  .orn-leaf-1{bottom:20%;left:4%;font-size:36px;color:#6EE7B7;animation-delay:1.8s;animation-name:floatSlow}
+  .orn-leaf-2{top:72%;right:7%;font-size:32px;color:#86EFAC;animation-delay:.8s}
+  .orn-spark-1{bottom:25%;right:2%;font-size:34px;color:#93C5FD;animation-delay:.3s;animation-name:floatSlow}
+  .orn-spark-2{top:52%;right:4%;font-size:26px;color:#60A5FA;animation-delay:2.8s}
+  .orn-purple-1{top:38%;right:8%;font-size:32px;color:#C4B5FD;animation-delay:1.7s}
+  .orn-dot-1{top:88%;left:30%;font-size:20px;color:#FDBA74;animation-delay:1.4s}
+  .orn-flower-1{top:25%;left:7%;font-size:28px;color:#F472B6;animation-delay:.4s;animation-duration:7s}
+  .orn-flower-2{bottom:32%;left:6%;font-size:26px;color:#A78BFA;animation-delay:1.8s;animation-name:floatSlow}
+  .orn-sparkle-1{bottom:15%;right:10%;font-size:24px;color:#FACC15;animation-delay:2.2s;animation-duration:7.5s}
+  .orn-sparkle-2{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s;animation-name:floatFast}
+  .orn-diamond-1{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s;animation-duration:9s}
+  @media(max-width:768px){
+    .orn-leaf-2,.orn-spark-2,.orn-star-2,.orn-dot-1,
+    .orn-flower-1,.orn-flower-2,.orn-sparkle-1,.orn-sparkle-2{display:none}
+  }
+  @media(max-width:480px){.ornament{opacity:.22;font-size:22px!important}}
+
+  /* ============================================================
+     HEADER STICKY
+     ============================================================ */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:var(--role-header-grad);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);
+    border-bottom:2px solid var(--role-header-border);gap:12px;
+    transition:background .3s,border-color .3s;
+  }
+  .header-left{flex:0 1 auto;min-width:0;display:flex;align-items:center;gap:10px}
+  .header-left h1{font-size:17px;color:var(--role-header-text);letter-spacing:.02em;font-weight:800;white-space:nowrap}
+  .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
+  .jam-box{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1.5px solid var(--role-primary);
+    color:#fff;padding:8px 18px;border-radius:100px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;
+    backdrop-filter:blur(10px);
+    transition:border-color .3s;
+  }
+  .jam-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--role-accent);
+    box-shadow:0 0 0 3px var(--role-glow);
+    animation:pulse 2s ease-in-out infinite;flex-shrink:0;
+  }
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px var(--role-glow)}50%{box-shadow:0 0 0 6px transparent}}
+  .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
+  .theme-toggle{
+    background:rgba(255,255,255,.1);border:none;color:#fff;
+    width:38px;height:38px;border-radius:50%;
+    font-size:17px;cursor:pointer;transition:transform .2s;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(255,255,255,.15);
+  }
+  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);background:rgba(255,255,255,.2)}
+
+  /* ============================================================
+     WRAPPER 2 KOLOM
+     ============================================================ */
+  .wrapper{
+    max-width:1280px;margin:0 auto;padding:24px 16px 40px;
+    display:grid;grid-template-columns:300px 1fr;gap:24px;
+    position:relative;z-index:1;align-items:start;
+  }
+  .col-profil{
+    position:sticky;top:88px;
+    height:calc(100vh - 110px);max-height:calc(100vh - 110px);
+  }
+  .col-menu{min-width:0}
+
+  /* ============================================================
+     PROFIL CARD
+     ============================================================ */
+  .profile-card{
+    background:var(--role-card);border-radius:16px;
+    border:2px solid var(--role-primary-dark);
+    box-shadow:
+      0 0 0 1px var(--role-glow),
+      0 0 25px var(--role-glow),
+      0 8px 24px rgba(0,0,0,.6);
+    height:100%;max-height:100%;
+    display:flex;flex-direction:column;overflow:hidden;
+    transition:background .3s,border-color .3s,box-shadow .3s;
+  }
+  .profile-card-header{
+    padding:20px 18px 16px;text-align:center;
+    border-bottom:1px dashed var(--role-border);
+    flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(10,31,23,.6));
+    transition:background .3s;
+  }
+  body:not(.dark) .profile-card-header{
+    background:linear-gradient(135deg,rgba(240,251,246,.6),rgba(220,245,235,.8));
+  }
+  .profile-photo{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,var(--role-card),var(--role-card-inner));
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:800;color:#D1FAE5;
+    overflow:hidden;flex-shrink:0;
+    border:3px solid var(--role-primary-dark);
+    box-shadow:0 4px 14px var(--role-glow);
+    margin:0 auto 12px;position:relative;
+    transition:border-color .3s,box-shadow .3s,background .3s;
+  }
+  body:not(.dark) .profile-photo{background:linear-gradient(135deg,#F5FDF9,#E0F5EC)}
+  .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
+  .profile-card-header h2{
+    font-size:14.5px;font-weight:800;
+    color:var(--text);margin-bottom:6px;line-height:1.35;
+  }
+  .profile-card-header .jabatan-badge{
+    display:inline-block;padding:4px 12px;border-radius:100px;
+    font-size:10.5px;font-weight:700;
+    background:rgba(0,0,0,.4);color:var(--role-header-text);
+    border:1px solid var(--role-primary);
+    text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;
+    transition:color .3s,border-color .3s;
+  }
+  body:not(.dark) .profile-card-header .jabatan-badge{
+    background:color-mix(in srgb, var(--role-primary) 15%, transparent);
+    color:var(--role-primary-dark);
+    border:1px solid color-mix(in srgb, var(--role-primary) 30%, transparent);
+  }
+  .profile-card-header .lama-text{
+    display:block;font-size:11.5px;font-weight:700;
+    color:var(--role-header-text);margin-top:4px;
+  }
+  body:not(.dark) .profile-card-header .lama-text{color:var(--role-primary-dark)}
+  .profile-card-body{
+    flex:1;overflow-y:auto;padding:14px 18px 18px;
+    scrollbar-width:thin;scrollbar-color:var(--role-glow) transparent;
+  }
+  .profile-card-body::-webkit-scrollbar{width:6px}
+  .profile-card-body::-webkit-scrollbar-thumb{
+    background:var(--role-glow);border-radius:10px;
+  }
+  .info-section-title{
+    font-size:10px;font-weight:800;color:var(--sub);
+    text-transform:uppercase;letter-spacing:.06em;
+    margin-bottom:8px;margin-top:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .info-section-title::before{
+    content:'';width:3px;height:12px;
+    background:var(--role-primary-dark);border-radius:2px;
+    transition:background .3s;
+  }
+  .info-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .info-item{
+    display:flex;justify-content:space-between;gap:8px;
+    padding:7px 10px;background:var(--role-card-inner);
+    border:1px solid var(--role-border);border-radius:8px;
+    font-size:11.5px;line-height:1.4;transition:background .2s;
+  }
+  .info-item:hover{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.15)}
+  body:not(.dark) .info-item:hover{
+    background:color-mix(in srgb, var(--role-primary) 5%, transparent);
+    border-color:color-mix(in srgb, var(--role-primary) 20%, transparent);
+  }
+  .info-item .lbl{color:var(--sub);font-weight:600;flex-shrink:0}
+  .info-item .val{
+    color:var(--text);font-weight:700;
+    text-align:right;word-break:break-word;min-width:0;
+  }
+
+  /* ============================================================
+     INTRO CARD
+     ============================================================ */
+  .intro-card{
+    background:var(--role-intro-grad);
+    color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px;
+    border:2px solid color-mix(in srgb, var(--role-accent) 40%, transparent);
+    box-shadow:0 10px 30px var(--role-glow);
+    position:relative;overflow:hidden;
+    transition:background .3s,box-shadow .3s,border-color .3s;
+  }
+  .intro-card::before{
+    content:'';position:absolute;top:-60px;right:-60px;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.2),transparent 70%);
+    pointer-events:none;
+  }
+  .intro-card h2{
+    font-size:20px;font-weight:800;margin-bottom:6px;
+    position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  .intro-card p{
+    font-size:13px;font-weight:600;line-height:1.5;
+    opacity:.95;position:relative;z-index:1;
+    text-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+
+  /* ============================================================
+     PANEL HEADER
+     ============================================================ */
+  .panel-header{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:12px;margin-bottom:14px;flex-wrap:wrap;
+  }
+  .panel-header .panel-title{
+    font-size:17px;font-weight:800;
+    color:var(--role-header-text);
+    display:flex;align-items:center;gap:8px;
+    text-shadow:0 0 10px color-mix(in srgb, var(--role-header-text) 35%, transparent);
+    line-height:1.3;
+  }
+  body:not(.dark) .panel-header .panel-title{
+    color:var(--role-primary-dark);
+    text-shadow:0 0 8px color-mix(in srgb, var(--role-primary-dark) 20%, transparent);
+  }
+  .btn-back-guru{
+    background:var(--role-card);
+    color:var(--text);
+    border:2px solid var(--role-primary-dark);
+    padding:10px 18px;border-radius:10px;
+    font-family:inherit;font-size:13px;font-weight:800;
+    cursor:pointer;transition:all .25s;
+    display:inline-flex;align-items:center;gap:6px;
+    white-space:nowrap;
+    text-decoration:none;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--role-primary) 25%, transparent),
+      0 0 10px color-mix(in srgb, var(--role-primary) 25%, transparent);
+  }
+  a.btn-back-guru{color:var(--text);text-decoration:none}
+  a.btn-back-guru:visited{color:var(--text)}
+  .btn-back-guru:hover{
+    background:linear-gradient(135deg,var(--role-primary-dark),var(--role-primary));
+    color:#fff;
+    border-color:var(--role-primary);
+    transform:translateY(-2px);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--role-primary) 45%, transparent),
+      0 0 20px color-mix(in srgb, var(--role-primary) 75%, transparent),
+      0 0 40px color-mix(in srgb, var(--role-primary) 45%, transparent),
+      0 8px 20px var(--role-glow);
+  }
+
+  /* ============================================================
+     TABS
+     ============================================================ */
+  .tabs{
+    display:flex;gap:6px;margin-bottom:18px;
+    background:var(--role-card);padding:6px;border-radius:14px;
+    border:2px solid var(--role-primary-dark);
+    box-shadow:0 0 0 1px var(--role-glow),0 0 12px var(--role-glow);
+    overflow-x:auto;
+    transition:border-color .3s,box-shadow .3s,background .3s;
+  }
+  .tabs::-webkit-scrollbar{height:5px}
+  .tabs::-webkit-scrollbar-thumb{background:var(--role-glow);border-radius:10px}
+  .tab-btn{
+    flex:1 0 auto;min-width:130px;
+    padding:11px 14px;border-radius:10px;border:none;
+    background:transparent;color:var(--sub);
+    font-family:inherit;font-size:12.5px;font-weight:700;
+    cursor:pointer;transition:all .25s;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    white-space:nowrap;text-decoration:none;
+  }
+  a.tab-btn{color:var(--sub)}
+  a.tab-btn:visited{color:var(--sub)}
+  .tab-btn:hover{color:var(--text);background:color-mix(in srgb, var(--role-primary) 8%, transparent)}
+  a.tab-btn:hover{text-decoration:none}
+  a.tab-btn.active{color:#fff}
+  .tab-btn.active{
+    background:linear-gradient(135deg,var(--role-primary-dark),var(--role-primary));
+    color:#fff;box-shadow:0 4px 14px var(--role-glow);
+  }
+
+  /* ============================================================
+     CARD PANEL
+     ============================================================ */
+  .card{
+    background:var(--role-card);border-radius:16px;
+    border:2px solid var(--role-primary-dark);
+    box-shadow:
+      0 0 0 1px var(--role-glow),
+      0 0 20px var(--role-glow),
+      0 8px 24px rgba(0,0,0,.4);
+    padding:22px;margin-bottom:18px;
+    transition:background .3s,border-color .3s,box-shadow .3s;
+  }
+  .card-title{
+    font-size:15px;font-weight:800;color:var(--text);
+    margin-bottom:16px;display:flex;align-items:center;gap:8px;
+    padding-bottom:12px;border-bottom:1px dashed var(--role-border);
+  }
+  .card-title .emoji{font-size:19px}
+
+  /* ============================================================
+     FILTER BAR
+     ============================================================ */
+  .filter-bar{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    margin-bottom:0;
+    transition:grid-template-columns .25s;
+  }
+  @media(max-width:768px){.filter-bar{grid-template-columns:1fr!important}}
+  .form-group{display:flex;flex-direction:column;gap:6px}
+  .form-group label{
+    font-size:10.5px;font-weight:800;
+    color:#DC2626;
+    text-transform:uppercase;letter-spacing:.08em;
+    display:flex;align-items:center;gap:5px;
+  }
+  body.dark .form-group label{color:#F87171}
+  .form-group input,
+  .form-group select{
+    width:100%;padding:11px 14px;
+    background:var(--role-card-inner);color:var(--text);
+    border:1.5px solid var(--role-border);border-radius:10px;
+    font-family:inherit;font-size:13.5px;font-weight:600;
+    transition:border-color .2s,box-shadow .2s,background .2s;
+    outline:none;
+  }
+  .form-group input:focus,
+  .form-group select:focus{
+    border-color:var(--role-primary-dark);
+    box-shadow:0 0 0 3px var(--role-glow);
+  }
+  .form-group select{
+    cursor:pointer;appearance:none;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2310B981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;
+  }
+  .form-group input::placeholder{color:var(--sub);opacity:.7;font-weight:500}
+  
+  /* Badge notifikasi merah (untuk status kosong) */
+  .tb-info.merah{
+    animation:pulseRed 2s ease-in-out infinite;
+  }
+  @keyframes pulseRed{
+    0%,100%{
+      box-shadow:0 0 0 0 rgba(220,38,38,.5);
+    }
+    50%{
+      box-shadow:0 0 0 6px rgba(220,38,38,0);
+    }
+  }
+  /* ============================================================
+     STATS BAR
+     ============================================================ */
+  .stats-bar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;
+    padding:12px 18px;margin-bottom:16px;
+    background:linear-gradient(135deg,
+      color-mix(in srgb, var(--role-primary) 8%, transparent),
+      color-mix(in srgb, var(--role-primary) 4%, transparent));
+    border:1.5px solid var(--role-border);border-radius:14px;
+    font-size:13px;font-weight:600;color:var(--text);
+  }
+  .stats-bar .stat-item{display:inline-flex;align-items:center;gap:7px}
+  .stats-bar .stat-badge{
+    display:inline-block;padding:3px 11px;border-radius:100px;
+    background:linear-gradient(135deg,#10B981,#059669);color:#fff;
+    font-size:12px;font-weight:800;min-width:28px;text-align:center;
+  }
+  .stats-bar .stat-badge.blue{background:linear-gradient(135deg,#3B82F6,#1D4ED8)}
+  .stats-bar .stat-badge.amber{background:linear-gradient(135deg,#F59E0B,#D97706)}
+  .stats-bar .stat-badge.purple{background:linear-gradient(135deg,#8B5CF6,#7C3AED)}
+
+  /* ============================================================
+     RIWAYAT LIST
+     ============================================================ */
+  .riwayat-list{display:flex;flex-direction:column;gap:12px}
+
+  .riwayat-item{
+    background:var(--role-card);border-radius:16px;
+    border:2px solid var(--role-primary-dark);
+    border-left:6px solid var(--role-primary-dark);
+    padding:16px 20px;
+    display:flex;align-items:center;gap:16px;
+    transition:all .3s cubic-bezier(.4,0,.2,1);
+    position:relative;overflow:hidden;
+    box-shadow:0 0 0 1px var(--role-glow),0 4px 16px rgba(0,0,0,.3);
+  }
+  .riwayat-item:hover{
+    transform:translateX(5px);
+    box-shadow:
+      0 0 0 1px var(--role-glow),
+      0 0 24px var(--role-glow),
+      0 12px 28px rgba(0,0,0,.4);
+  }
+  .riwayat-item.rppm{border-left-color:#3B82F6}
+  .riwayat-item.rppm:hover{
+    border-color:#3B82F6;
+    box-shadow:0 0 0 1px rgba(59,130,246,.35),0 0 24px rgba(59,130,246,.4),0 12px 28px rgba(0,0,0,.4);
+  }
+  .riwayat-item.lkpd{border-left-color:#8B5CF6}
+  .riwayat-item.lkpd:hover{
+    border-color:#8B5CF6;
+    box-shadow:0 0 0 1px rgba(139,92,246,.35),0 0 24px rgba(139,92,246,.4),0 12px 28px rgba(0,0,0,.4);
+  }
+
+  .riwayat-item .item-icon{
+    width:52px;height:52px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;flex-shrink:0;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+  }
+  .riwayat-item.rpph .item-icon{background:linear-gradient(135deg,#34D399,#059669);color:#fff}
+  .riwayat-item.rppm .item-icon{background:linear-gradient(135deg,#60A5FA,#2563EB);color:#fff}
+  .riwayat-item.lkpd .item-icon{background:linear-gradient(135deg,#A78BFA,#7C3AED);color:#fff}
+
+  .riwayat-item .item-content{flex:1;min-width:0}
+  .riwayat-item .item-title{
+    font-size:15px;font-weight:800;color:var(--text);
+    margin-bottom:6px;line-height:1.3;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .riwayat-item .item-title .badge-type{
+    display:inline-block;padding:3px 9px;border-radius:100px;
+    font-size:10px;font-weight:800;color:#fff;letter-spacing:.05em;
+  }
+  .riwayat-item.rpph .item-title .badge-type{background:linear-gradient(135deg,#10B981,#047857)}
+  .riwayat-item.rppm .item-title .badge-type{background:linear-gradient(135deg,#3B82F6,#1D4ED8)}
+  .riwayat-item.lkpd .item-title .badge-type{background:linear-gradient(135deg,#8B5CF6,#6D28D9)}
+
+  .riwayat-item .item-meta{
+    display:flex;gap:14px;flex-wrap:wrap;
+    font-size:12px;color:var(--sub);font-weight:600;
+  }
+  .riwayat-item .item-meta span{display:inline-flex;align-items:center;gap:4px}
+
+  .riwayat-item .item-chips{
+    display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;
+  }
+  .riwayat-item .item-chips .chip{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:3px 9px;border-radius:100px;
+    font-size:10.5px;font-weight:700;
+    background:color-mix(in srgb, var(--role-primary) 12%, transparent);
+    color:var(--role-primary-dark);
+    border:1px solid color-mix(in srgb, var(--role-primary) 30%, transparent);
+  }
+  body.dark .riwayat-item .item-chips .chip{
+    color:var(--role-accent);
+  }
+
+  .riwayat-item .item-actions{display:flex;gap:6px;flex-shrink:0}
+  .riwayat-item .item-actions button{
+    width:38px;height:38px;border-radius:11px;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;transition:all .2s ease;
+  }
+  .riwayat-item .btn-preview{
+    background:linear-gradient(135deg,#60A5FA,#2563EB);color:#fff;
+    box-shadow:0 3px 8px rgba(37,99,235,.3);
+  }
+  .riwayat-item .btn-preview:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 6px 16px rgba(37,99,235,.5)}
+  .riwayat-item .btn-download{
+    background:linear-gradient(135deg,#34D399,#059669);color:#fff;
+    box-shadow:0 3px 8px rgba(16,185,129,.3);
+  }
+  .riwayat-item .btn-download:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 6px 16px rgba(16,185,129,.5)}
+  .riwayat-item .btn-download-purple{
+    background:linear-gradient(135deg,#A78BFA,#7C3AED);color:#fff;
+    box-shadow:0 3px 8px rgba(139,92,246,.3);
+  }
+  .riwayat-item .btn-download-purple:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 6px 16px rgba(139,92,246,.5)}
+  .riwayat-item .btn-delete{
+    background:linear-gradient(135deg,#FB7185,#E11D48);color:#fff;
+    box-shadow:0 3px 8px rgba(225,29,72,.3);
+  }
+  .riwayat-item .btn-delete:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 6px 16px rgba(225,29,72,.5)}
+
+  @media(max-width:640px){
+    .riwayat-item{padding:14px;flex-wrap:wrap;gap:12px}
+    .riwayat-item .item-icon{width:44px;height:44px;font-size:22px}
+    .riwayat-item .item-actions{width:100%;justify-content:flex-end}
+    .riwayat-item .item-title{font-size:14px}
+    .riwayat-item .item-meta{font-size:11.5px;gap:10px}
+  }
+
+  /* ============================================================
+     EMPTY STATE
+     ============================================================ */
+  .empty-state{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:60px 20px;text-align:center;
+    background:var(--role-card);border:2px dashed var(--role-border);
+    border-radius:20px;margin-top:8px;
+  }
+  .empty-state .empty-icon{
+    font-size:72px;margin-bottom:16px;
+    filter:grayscale(.3);opacity:.7;animation:float 4s ease-in-out infinite;
+  }
+  .empty-state .empty-title{
+    font-size:20px;font-weight:800;color:var(--text);
+    margin-bottom:8px;letter-spacing:-.01em;
+  }
+  .empty-state .empty-desc{
+    font-size:13.5px;color:var(--sub);
+    font-weight:500;line-height:1.7;max-width:460px;
+    margin-bottom:20px;
+  }
+  .empty-state .btn-create{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 26px;border-radius:13px;
+    background:linear-gradient(135deg,#34D399,#10B981,#059669);
+    color:#fff;text-decoration:none;
+    font-size:14px;font-weight:700;letter-spacing:.02em;
+    box-shadow:0 6px 20px rgba(16,185,129,.4);
+    transition:all .3s ease;
+  }
+  .empty-state .btn-create:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(16,185,129,.55)}
+  .empty-state .btn-create.purple{
+    background:linear-gradient(135deg,#A78BFA,#8B5CF6,#7C3AED);
+    box-shadow:0 6px 20px rgba(139,92,246,.4);
+  }
+  .empty-state .btn-create.purple:hover{box-shadow:0 12px 28px rgba(139,92,246,.55)}
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .footer{
+    text-align:center;padding:20px 12px;color:var(--sub);font-size:12.5px;
+  }
+  .footer strong{color:var(--role-header-text)}
+  body:not(.dark) .footer strong{color:var(--role-primary-dark)}
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  .toast{
+    position:fixed;bottom:24px;left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:var(--role-card);color:#fff;
+    padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:0 20px 40px rgba(0,0,0,.5);
+    border:2px solid var(--role-primary-dark);
+    opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);
+    z-index:99999;max-width:calc(100vw - 32px);text-align:center;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.success{background:linear-gradient(135deg,#059669,#047857);border-color:#10B981}
+  .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
+  .toast.info{background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-color:#60A5FA}
+  .toast.warn{background:linear-gradient(135deg,#D97706,#B45309);border-color:#FBBF24}
+
+  /* ============================================================
+     PWA LOADER
+     ============================================================ */
+  .pwa-loader{
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(15,23,42,.85);backdrop-filter:blur(8px);
+    z-index:99999;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:20px;
+    opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s;
+  }
+  .pwa-loader.show{opacity:1;visibility:visible}
+  .pwa-loader .loader-logo{
+    font-size:64px;animation:loaderSpin 2s ease-in-out infinite;
+    filter:drop-shadow(0 4px 12px rgba(16,185,129,.5));
+  }
+  @keyframes loaderSpin{
+    0%,100%{transform:scale(1) rotate(0deg)}
+    50%{transform:scale(1.1) rotate(10deg)}
+  }
+  .pwa-loader .loader-text{
+    font-size:15px;font-weight:700;color:#A7F3D0;letter-spacing:.02em;
+  }
+  .pwa-loader .loader-bar{
+    width:220px;height:4px;border-radius:100px;
+    background:rgba(167,243,208,.15);overflow:hidden;
+  }
+  .pwa-loader .loader-bar::after{
+    content:'';display:block;height:100%;width:40%;
+    background:linear-gradient(90deg,#10B981,#3B82F6);
+    border-radius:100px;animation:loaderBar 1.4s ease-in-out infinite;
+  }
+  @keyframes loaderBar{
+    0%{transform:translateX(-100%)}
+    100%{transform:translateX(300%)}
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media(max-width:900px){
+    .wrapper{grid-template-columns:1fr;gap:18px}
+    .col-profil{position:static;height:auto;max-height:none}
+    .profile-card{max-height:none;height:auto}
+    .profile-card-body{overflow-y:visible;max-height:none}
+  }
+  @media(max-width:640px){
+    .header{flex-wrap:wrap;padding:12px 16px;position:relative}
+    .header-left{flex:1 1 100%;justify-content:center}
+    .header-center{flex:1 1 100%;order:2}
+    .header-right{flex:1 1 100%;justify-content:center;order:3}
+    .jam-box{font-size:11px;padding:6px 14px}
+    .wrapper{padding:16px 12px}
+    .card{padding:16px}
+    .intro-card{padding:18px}
+    .intro-card h2{font-size:17px}
+    .panel-header{flex-direction:column;align-items:stretch}
+    .btn-back-guru{justify-content:center}
+    .tab-btn{font-size:11.5px;padding:10px 8px;min-width:110px}
+  }
+</style>
+</head>
+
+<body>
+
+<!-- PWA LOADER -->
+<div class="pwa-loader show" id="pwaLoader">
+  <div class="loader-logo">📜</div>
+  <div class="loader-text">Memuat Riwayat...</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- ORNAMEN 17 -->
+<div class="ornament orn-love-1">♡</div>
+<div class="ornament orn-love-2">❤</div>
+<div class="ornament orn-love-3">♡</div>
+<div class="ornament orn-star-1">★</div>
+<div class="ornament orn-star-2">☆</div>
+<div class="ornament orn-star-3">✦</div>
+<div class="ornament orn-leaf-1">🍃</div>
+<div class="ornament orn-leaf-2">🌿</div>
+<div class="ornament orn-spark-1">✨</div>
+<div class="ornament orn-spark-2">✧</div>
+<div class="ornament orn-purple-1">◆</div>
+<div class="ornament orn-dot-1">●</div>
+<div class="ornament orn-flower-1">✿</div>
+<div class="ornament orn-flower-2">❀</div>
+<div class="ornament orn-sparkle-1">✺</div>
+<div class="ornament orn-sparkle-2">✹</div>
+<div class="ornament orn-diamond-1">♦</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1 id="headerTitle">Riwayat RPPH/RPPM &amp; LKPD</h1>
+  </div>
+  <div class="header-center">
+    <div class="jam-box">
+      <span class="jam-dot"></span>
+      <span id="liveClock">Memuat...</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Ganti Tema">🌙</button>
+  </div>
+</div>
+
+<!-- WRAPPER 2 KOLOM -->
+<div class="wrapper">
+
+  <!-- KOLOM KIRI: PROFIL GURU -->
+  <div class="col-profil">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+        <span class="lama-text" id="profileLama">-</span>
+      </div>
+      <div class="profile-card-body" id="profileBody">
+        <!-- diisi JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: KONTEN -->
+  <div class="col-menu">
+
+    <!-- INTRO CARD -->
+    <div class="intro-card">
+      <h2>📚 Riwayat Pembelajaran Anda</h2>
+      <p>Semua RPPH/RPPM yang pernah Anda buat &amp; LKPD yang pernah Anda unduh — tersimpan otomatis per akun Guru.</p>
+    </div>
+
+    <!-- PANEL HEADER -->
+    <div class="panel-header">
+      <div class="panel-title">
+        <span>📜</span>
+        <span>Riwayat Pembelajaran Anda</span>
+      </div>
+      <a class="btn-back-guru" href="../guru.html" id="btnKembaliMenu" title="Kembali ke halaman utama">
+        ← Kembali ke Menu
+      </a>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <a class="tab-btn active" id="tabRpphRppm" href="#riwayat-rpp" onclick="tanganiTabClick(event,'rpp')">
+        📚 RPPH/RPPM <span id="countRppBadge" style="opacity:.85">(0)</span>
+      </a>
+      <a class="tab-btn" id="tabLkpd" href="#riwayat-lkpd" onclick="tanganiTabClick(event,'lkpd')">
+        📋 LKPD <span id="countLkpdBadge" style="opacity:.85">(0)</span>
+      </a>
+      <a class="tab-btn" id="tabStatistik" href="#statistik" onclick="tanganiTabClick(event,'stat')">
+        📊 Statistik
+      </a>
+    </div>
+
+    <!-- TAB 1: RIWAYAT RPPH/RPPM -->
+    <div id="panelRpp">
+
+      <!-- FILTER -->
+      <div class="card" style="padding:16px">
+        <div class="filter-bar">
+          <div class="form-group">
+            <label>📅 Periode Bulan</label>
+            <select id="filterBulan">
+              <option value="">Semua Bulan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>📂 Jenis RPP</label>
+            <select id="filterJenis">
+              <option value="">Semua Jenis</option>
+              <option value="rpph">📅 RPPH (Harian)</option>
+              <option value="rppm">📆 RPPM (Mingguan)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>🔍 Cari Topik</label>
+            <input type="text" id="filterCari" placeholder="Cari topik, subtopik, kelompok...">
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px dashed var(--role-border)">
+          <span class="tb-info" id="tbInfoRpp" style="font-size:11.5px;font-weight:800;color:var(--role-primary-dark);padding:6px 14px;background:color-mix(in srgb, var(--role-primary) 12%, transparent);border:1.5px solid color-mix(in srgb, var(--role-primary) 35%, transparent);border-radius:100px;white-space:nowrap;margin-right:auto">
+            Menampilkan semua riwayat
+          </span>
+          <a class="btn-back-guru" href="#reset-filter" onclick="tanganiResetFilter(event)" style="padding:8px 14px;font-size:12px">
+            🔄 Reset Filter
+          </a>
+        </div>
+      </div>
+
+      <!-- STATS BAR -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span>📊 Total:</span>
+          <span class="stat-badge" id="totalRiwayat">0</span>
+        </div>
+        <div class="stat-item">
+          <span>📅 RPPH:</span>
+          <span class="stat-badge" id="totalRpph">0</span>
+        </div>
+        <div class="stat-item">
+          <span>📆 RPPM:</span>
+          <span class="stat-badge blue" id="totalRppm">0</span>
+        </div>
+        <div class="stat-item">
+          <span>🗂️ Tersaring:</span>
+          <span class="stat-badge amber" id="totalFiltered">0</span>
+        </div>
+      </div>
+
+      <!-- LIST RIWAYAT -->
+      <div id="riwayatContainer">
+        <!-- Dirender oleh JavaScript -->
+      </div>
+
+    </div>
+
+    <!-- TAB 2: RIWAYAT UNDUHAN LKPD -->
+    <div id="panelLkpd" style="display:none">
+
+      <!-- FILTER LKPD -->
+      <div class="card" style="padding:16px">
+        <div class="filter-bar">
+          <div class="form-group">
+            <label>📅 Periode Bulan</label>
+            <select id="lkpdFilterBulan">
+              <option value="">Semua Bulan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>📋 Jenis LKPD</label>
+            <select id="lkpdFilterJenis">
+              <option value="">Semua Jenis LKPD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>🔍 Cari Topik</label>
+            <input type="text" id="lkpdFilterCari" placeholder="Cari topik, subtopik, LKPD...">
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px dashed var(--role-border)">
+          <span class="tb-info" id="tbInfoLkpd" style="font-size:11.5px;font-weight:800;color:#DC2626;padding:6px 14px;background:rgba(220,38,38,.12);border:1.5px solid rgba(220,38,38,.4);border-radius:100px;white-space:nowrap;margin-right:auto">
+  Menampilkan semua unduhan LKPD
+</span>
+          <a class="btn-back-guru" href="#reset-filter-lkpd" onclick="tanganiResetFilterLkpd(event)" style="padding:8px 14px;font-size:12px">
+            🔄 Reset Filter
+          </a>
+        </div>
+      </div>
+
+      <!-- STATS BAR LKPD -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span>📋 Total Unduhan:</span>
+          <span class="stat-badge purple" id="lkpdTotalUnduhan">0</span>
+        </div>
+        <div class="stat-item">
+          <span>📄 Total LKPD:</span>
+          <span class="stat-badge" id="lkpdTotalLkpd">0</span>
+        </div>
+        <div class="stat-item">
+          <span>🗂️ Tersaring:</span>
+          <span class="stat-badge amber" id="lkpdTotalFiltered">0</span>
+        </div>
+      </div>
+
+      <!-- LIST LKPD -->
+      <div id="lkpdContainer">
+        <!-- Dirender oleh JavaScript -->
+      </div>
+
+    </div>
+
+    <!-- TAB 3: STATISTIK -->
+    <div id="panelStat" style="display:none">
+      <div id="statContent">
+        <!-- Dirender oleh JavaScript -->
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      ~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~
+    </div>
+
+  </div><!-- /col-menu -->
+
+</div><!-- /wrapper -->
+
+<div class="toast" id="toast">✨</div>
+
+<script>
+console.log(
+  '%c╔══════════════════════════════════════════════════╗\n' +
+  '║  RIWAYAT RPPH/RPPM + LKPD — SIAGRA v.2.s         ║\n' +
+  '║  © 2026 Sugianto, S.Pd., Gr.                     ║\n' +
+  '║  📁 Folder: menu-guru/riwayat-rpp.html           ║\n' +
+  '║  🎨 Tema: Hijau (#10B981) • Dark mode default    ║\n' +
+  '║  👤 Layout: 2 Kolom (Profil Kiri + Konten)       ║\n' +
+  '║  ✨ 17 Ornamen (persis absensi.html)             ║\n' +
+  '║  📋 Fitur: Riwayat RPPH/RPPM + LKPD + Statistik  ║\n' +
+  '╚══════════════════════════════════════════════════╝',
+  'color:#10B981;font-weight:bold;font-size:11px'
+);
+
+/* ============================================================
+   KONFIGURASI STORAGE
+   ============================================================ */
+const KEY_ANAK = 'ra_anak';
+const KEY_GURU = 'ra_guru';
+const KEY_TENDIK = 'ra_tendik';
+const KEY_KELAS = 'ra_kelas';
+
+/* ============================================================
+   🔒 VALIDASI LOGIN SIAGRA
+   ============================================================ */
+var currentUser = null;
+(function validasiLoginRiwayat(){
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+  if(!user || user.role !== 'guru'){
+    alert('Silakan login sebagai Guru terlebih dahulu untuk mengakses halaman ini.');
+    window.location.href = '../index.html';
+    return;
+  }
+  currentUser = user;
+  console.log('🔒 Validasi login Riwayat OK — Guru:', user.nama);
+})();
+
+/* ============================================================
+   DATA GLOBAL
+   ============================================================ */
+let dataGuru = [];
+let dataTendik = [];
+let dataKelas = [];
+let guruProfil = null;
+
+/* ============================================================
+   UTILITAS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+
+function load(key, def){
+  try{
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : (def !== undefined ? def : null);
+  }catch(e){ return def !== undefined ? def : null; }
+}
+
+function save(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e){ return false; }
+}
+
+function esc(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+const escapeHtml = esc;
+
+function normalisasiNama(nama){
+  if(!nama) return '';
+  let s = String(nama).trim().toLowerCase();
+  s = s.split(',')[0].trim();
+  s = s.replace(/[.,']/g, ' ');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
+function kataKunciNama(nama){
+  const n = normalisasiNama(nama);
+  const parts = n.split(' ').filter(x => x.length > 2);
+  return parts.slice(0, 2).join(' ');
+}
+
+function namaPanggilan(nama){
+  if(!nama) return '';
+  return String(nama).split(',')[0].trim().split(/\s+/)[0] || nama;
+}
+
+function namaKeFile(nama){
+  let b = String(nama || '').split(',')[0].trim();
+  b = b.replace(/\s+/g, '-');
+  b = b.replace(/[^a-zA-Z0-9\-]/g, '');
+  return b;
+}
+
+const NAMA_BULAN_ID = [
+  'Januari','Februari','Maret','April','Mei','Juni',
+  'Juli','Agustus','September','Oktober','November','Desember'
+];
+
+function formatTanggalPanjang(tgl){
+  if(!tgl) return '-';
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  return d.getDate() + ' ' + NAMA_BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function getWITA(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  return new Date(utc + (8 * 3600000));
+}
+
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+
+/* ============================================================
+   TOAST + BEEP
+   ============================================================ */
+function playBeep(type){
+  try{
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return;
+    const ctx = new Ctx();
+    const beep = (startAt, freq, dur, vol) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + startAt);
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + startAt);
+      gain.gain.exponentialRampToValueAtTime(vol || 0.55, ctx.currentTime + startAt + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startAt + dur);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime + startAt);
+      osc.stop(ctx.currentTime + startAt + dur + 0.02);
+    };
+    if(type === 'error'){
+      beep(0.00, 180, 0.18, 0.55);
+      beep(0.24, 180, 0.18, 0.55);
+    } else if(type === 'warn'){
+      beep(0.00, 440, 0.16, 0.5);
+      beep(0.20, 440, 0.16, 0.5);
+    }
+    setTimeout(() => { try{ ctx.close(); }catch(e){} }, 1000);
+  }catch(e){}
+}
+
+function toast(msg, type){
+  const t = $('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+  if(type === 'error' || type === 'warn'){ playBeep(type); }
+}
+const showToast = toast;
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('dark', theme === 'dark');
+  const btn = $('themeBtn');
+  if(btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme(){
+  const cur = localStorage.getItem('theme') || 'dark';
+  localStorage.setItem('theme', cur === 'dark' ? 'light' : 'dark');
+  applyTheme();
+  toast(localStorage.getItem('theme') === 'dark' ? '🌙 Mode Gelap aktif' : '☀️ Mode Terang aktif', 'info');
+}
+applyTheme();
+
+/* ============================================================
+   JAM WITA
+   ============================================================ */
+function updateClock(){
+  const w = getWITA();
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const h = String(w.getHours()).padStart(2,'0');
+  const m = String(w.getMinutes()).padStart(2,'0');
+  const el = $('liveClock');
+  if(el) el.textContent = days[w.getDay()] + ', ' + w.getDate() + ' ' + NAMA_BULAN_ID[w.getMonth()] + ' ' + w.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   ROLE COLORS
+   ============================================================ */
+function applyRoleColors(){
+  const role = (currentUser && currentUser.role) || 'guru';
+  const colors = {
+    'guru': {
+      primary:'#34D399', primaryDark:'#10B981', accent:'#6EE7B7',
+      glow:'rgba(52,211,153,.5)', glowSoft:'rgba(16,185,129,.3)',
+      headerGrad:'linear-gradient(135deg,#064E3B,#0A1F17)',
+      headerBorder:'#10B981', headerText:'#A7F3D0',
+      introGrad:'linear-gradient(135deg,#065F46,#10B981 60%,#34D399)',
+      card:'#0A1F17', cardInner:'#0F2A20', border:'#1F4A36'
+    },
+    'kepala': {
+      primary:'#3B82F6', primaryDark:'#1E40AF', accent:'#60A5FA',
+      glow:'rgba(59,130,246,.5)', glowSoft:'rgba(96,165,250,.3)',
+      headerGrad:'linear-gradient(135deg,#1E3A8A,#1E40AF)',
+      headerBorder:'#3B82F6', headerText:'#FCD34D',
+      introGrad:'linear-gradient(135deg,#1E3A8A,#2563EB 60%,#60A5FA)',
+      card:'#0F1A3A', cardInner:'#0A0F26', border:'#1E3A8A'
+    }
+  };
+  const c = colors[role] || colors.guru;
+  const root = document.documentElement;
+  root.style.setProperty('--role-primary', c.primary);
+  root.style.setProperty('--role-primary-dark', c.primaryDark);
+  root.style.setProperty('--role-accent', c.accent);
+  root.style.setProperty('--role-glow', c.glow);
+  root.style.setProperty('--role-header-grad', c.headerGrad);
+  root.style.setProperty('--role-header-border', c.headerBorder);
+  root.style.setProperty('--role-header-text', c.headerText);
+  root.style.setProperty('--role-intro-grad', c.introGrad);
+  root.style.setProperty('--role-card', c.card);
+  root.style.setProperty('--role-card-inner', c.cardInner);
+  root.style.setProperty('--role-border', c.border);
+}
+
+/* ============================================================
+   AVATAR SVG + FOTO
+   ============================================================ */
+function avatarSvg(nama, warnaAksen){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+  const palettes = [
+    { bg1:'#1F1414', bg2:'#3D1A1A', fg:'#F5F5F5', accent:'#EF4444' },
+    { bg1:'#141A1F', bg2:'#1A2A3D', fg:'#F5F5F5', accent:'#60A5FA' },
+    { bg1:'#1F1A14', bg2:'#3D2A1A', fg:'#F5F5F5', accent:'#FBBF24' },
+    { bg1:'#1A141F', bg2:'#2A1A3D', fg:'#F5F5F5', accent:'#C4B5FD' }
+  ];
+  const p = palettes[variant];
+  const accent = warnaAksen || p.accent;
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  const shapes = [
+    `<circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+     <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>`,
+    `<circle cx="60" cy="40" r="17" fill="url(#g${id})"/>
+     <path d="M 22 100 Q 22 70 60 70 Q 98 70 98 100 Z" fill="url(#g${id})"/>
+     <path d="M 50 72 L 60 84 L 70 72" fill="none" stroke="${p.bg1}" stroke-width="3" stroke-linejoin="round"/>`,
+    `<path d="M 60 22 Q 82 22 82 48 Q 82 62 78 66 L 78 78 L 42 78 L 42 66 Q 38 62 38 48 Q 38 22 60 22 Z" fill="url(#g${id})"/>
+     <circle cx="60" cy="46" r="12" fill="${p.bg1}" opacity="0.4"/>
+     <path d="M 22 100 Q 22 78 60 78 Q 98 78 98 100 Z" fill="url(#g${id})"/>`,
+    `<circle cx="60" cy="44" r="16" fill="url(#g${id})"/>
+     <rect x="42" y="26" width="36" height="10" rx="4" fill="${accent}" opacity="0.7"/>
+     <path d="M 22 100 Q 22 72 60 72 Q 98 72 98 100 Z" fill="url(#g${id})"/>`
+  ];
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/>
+      </linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${p.bg1}"/>
+        <stop offset="100%" stop-color="${p.bg2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    ${shapes[variant]}
+  </svg>`;
+}
+function pakaiFotoAtauAvatar(el, nama){
+  if(!el) return;
+  const fotoUpload = localStorage.getItem('ra_foto_' + nama);
+  if(fotoUpload){ el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">'; return; }
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg','png','jpeg','JPG','PNG'];
+  let idx = 0;
+  function coba(){
+    if(idx >= exts.length){ el.innerHTML = avatarSvg(nama); return; }
+    const img = new Image();
+    img.onload = function(){ el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; };
+    img.onerror = function(){ idx++; coba(); };
+    img.src = '../foto/' + baseName + '.' + exts[idx];
+  }
+  coba();
+}
+
+/* ============================================================
+   CARI DATA GURU LOGIN
+   ============================================================ */
+function cariDataUser(){
+  const sumber = [...(dataGuru||[]), ...(dataTendik||[])];
+  const namaLogin = normalisasiNama(currentUser.nama);
+  const fallback = {
+    nama: currentUser.nama,
+    jabatan: currentUser.role === 'kepala' ? 'Kepala Sekolah' :
+             currentUser.role === 'tendik' ? 'Tenaga Kependidikan' : 'Guru RA',
+    _fallback: true
+  };
+  if(sumber.length === 0) return fallback;
+
+  let found = sumber.find(g => normalisasiNama(g.nama) === namaLogin);
+  if(!found){
+    const depan = namaLogin.split(' ')[0];
+    found = sumber.find(g => normalisasiNama(g.nama).split(' ')[0] === depan);
+  }
+  if(!found){
+    const dua = namaLogin.split(' ').slice(0,2).join(' ');
+    found = sumber.find(g => normalisasiNama(g.nama).split(' ').slice(0,2).join(' ') === dua);
+  }
+  if(!found){
+    found = sumber.find(g => {
+      const n = normalisasiNama(g.nama);
+      return namaLogin.includes(n) || n.includes(namaLogin);
+    });
+  }
+  return found || fallback;
+}
+
+function cariRombelGuru(guru){
+  if(!guru || !dataKelas) return [];
+  const kw = kataKunciNama(guru.nama);
+  const hasil = [];
+  dataKelas.forEach(k => {
+    const rombel = k.rombel || k.nama || '';
+    let cocok = false;
+    if(k.guruUtamaId && guru.id && String(k.guruUtamaId) === String(guru.id)) cocok = true;
+    if(!cocok && Array.isArray(k.guruPendampingIds) && guru.id){
+      if(k.guruPendampingIds.map(String).includes(String(guru.id))) cocok = true;
+    }
+    if(!cocok && k.guruUtama){
+      const kk = kataKunciNama(k.guruUtama);
+      if(kk && kw && (kk === kw || kk.includes(kw) || kw.includes(kk))) cocok = true;
+    }
+    if(!cocok && k.guruPendamping){
+      const kp = kataKunciNama(k.guruPendamping);
+      if(kp && kw && (kp === kw || kp.includes(kw) || kw.includes(kp))) cocok = true;
+    }
+    if(cocok && rombel && !hasil.includes(rombel)) hasil.push(rombel);
+  });
+  return hasil;
+}
+
+/* ============================================================
+   RENDER PROFIL GURU (KIRI)
+   ============================================================ */
+function renderProfil(){
+  const body = $('profileBody');
+  const nama = currentUser.nama;
+  if(!body) return;
+
+  if(!guruProfil || guruProfil._fallback){
+    $('profileNama').textContent = nama;
+    $('profileJabatan').textContent = guruProfil ? guruProfil.jabatan : 'Guru RA';
+    $('profileLama').textContent = '';
+    body.innerHTML = `
+      <div class="info-section-title">📇 Identitas</div>
+      <div class="info-list">
+        <div class="info-item"><span class="lbl">Nama</span><span class="val">${escapeHtml(nama)}</span></div>
+        <div class="info-item"><span class="lbl">Peran</span><span class="val">${escapeHtml(guruProfil ? guruProfil.jabatan : 'Guru')}</span></div>
+      </div>
+      <div style="text-align:center;padding:14px 0;font-size:11.5px;color:var(--sub);line-height:1.5">
+        Data lengkap belum diisi.<br>Silakan hubungi Admin.
+      </div>`;
+    pakaiFotoAtauAvatar($('profilePhoto'), nama);
+    return;
+  }
+
+  $('profileNama').textContent = guruProfil.nama;
+  $('profileJabatan').textContent = guruProfil.jabatan || 'Guru RA';
+  const lama = hitungLamaMengajar(guruProfil.tmt);
+  $('profileLama').textContent = guruProfil.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+
+  const ident = [];
+  if(guruProfil.nip) ident.push({l:'NIP', v:guruProfil.nip});
+  if(guruProfil.npk) ident.push({l:'NPK/PEGID', v:guruProfil.npk});
+  if(guruProfil.jk) ident.push({l:'Jenis Kelamin', v: guruProfil.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(guruProfil.tempatLahir) ident.push({l:'Tempat Lahir', v:guruProfil.tempatLahir});
+  if(guruProfil.tglLahir) ident.push({l:'Tanggal Lahir', v:formatTanggalPanjang(guruProfil.tglLahir)});
+  if(ident.length){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    ident.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  const peg = [];
+  if(guruProfil.pendidikan) peg.push({l:'Pendidikan', v:guruProfil.pendidikan});
+  if(guruProfil.tmt) peg.push({l:'TMT', v:formatTanggalPanjang(guruProfil.tmt)});
+  if(guruProfil.tmt) peg.push({l:'Lama Mengajar', v:lama.teks});
+  if(guruProfil.jabatan) peg.push({l:'Jabatan', v:guruProfil.jabatan});
+  const rombel = cariRombelGuru(guruProfil);
+  if(rombel.length) peg.push({l:'Rombel Diampu', v:rombel.join(', ')});
+  if(peg.length){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    peg.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  const kontak = [];
+  if(guruProfil.hp) kontak.push({l:'HP/WA', v:guruProfil.hp});
+  if(guruProfil.email) kontak.push({l:'Email', v:guruProfil.email});
+  if(guruProfil.alamat) kontak.push({l:'Alamat', v:guruProfil.alamat});
+  if(kontak.length){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  body.innerHTML = html;
+  pakaiFotoAtauAvatar($('profilePhoto'), guruProfil.nama);
+}
+
+/* ============================================================
+   AKSES DATA RIWAYAT RPPH/RPPM
+   ============================================================ */
+function getRiwayatKey(){
+  const username = currentUser ? (currentUser.username || currentUser.nama || 'umum') : 'umum';
+  return 'siagra_riwayat_rpp_' + username.replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+function getRiwayatData(){
+  try {
+    const raw = localStorage.getItem(getRiwayatKey());
+    if(!raw) return { rpph: [], rppm: [] };
+    const parsed = JSON.parse(raw);
+    return {
+      rpph: Array.isArray(parsed.rpph) ? parsed.rpph : [],
+      rppm: Array.isArray(parsed.rppm) ? parsed.rppm : []
+    };
+  } catch(e){
+    console.error('Gagal baca riwayat:', e);
+    return { rpph: [], rppm: [] };
+  }
+}
+
+function saveRiwayatData(data){
+  try {
+    localStorage.setItem(getRiwayatKey(), JSON.stringify(data));
+  } catch(e){
+    console.error('Gagal simpan riwayat:', e);
+    toast('❌ Gagal menyimpan riwayat', 'error');
+  }
+}
+
+/* ============================================================
+   AKSES DATA RIWAYAT UNDUHAN LKPD
+   ============================================================ */
+function getRiwayatLkpdKey(){
+  const username = currentUser ? (currentUser.username || currentUser.nama || 'umum') : 'umum';
+  return 'siagra_riwayat_lkpd_' + username.replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+function getLogLkpd(){
+  try {
+    const raw = localStorage.getItem(getRiwayatLkpdKey());
+    if(!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch(e){
+    console.error('Gagal baca log LKPD:', e);
+    return [];
+  }
+}
+
+function saveLogLkpd(data){
+  try {
+    localStorage.setItem(getRiwayatLkpdKey(), JSON.stringify(data));
+  } catch(e){
+    console.error('Gagal simpan log LKPD:', e);
+    toast('❌ Gagal menyimpan log LKPD', 'error');
+  }
+}
+
+/* Fungsi ini dipanggil dari rpp.html saat user klik Download LKPD */
+function simpanLogLkpd(data){
+  if(!data) return;
+  const log = getLogLkpd();
+
+  const item = {
+    id: 'lkpd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+    tanggal: new Date().toISOString(),
+    topik: data.topik || '-',
+    subtopik: data.subtopik || '',
+    kelompok: data.kelompok || '-',
+    kelompokRombel: data.kelompokRombel || '-',
+    namaGuru: data.namaGuru || '-',
+    jumlahLkpd: (data.lkpdJenis && data.lkpdJenis.length) ? data.lkpdJenis.length : 0,
+    jenisLkpd: data.lkpdJenis || [],
+    lkpdTypes: data.lkpdTypes || [],
+    instruksiLkpd: data.instruksiLkpd || '',
+    mode: data.mode || 'rpph',
+    data: data
+  };
+
+  log.unshift(item);
+  /* Batasi maksimal 100 log */
+  if(log.length > 100) log.length = 100;
+
+  saveLogLkpd(log);
+  console.log('📋 Log LKPD disimpan:', item.topik, '(', item.jumlahLkpd, 'LKPD)');
+}
+
+/* Format helper */
+function formatTanggalIso(iso){
+  try {
+    const d = new Date(iso);
+    return d.getDate() + ' ' + NAMA_BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
+  } catch(e){ return '-'; }
+}
+
+function formatWaktuIso(iso){
+  try {
+    const d = new Date(iso);
+    return String(d.getHours()).padStart(2,'0') + '.' + String(d.getMinutes()).padStart(2,'0');
+  } catch(e){ return ''; }
+}
+
+function normalizePertemuan(val){
+  const v = String(val||'').trim();
+  if(!v) return '6 Hari';
+  if(/^\d+$/.test(v)) return v + ' Hari';
+  return v;
+}
+
+/* ============================================================
+   TAB SWITCHER
+   ============================================================ */
+function switchTab(tab){
+  const panels = {
+    rpp: $('panelRpp'),
+    lkpd: $('panelLkpd'),
+    stat: $('panelStat')
+  };
+  const tabs = {
+    rpp: $('tabRpphRppm'),
+    lkpd: $('tabLkpd'),
+    stat: $('tabStatistik')
+  };
+  Object.keys(panels).forEach(k => {
+    if(panels[k]) panels[k].style.display = (k === tab) ? '' : 'none';
+    if(tabs[k]) tabs[k].classList.toggle('active', k === tab);
+  });
+
+  if(tab === 'rpp') renderRiwayat();
+  else if(tab === 'lkpd') renderLkpd();
+  else if(tab === 'stat') renderStatistik();
+}
+
+function tanganiTabClick(e, tab){
+  if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+  e.preventDefault();
+  switchTab(tab);
+  if(history.replaceState){
+    const hashBaru = tab === 'stat' ? '#statistik' : tab === 'lkpd' ? '#riwayat-lkpd' : '#riwayat-rpp';
+    history.replaceState(null, '', hashBaru);
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function bukaDariHash(){
+  const hash = (location.hash || '').toLowerCase();
+  if(hash === '#statistik' || hash === '#stat'){ switchTab('stat'); }
+  else if(hash === '#riwayat-lkpd' || hash === '#lkpd'){ switchTab('lkpd'); }
+  else { switchTab('rpp'); }
+}
+
+/* ============================================================
+   RENDER RIWAYAT RPPH/RPPM
+   ============================================================ */
+function populateFilterBulan(){
+  const sel = $('filterBulan');
+  if(!sel) return;
+  const all = getRiwayatData();
+  const items = all.rpph.concat(all.rppm);
+  const bulanSet = {};
+  items.forEach(it => {
+    const d = new Date(it.tanggal);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    const label = NAMA_BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
+    bulanSet[key] = label;
+  });
+  const keys = Object.keys(bulanSet).sort().reverse();
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">Semua Bulan</option>';
+  keys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = bulanSet[k];
+    sel.appendChild(opt);
+  });
+  if(currentVal && bulanSet[currentVal]) sel.value = currentVal;
+}
+
+function updateStats(all, filtered){
+  const t = $('totalRiwayat');
+  const rh = $('totalRpph');
+  const rm = $('totalRppm');
+  const ft = $('totalFiltered');
+  if(t) t.textContent = all.rpph.length + all.rppm.length;
+  if(rh) rh.textContent = all.rpph.length;
+  if(rm) rm.textContent = all.rppm.length;
+  if(ft) ft.textContent = filtered.length;
+
+  const badge = $('countRppBadge');
+  if(badge) badge.textContent = '(' + (all.rpph.length + all.rppm.length) + ')';
+}
+
+function renderRiwayat(){
+  populateFilterBulan();
+  const container = $('riwayatContainer');
+  if(!container) return;
+
+  const all = getRiwayatData();
+  const fJenis = ($('filterJenis') || {}).value || '';
+  const fBulan = ($('filterBulan') || {}).value || '';
+  const fCari = (($('filterCari') || {}).value || '').toLowerCase().trim();
+
+  let items = [];
+  if(fJenis === '' || fJenis === 'rpph'){
+    all.rpph.forEach(it => items.push(Object.assign({}, it, { _mode: 'rpph' })));
+  }
+  if(fJenis === '' || fJenis === 'rppm'){
+    all.rppm.forEach(it => items.push(Object.assign({}, it, { _mode: 'rppm' })));
+  }
+
+  if(fBulan){
+    items = items.filter(it => {
+      const d = new Date(it.tanggal);
+      const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      return key === fBulan;
+    });
+  }
+
+  if(fCari){
+    items = items.filter(it => {
+      const hay = (it.topik + ' ' + it.subtopik + ' ' + (it.semester||'') + ' ' + (it.kelompok||'') + ' ' + (it.namaGuru||'')).toLowerCase();
+      return hay.indexOf(fCari) > -1;
+    });
+  }
+
+  items.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+  updateStats(all, items);
+
+  const infoEl = $('tbInfoRpp');
+  if(infoEl){
+    if(items.length === 0){
+      infoEl.textContent = 'Belum ada riwayat';
+    } else {
+      infoEl.textContent = '📋 Menampilkan ' + items.length + ' dari ' + (all.rpph.length + all.rppm.length) + ' riwayat';
+    }
+  }
+
+  if(items.length === 0){
+    container.innerHTML =
+      '<div class="empty-state">' +
+        '<div class="empty-icon">📭</div>' +
+        '<div class="empty-title">Belum ada RPPH/RPPM</div>' +
+        '<div class="empty-desc">Belum ada dokumen pada filter ini.<br>Klik tombol di bawah untuk mulai membuat RPPH/RPPM pertama Anda.</div>' +
+        '<a href="rpp.html" class="btn-create">✨ Buat RPPH/RPPM Sekarang</a>' +
+      '</div>';
+    return;
+  }
+
+  let h = '<div class="riwayat-list">';
+  items.forEach(it => {
+    const isRppm = it._mode === 'rppm';
+    const typeLabel = isRppm ? 'RPPM' : 'RPPH';
+    const icon = isRppm ? '📆' : '📅';
+    const tglStr = formatTanggalIso(it.tanggal);
+    const waktuStr = formatWaktuIso(it.tanggal);
+    const judul = it.topik + (it.subtopik ? ' — ' + it.subtopik : '');
+    const metaHari = isRppm ? ('Minggu ke-' + (it.mingguKe || '-')) : (it.hariTanggal || '-');
+    const jmlLkpd = (it.data && it.data.lkpdJenis) ? it.data.lkpdJenis.length : 0;
+    const idSafe = String(it.id).replace(/'/g, "\\'");
+
+    h += '<div class="riwayat-item ' + (isRppm ? 'rppm' : 'rpph') + '">';
+    h += '<div class="item-icon">' + icon + '</div>';
+    h += '<div class="item-content">';
+    h += '<div class="item-title">' + esc(judul) + ' <span class="badge-type">' + typeLabel + '</span></div>';
+    h += '<div class="item-meta">';
+    h += '<span>🗓️ ' + esc(tglStr) + ' • ' + esc(waktuStr) + '</span>';
+    h += '<span>📚 ' + esc(metaHari) + '</span>';
+    h += '<span>👥 ' + esc(it.kelompok || '-') + '</span>';
+    if(jmlLkpd > 0) h += '<span>📋 ' + jmlLkpd + ' LKPD</span>';
+    h += '</div></div>';
+    h += '<div class="item-actions">';
+    h += '<button class="btn-preview" title="Muat ulang ke formulir RPP" onclick="previewRiwayat(\'' + idSafe + '\',\'' + it._mode + '\')">👁️</button>';
+    h += '<button class="btn-download" title="Download ulang RPP" onclick="downloadRPPRiwayat(\'' + idSafe + '\',\'' + it._mode + '\')">📄</button>';
+    h += '<button class="btn-delete" title="Hapus riwayat" onclick="hapusRiwayat(\'' + idSafe + '\',\'' + it._mode + '\')">🗑️</button>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+  container.innerHTML = h;
+}
+
+/* ============================================================
+   AKSI RPPH/RPPM: PREVIEW, DOWNLOAD, HAPUS
+   ============================================================ */
+function previewRiwayat(id, mode){
+  const all = getRiwayatData();
+  const list = mode === 'rppm' ? all.rppm : all.rpph;
+  let item = null;
+  for(let i = 0; i < list.length; i++){
+    if(list[i].id === id){ item = list[i]; break; }
+  }
+  if(!item || !item.data){
+    toast('⚠️ Data riwayat tidak ditemukan', 'warn');
+    return;
+  }
+  if(!confirm('Muat data ini ke formulir RPP?\n\nAnda akan diarahkan ke halaman RPP.')) return;
+
+  try {
+    localStorage.setItem('siagra_preview_data', JSON.stringify(item.data));
+    toast('✅ Membuka formulir RPP...', 'success');
+    setTimeout(() => { window.location.href = 'rpp.html'; }, 400);
+  } catch(e){
+    console.error('Gagal simpan preview:', e);
+    toast('❌ Gagal memuat data preview', 'error');
+  }
+}
+
+function downloadRPPRiwayat(id, mode){
+  const all = getRiwayatData();
+  const list = mode === 'rppm' ? all.rppm : all.rpph;
+  let item = null;
+  for(let i = 0; i < list.length; i++){
+    if(list[i].id === id){ item = list[i]; break; }
+  }
+  if(!item || !item.data){
+    toast('⚠️ Data riwayat tidak ditemukan', 'warn');
+    return;
+  }
+
+  const d = item.data;
+  d.pertemuan = normalizePertemuan(d.pertemuan);
+
+  toast('📄 Menyiapkan file RPP...', 'info');
+  try {
+    localStorage.setItem('siagra_download_data', JSON.stringify(d));
+    toast('✅ Membuka halaman RPP untuk download...', 'success');
+    setTimeout(() => { window.location.href = 'rpp.html?download=1'; }, 400);
+  } catch(e){
+    console.error('Gagal simpan download:', e);
+    toast('❌ Gagal menyiapkan download', 'error');
+  }
+}
+
+function hapusRiwayat(id, mode){
+  if(!confirm('Hapus riwayat ini secara permanen?\n\nTindakan ini tidak bisa dibatalkan.')) return;
+  const all = getRiwayatData();
+  if(mode === 'rppm'){
+    all.rppm = all.rppm.filter(x => x.id !== id);
+  } else {
+    all.rpph = all.rpph.filter(x => x.id !== id);
+  }
+  saveRiwayatData(all);
+  renderRiwayat();
+  toast('🗑️ Riwayat berhasil dihapus', 'info');
+}
+
+function tanganiResetFilter(e){
+  if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+  e.preventDefault();
+  const fb = $('filterBulan'); if(fb) fb.value = '';
+  const fj = $('filterJenis'); if(fj) fj.value = '';
+  const fc = $('filterCari'); if(fc) fc.value = '';
+  renderRiwayat();
+  toast('🔄 Filter direset', 'info');
+  if(history.replaceState){
+    history.replaceState(null, '', '#riwayat-rpp');
+  }
+}
+
+/* ============================================================
+   RENDER RIWAYAT UNDUHAN LKPD
+   ============================================================ */
+function populateLkpdFilterBulan(){
+  const sel = $('lkpdFilterBulan');
+  if(!sel) return;
+  const log = getLogLkpd();
+  const bulanSet = {};
+  log.forEach(it => {
+    const d = new Date(it.tanggal);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    const label = NAMA_BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
+    bulanSet[key] = label;
+  });
+  const keys = Object.keys(bulanSet).sort().reverse();
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">Semua Bulan</option>';
+  keys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = bulanSet[k];
+    sel.appendChild(opt);
+  });
+  if(currentVal && bulanSet[currentVal]) sel.value = currentVal;
+}
+
+function populateLkpdFilterJenis(){
+  const sel = $('lkpdFilterJenis');
+  if(!sel) return;
+  const log = getLogLkpd();
+  const jenisSet = {};
+  log.forEach(it => {
+    (it.jenisLkpd || []).forEach(j => { jenisSet[j] = true; });
+  });
+  const keys = Object.keys(jenisSet).sort();
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">Semua Jenis LKPD</option>';
+  keys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = k;
+    sel.appendChild(opt);
+  });
+  if(currentVal && jenisSet[currentVal]) sel.value = currentVal;
+}
+
+function updateLkpdStats(all, filtered){
+  const totalU = $('lkpdTotalUnduhan');
+  const totalL = $('lkpdTotalLkpd');
+  const totalF = $('lkpdTotalFiltered');
+  const badge = $('countLkpdBadge');
+
+  if(totalU) totalU.textContent = all.length;
+  if(totalL){
+    const totalLkpd = all.reduce((acc, it) => acc + (it.jumlahLkpd || 0), 0);
+    totalL.textContent = totalLkpd;
+  }
+  if(totalF) totalF.textContent = filtered.length;
+  if(badge) badge.textContent = '(' + all.length + ')';
+}
+
+function renderLkpd(){
+  populateLkpdFilterBulan();
+  populateLkpdFilterJenis();
+
+  const container = $('lkpdContainer');
+  if(!container) return;
+
+  const log = getLogLkpd();
+  const fBulan = ($('lkpdFilterBulan') || {}).value || '';
+  const fJenis = ($('lkpdFilterJenis') || {}).value || '';
+  const fCari = (($('lkpdFilterCari') || {}).value || '').toLowerCase().trim();
+
+  let items = log.slice();
+
+  if(fBulan){
+    items = items.filter(it => {
+      const d = new Date(it.tanggal);
+      const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      return key === fBulan;
+    });
+  }
+
+  if(fJenis){
+    items = items.filter(it => {
+      return (it.jenisLkpd || []).indexOf(fJenis) > -1;
+    });
+  }
+
+  if(fCari){
+    items = items.filter(it => {
+      const hay = (it.topik + ' ' + it.subtopik + ' ' + (it.kelompok||'') + ' ' + (it.jenisLkpd||[]).join(' ')).toLowerCase();
+      return hay.indexOf(fCari) > -1;
+    });
+  }
+
+  items.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+  updateLkpdStats(log, items);
+
+      const infoEl = $('tbInfoLkpd');
+  if(infoEl){
+    if(items.length === 0){
+      infoEl.textContent = '📭 Belum ada unduhan LKPD';
+      infoEl.classList.add('merah');
+      infoEl.style.color = '#DC2626';
+      infoEl.style.background = 'rgba(220,38,38,.15)';
+      infoEl.style.borderColor = 'rgba(220,38,38,.5)';
+    } else {
+      infoEl.textContent = '📋 Menampilkan ' + items.length + ' dari ' + log.length + ' unduhan';
+      infoEl.classList.remove('merah');
+      infoEl.style.color = '#7C3AED';
+      infoEl.style.background = 'rgba(139,92,246,.12)';
+      infoEl.style.borderColor = 'rgba(139,92,246,.35)';
+    }
+  }
+
+  if(items.length === 0){
+    container.innerHTML =
+      '<div class="empty-state">' +
+        '<div class="empty-icon">📭</div>' +
+        '<div class="empty-title">Belum ada LKPD yang diunduh</div>' +
+        '<div class="empty-desc">Setiap kali Anda klik <b>Download LKPD</b> di halaman RPP, log akan tercatat otomatis di sini.<br>Mulai buat RPP + LKPD sekarang!</div>' +
+        '<a href="rpp.html" class="btn-create purple">📋 Buat RPP + LKPD</a>' +
+      '</div>';
+    return;
+  }
+
+  let h = '<div class="riwayat-list">';
+  items.forEach(it => {
+    const tglStr = formatTanggalIso(it.tanggal);
+    const waktuStr = formatWaktuIso(it.tanggal);
+    const judul = it.topik + (it.subtopik ? ' — ' + it.subtopik : '');
+    const modeLabel = it.mode === 'rppm' ? '📆 RPPM' : '📅 RPPH';
+    const idSafe = String(it.id).replace(/'/g, "\\'");
+
+    /* Chips jenis LKPD */
+    let chipsHtml = '';
+    if(it.jenisLkpd && it.jenisLkpd.length > 0){
+      chipsHtml = '<div class="item-chips">';
+      it.jenisLkpd.slice(0, 6).forEach(j => {
+        chipsHtml += '<span class="chip">📋 ' + esc(j) + '</span>';
+      });
+      if(it.jenisLkpd.length > 6){
+        chipsHtml += '<span class="chip">+' + (it.jenisLkpd.length - 6) + ' lainnya</span>';
+      }
+      chipsHtml += '</div>';
+    }
+
+    h += '<div class="riwayat-item lkpd">';
+    h += '<div class="item-icon">📋</div>';
+    h += '<div class="item-content">';
+    h += '<div class="item-title">' + esc(judul) + ' <span class="badge-type">' + it.jumlahLkpd + ' LKPD</span></div>';
+    h += '<div class="item-meta">';
+    h += '<span>🗓️ ' + esc(tglStr) + ' • ' + esc(waktuStr) + '</span>';
+    h += '<span>' + modeLabel + '</span>';
+    h += '<span>👥 ' + esc(it.kelompokRombel || it.kelompok || '-') + '</span>';
+    h += '</div>';
+    h += chipsHtml;
+    h += '</div>';
+    h += '<div class="item-actions">';
+    h += '<button class="btn-preview" title="Lihat detail RPP/LKPD" onclick="previewLkpdRiwayat(\'' + idSafe + '\')">👁️</button>';
+    h += '<button class="btn-download-purple" title="Download ulang LKPD" onclick="downloadLkpdRiwayat(\'' + idSafe + '\')">📄</button>';
+    h += '<button class="btn-delete" title="Hapus log" onclick="hapusLkpdLog(\'' + idSafe + '\')">🗑️</button>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+  container.innerHTML = h;
+}
+
+/* ============================================================
+   AKSI LKPD: PREVIEW, DOWNLOAD, HAPUS
+   ============================================================ */
+function previewLkpdRiwayat(id){
+  const log = getLogLkpd();
+  let item = null;
+  for(let i = 0; i < log.length; i++){
+    if(log[i].id === id){ item = log[i]; break; }
+  }
+  if(!item || !item.data){
+    toast('⚠️ Data LKPD tidak ditemukan', 'warn');
+    return;
+  }
+  if(!confirm('Muat data ini ke formulir RPP?\n\nAnda akan diarahkan ke halaman RPP dengan konfigurasi LKPD ini.')) return;
+
+  try {
+    localStorage.setItem('siagra_preview_data', JSON.stringify(item.data));
+    toast('✅ Membuka formulir RPP...', 'success');
+    setTimeout(() => { window.location.href = 'rpp.html'; }, 400);
+  } catch(e){
+    console.error('Gagal simpan preview LKPD:', e);
+    toast('❌ Gagal memuat data preview', 'error');
+  }
+}
+
+function downloadLkpdRiwayat(id){
+  const log = getLogLkpd();
+  let item = null;
+  for(let i = 0; i < log.length; i++){
+    if(log[i].id === id){ item = log[i]; break; }
+  }
+  if(!item || !item.data){
+    toast('⚠️ Data LKPD tidak ditemukan', 'warn');
+    return;
+  }
+
+  toast('📋 Menyiapkan file LKPD...', 'info');
+  try {
+    localStorage.setItem('siagra_download_lkpd_data', JSON.stringify(item.data));
+    toast('✅ Membuka halaman RPP untuk download LKPD...', 'success');
+    setTimeout(() => { window.location.href = 'rpp.html?download_lkpd=1'; }, 400);
+  } catch(e){
+    console.error('Gagal simpan download LKPD:', e);
+    toast('❌ Gagal menyiapkan download', 'error');
+  }
+}
+
+function hapusLkpdLog(id){
+  if(!confirm('Hapus log unduhan LKPD ini?\n\nTindakan ini tidak bisa dibatalkan.')) return;
+  let log = getLogLkpd();
+  log = log.filter(x => x.id !== id);
+  saveLogLkpd(log);
+  renderLkpd();
+  renderStatistik();
+  toast('🗑️ Log LKPD dihapus', 'info');
+}
+
+function tanganiResetFilterLkpd(e){
+  if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+  e.preventDefault();
+  const fb = $('lkpdFilterBulan'); if(fb) fb.value = '';
+  const fj = $('lkpdFilterJenis'); if(fj) fj.value = '';
+  const fc = $('lkpdFilterCari'); if(fc) fc.value = '';
+  renderLkpd();
+  toast('🔄 Filter LKPD direset', 'info');
+  if(history.replaceState){
+    history.replaceState(null, '', '#riwayat-lkpd');
+  }
+}
+
+/* ============================================================
+   RENDER STATISTIK (GABUNGAN RPP + LKPD)
+   ============================================================ */
+function renderStatistik(){
+  const cont = $('statContent');
+  if(!cont) return;
+
+  const all = getRiwayatData();
+  const logLkpd = getLogLkpd();
+
+  const totalRpp = all.rpph.length + all.rppm.length;
+  const semuaItems = all.rpph.concat(all.rppm);
+  const hariSet = new Set(semuaItems.map(it => (it.tanggal || '').substring(0,10)));
+  const bulanSet = new Set(semuaItems.map(it => (it.tanggal || '').substring(0,7)));
+  const totalLkpdDibuat = semuaItems.reduce((acc, it) => {
+    return acc + ((it.data && it.data.lkpdJenis) ? it.data.lkpdJenis.length : 0);
+  }, 0);
+  const totalLkpdDiunduh = logLkpd.reduce((acc, it) => acc + (it.jumlahLkpd || 0), 0);
+
+  /* Statistik per bulan gabungan */
+  const perBulan = {};
+  semuaItems.forEach(it => {
+    const key = (it.tanggal || '').substring(0,7);
+    if(!perBulan[key]) perBulan[key] = { rpph: 0, rppm: 0, lkpdBuat: 0, lkpdUnduh: 0 };
+    if(it.mode === 'rppm') perBulan[key].rppm++;
+    else perBulan[key].rpph++;
+    if(it.data && it.data.lkpdJenis) perBulan[key].lkpdBuat += it.data.lkpdJenis.length;
+  });
+  logLkpd.forEach(it => {
+    const key = (it.tanggal || '').substring(0,7);
+    if(!perBulan[key]) perBulan[key] = { rpph: 0, rppm: 0, lkpdBuat: 0, lkpdUnduh: 0 };
+    perBulan[key].lkpdUnduh += (it.jumlahLkpd || 0);
+  });
+  const bulanKeys = Object.keys(perBulan).sort().reverse();
+
+  let html = '';
+
+  /* Statistik Utama */
+  html += '<div class="card">';
+  html += '<div class="card-title"><span class="emoji">📊</span><span>Ringkasan Statistik</span></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  html += statBox('📋', totalRpp, 'Total RPP');
+  html += statBox('📅', all.rpph.length, 'RPPH', '#10B981');
+  html += statBox('📆', all.rppm.length, 'RPPM', '#3B82F6');
+  html += statBox('📋', totalLkpdDibuat, 'LKPD Dibuat', '#F59E0B');
+  html += '</div>';
+  html += '</div>';
+
+  /* Statistik LKPD */
+  html += '<div class="card">';
+  html += '<div class="card-title"><span class="emoji">📋</span><span>Statistik LKPD</span></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
+  html += statBox('📋', totalLkpdDibuat, 'LKPD Dibuat', '#F59E0B');
+  html += statBox('📄', totalLkpdDiunduh, 'LKPD Diunduh', '#8B5CF6');
+  html += statBox('🔢', logLkpd.length, 'Sesi Unduhan', '#EC4899');
+  html += '</div>';
+  html += '</div>';
+
+  /* Info Tambahan */
+  html += '<div class="card">';
+  html += '<div class="card-title"><span class="emoji">📈</span><span>Info Tambahan</span></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
+  html += statBox('🗓️', hariSet.size, 'Hari Aktif', '#06B6D4');
+  html += statBox('📅', bulanSet.size, 'Bulan Aktif', '#14B8A6');
+  const rataRata = bulanSet.size > 0 ? Math.round(totalRpp / bulanSet.size) : 0;
+  html += statBox('📊', rataRata, 'Rata-rata/Bulan', '#F97316');
+  html += '</div>';
+  html += '</div>';
+
+  /* Detail per Bulan */
+  if(bulanKeys.length === 0){
+    html += '<div class="card">';
+    html += '<div class="empty-state" style="padding:40px 20px">';
+    html += '<div class="empty-icon" style="font-size:52px">📭</div>';
+    html += '<div class="empty-title" style="font-size:16px">Belum Ada Data</div>';
+    html += '<div class="empty-desc" style="font-size:12.5px">Mulai buat RPPH/RPPM untuk melihat statistik di sini.</div>';
+    html += '</div></div>';
+  } else {
+    html += '<div class="card">';
+    html += '<div class="card-title"><span class="emoji">📆</span><span>Rincian Per Bulan</span></div>';
+    html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html += '<thead><tr style="background:var(--role-card-inner)">';
+    html += '<th style="padding:10px;text-align:left;border:1px solid var(--role-border);font-weight:800">Bulan</th>';
+    html += '<th style="padding:10px;text-align:center;border:1px solid var(--role-border);font-weight:800">RPPH</th>';
+    html += '<th style="padding:10px;text-align:center;border:1px solid var(--role-border);font-weight:800">RPPM</th>';
+    html += '<th style="padding:10px;text-align:center;border:1px solid var(--role-border);font-weight:800">Total RPP</th>';
+    html += '<th style="padding:10px;text-align:center;border:1px solid var(--role-border);font-weight:800">LKPD Buat</th>';
+    html += '<th style="padding:10px;text-align:center;border:1px solid var(--role-border);font-weight:800">LKPD Unduh</th>';
+    html += '</tr></thead><tbody>';
+    bulanKeys.forEach(k => {
+      const [thn, bln] = k.split('-');
+      const namaBln = NAMA_BULAN_ID[parseInt(bln) - 1] + ' ' + thn;
+      const d = perBulan[k];
+      html += '<tr>';
+      html += '<td style="padding:9px 10px;border:1px solid var(--role-border);font-weight:700">' + esc(namaBln) + '</td>';
+      html += '<td style="padding:9px 10px;border:1px solid var(--role-border);text-align:center;color:#10B981;font-weight:800">' + d.rpph + '</td>';
+      html += '<td style="padding:9px 10px;border:1px solid var(--role-border);text-align:center;color:#3B82F6;font-weight:800">' + d.rppm + '</td>';
+      html += '<td style="padding:9px 10px;border:1px solid var(--role-border);text-align:center;font-weight:900">' + (d.rpph + d.rppm) + '</td>';
+      html += '<td style="padding:9px 10px;border:1px solid var(--role-border);text-align:center;color:#F59E0B;font-weight:800">' + d.lkpdBuat + '</td>';
+      html += '<td style="padding:9px 10px;border:1px solid var(--role-border);text-align:center;color:#8B5CF6;font-weight:800">' + d.lkpdUnduh + '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    html += '</div>';
+  }
+
+  cont.innerHTML = html;
+}
+
+function statBox(emoji, n, label, warna){
+  const c = warna || 'var(--role-primary-dark)';
+  return '<div style="padding:14px 12px;border-radius:12px;background:color-mix(in srgb, ' + c + ' 10%, var(--role-card-inner));border:2px solid color-mix(in srgb, ' + c + ' 40%, transparent);text-align:center">' +
+    '<div style="font-size:24px;line-height:1;margin-bottom:6px">' + emoji + '</div>' +
+    '<div style="font-size:22px;font-weight:800;color:' + c + ';line-height:1">' + n + '</div>' +
+    '<div style="font-size:10px;font-weight:700;color:var(--sub);margin-top:4px;text-transform:uppercase;letter-spacing:.04em">' + label + '</div>' +
+  '</div>';
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function muatData(){
+  dataGuru = load(KEY_GURU, []) || [];
+  dataTendik = load(KEY_TENDIK, []) || [];
+  dataKelas = load(KEY_KELAS, []) || [];
+  guruProfil = cariDataUser();
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  applyTheme();
+  applyRoleColors();
+  muatData();
+  renderProfil();
+
+  /* Render awal semua tab */
+  renderRiwayat();
+  renderLkpd();
+  switchTab('rpp');
+
+  /* Filter listeners - RPP */
+  const fb = $('filterBulan');
+  const fj = $('filterJenis');
+  const fc = $('filterCari');
+  if(fb) fb.addEventListener('change', renderRiwayat);
+  if(fj) fj.addEventListener('change', renderRiwayat);
+  if(fc) fc.addEventListener('input', renderRiwayat);
+
+  /* Filter listeners - LKPD */
+  const lbf = $('lkpdFilterBulan');
+  const lbj = $('lkpdFilterJenis');
+  const lbfc = $('lkpdFilterCari');
+  if(lbf) lbf.addEventListener('change', renderLkpd);
+  if(lbj) lbj.addEventListener('change', renderLkpd);
+  if(lbfc) lbfc.addEventListener('input', renderLkpd);
+
+  /* PWA loader hide */
+  setTimeout(() => {
+    const loader = $('pwaLoader');
+    if(loader) loader.classList.remove('show');
+  }, 500);
+
+  /* Buka dari hash */
+  setTimeout(bukaDariHash, 100);
+
+  console.log('🚀 riwayat-rpp.html siap');
+  console.log('👤 Guru:', currentUser.nama);
+  console.log('📋 Data guru:', guruProfil ? guruProfil.nama : 'TIDAK DITEMUKAN');
+  console.log('📚 Total riwayat RPP:', getRiwayatData().rpph.length + getRiwayatData().rppm.length);
+  console.log('📋 Total log LKPD:', getLogLkpd().length);
+});
+
+window.addEventListener('hashchange', bukaDariHash);
+
+console.log(
+  '%c✅ riwayat-rpp.html — SIAGRA v.2.s Aktif!\n' +
+  '   • Dark mode default (sinkron SIAGRA key: "theme")\n' +
+  '   • Layout 2 kolom: Profil kiri (sticky) + Konten kanan\n' +
+  '   • Header sticky + Jam WITA\n' +
+  '   • 17 Ornamen floating (persis absensi.html)\n' +
+  '   • Tab: RPPH/RPPM + LKPD + Statistik\n' +
+  '   • Aksi: Preview, Download, Hapus\n' +
+  '   • Tanpa watermark\n' +
+  '   • © 2026 Sugianto, S.Pd., Gr.',
+  'color:#10B981;font-weight:bold;font-size:11px'
+);
+</script>
+<script src="../auto-update.js"></script>
+</body>
+</html>
+<!-- ============ END RIWAYAT RPPH/RPPM + LKPD — SIAGRA v.2.s (menu-guru/riwayat-rpp.html) ============ -->

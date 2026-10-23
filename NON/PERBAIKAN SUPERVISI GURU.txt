@@ -1,0 +1,130 @@
+perbaikan pada cover dan laporan ms. word
+perlu diperbaiki seperti gambar yang saya unggah:
+gambar 1. pisahkan antara cover dengan isi laporan (dihalaman selanjutnya) 
+gambar 2. setelah hakcipta di footer, buatkan halaman baru untuk laporan selanjutnya
+gambar 3. tampilan pada kolom tanda tangan masih belum sesuai yang diharapkan
+pada kolom tanda tangan:
+sejajarkan tulisan Guru yang Dinilai, Pengawas dan Penilai
+sejajarkan 
+
+
+=================
+1. turunkan KAB. BARITO KUALA – KALIMANTAN SELATAN setelah KANTOR KEMENTERIAN AGAMA 
+2. turunkan PENILAIAN KINERJA GURU (PKG)
+3. tambahkan RA MAZKIRA IMANI sebelum TAHUN AJARAN 2026/2027
+pada kolom tanda tangan:
+sejajarkan tulisan Guru yang Dinilai, Pengawas dan Penilai
+sejajarkan 
+ 
+JAMSIAH					Hj. Berkati, S.Ag, M.M.  Sugianto, S.Pd., Gr.
+PegID: 6304036211850002	NIP: 196908291997032002  NPK: 7742840214031
+ 
+========================
+tampilan sudah sangat bagus. 
+tetapi ada beberapa hal yang diperlu diperbaiki pada tampilan supervisi.html:
+
+terlalu banyak card. 
+maksud saya, 1 card untuk 1  Instrumen Penilaian
+saya coba obsi b 4 card (1 per aspek) berisi daftar kompetensi masing-masing
+tampilkan notifikasi/error/warn, berbunyi Beep 
+logo masih belum tampil (gambar diunggah)
+hilangkan kata Penilai, pada pengawas
+buatkan nama kota dan tanggal penilaian diatas kata Penilai (kepala sekolah)
+NIP Guru, dirubah menjadi PegId
+===============================
+pada menu form supervisi:
+1. buatkan ℹ️ Keterangan Indikator & Skor, 
+0 Tidak Terpenuhi (warna merah), 1 Terpenuhi Sebagian (warna hijau), 2 Terpenuhi Seluruhnya (tetap warna biru)
+2. sebelum card Total Skor - Nilai PKG - Sebutan
+- Persentase AK, buatkan jumlah nilai kompetensi per komponen, sehingga penilai mengetahui seluruh nilainya. buatkan tampilan memiliki efek "menyala" saat mouse menyentuh card — sama seperti di observasi.html yang menggunakan efek glow + transform + shadow berwarna sama seperti di observasi.html. perkuat efek hover dengan:
+Glow berwarna yang lebih kuat (box-shadow 3 layer)
+Radial glow di belakang card yang membesar (.nilai-item::before)
+Ikon emoji yang ikut menyala + rotate
+Border berwarna yang lebih terang
+Skala pill yang ikut terangkat
+
+pada menu 📚 Riwayat Supervisi
+1. tambahkan tombol aksi ✏️ Edit - 📄 Word - 🗑️ pada guru yang sudah di supervisi
+2. pada menu 📚 Riwayat Supervisi, ubah menjadi 📚 Riwayat Supervisi (../..) (orang yang sudah dan belum disuvervisi)  seperti pada file observasi.html
+
+pada menu 📊 Rekap Nilai
+buatkan tampilan card 📊 Rekap Nilai Supervisi memiliki efek "menyala" saat mouse menyentuh card — sama seperti di observasi.html yang menggunakan efek glow + transform + shadow berwarna sama seperti di observasi.html. perkuat efek hover dengan:
+Glow berwarna yang lebih kuat (box-shadow 3 layer)
+Radial glow di belakang card yang membesar (.nilai-item::before)
+Ikon emoji yang ikut menyala + rotate
+Border berwarna yang lebih terang
+Skala pill yang ikut terangkat
+
+pada hasil cetakan:
+1. logo icon sekolah belum tampil. logo sekolah terdapat pada folder menu-guru/logo-mazkira-200x200px.png
+2. rubah dan buatkan kolom tanda tangan menjadi 3 kolom:
+Guru yang Dinilai
+Pengawas : Hj. Berkati, S.Ag, M.M. NIP. 196908291997032002
+Kepala RA Mazkira Imani Sugianto, S.Pd., Gr. NPK. 7742840214031
+Kata Mengetahui, dirubah menjadi Penilai
+3. gabungkan sourcecode yang baru ke dalam file supervisi.html yang saya unggah, dan buatkan file utuh nya tanpa merusak/merubah isi yang sudah ada
+
+========================
+1. foto di profile kepsek belum muncul dan ucapan pada hero di supervisi.html sama seperti di file kepsek.html menggunakan sebutan pak anto
+2. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address pada semua tombol
+3. buatkan tampilan card menu 4 komponen: 📚 A. PEDAGOGIK, 📚 B. KEPRIBADIAN, 📚 C. SOSIAL, 📚 D. PROFESIONAL memiliki efek "menyala" saat mouse menyentuh card — sama seperti di observasi.html yang menggunakan efek glow + transform + shadow berwarna sama seperti di observasi.html. perkuat efek hover dengan:
+Glow berwarna yang lebih kuat (box-shadow 3 layer)
+Radial glow di belakang card yang membesar (.nilai-item::before)
+Ikon emoji yang ikut menyala + rotate
+Border berwarna yang lebih terang
+Skala pill yang ikut terangkat
+4. gabungkan sourcecode yang baru ke dalam file supervisi.html yang saya unggah, dan buatkan file utuh nya tanpa merusak/merubah isi yang sudah ada
+
+
+===================
+buatkan disetiap kompetensi keterangan INDIKATOR dan Skor: 0 = Tidak Terpenuhi, 1 =	Terpenuhi sebagian, 2 =	Terpenuhi Seluruhnya
+
+
+======================================
+1. buatkan foto di profile kepsek dan ucapan pada hero di supervisi.html sama seperti di file kepsek.html
+2. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address pada semua tombol
+4. pada IDENTITAS SUPERVISI, kelompok dibuat otomatis berdasarkan data pada admin.html
+5. pada kolom Instrumen Penilaian (14 Kompetensi), buatkan sub menu menjadi 4 komponen berjejer: 📚 A. PEDAGOGIK, 📚 B. KEPRIBADIAN, 📚 C. SOSIAL, 📚 D. PROFESIONAL (dengan tujuan agar tampilan tidak terlalu panjang)
+6. gabungkan sourcecode yang baru ke dalam file supervisi.html yang saya unggah, dan buatkan file utuh nya tanpa merusak/merubah isi yang sudah ada
+
+FILE YANG AKAN SAYA UNGGAH:
+- supervisi.html (file fix hasil sebelumnya akan diperbaiki)
+- kepsek.html & admin.html (sebagai acuan)
+
+==========================
+2. buatkan 📝 Supervisi & Penilaian Kinerja Guru
+← Kembali ke Menu dibawah card hero
+3. Terapkan klik kanan, open in new tab, Ctrl+Click, middle-click, Copy link address kedua tombolnya
+4. pada IDENTITAS SUPERVISI, dropdown Nama guru tidak usah menggunakan kelompok, karena sudah ada di dropdown kelompok
+5. pada kolom Instrumen Penilaian (14 Kompetensi), hapus mode cepat, dan ganti mode lengkap menjadi 4 komponen: 📚 A. PEDAGOGIK, 📚 B. KEPRIBADIAN, 📚 C. SOSIAL, 📚 D. PROFESIONAL (dengan tujuan agar tampilan tidak terlalu panjang)
+6. tampilkan notifikasi/error/warn, berbunyi Beep 
+7. gabungkan sourcecode yang baru ke dalam file supervisi.html yang saya unggah, dan buatkan file fix nya tanpa merusak/merubah isi yang sudah ada
+
+==========================
+Halo, saya lanjutkan proyek SIAGRA v.2.s untuk RA Mazkira Imani.
+Folder: SIAGRA/2025/menu-guru/
+
+STANDAR SIAGRA (WAJIB DIPERTAHANKAN):
+- Font: Plus Jakarta Sans + Inter
+- Warna tema guru: Hijau (#10B981 / #34D399)
+- Ornamen 17 floating
+- Header sticky + jam WITA
+- Footer "~ SIAGRA v.2.s — © Sugianto, S.Pd., Gr. ~"
+- Dark mode default
+- Loader PWA
+
+ATURAN PENTING:
+1. Jangan ubah file html yang sudah FIX
+2. Jangan buat file baru kalau tidak perlu
+3. Kalau source code >500 baris → potong jadi 3-4 BAGIAN
+4. Setiap perbaikan → berikan PATCH (cari X, ganti Y) bukan ulang semua
+5. Setelah kirim tiap BAGIAN → minta konfirmasi "lanjutkan"
+6. Kalau file UTUH/FIX → sebutkan "BAGIAN X dari Y" + minta konfirmasi
+7. Tanya dulu sebelum asumsi
+
+YANG INGIN SAYA KERJAKAN:
+1. Perbaiki tampilan Supervisi & Penilaian Guru di supervisi.html
+2. perbaiki tampilan profile kepala sekolah
+
+FILE YANG AKAN SAYA UNGGAH:
+- supervisi.html (file fix hasil sebelumnya akan diperbaiki)

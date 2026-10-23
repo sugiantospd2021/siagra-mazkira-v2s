@@ -1,0 +1,75 @@
+menjalankan server siagra
+
+cmd command:
+
+cd "C:\Users\Acer\OneDrive\Desktop\SIAGRA v.2.s"
+
+python server.py
+
+=====================================
+browser:
+
+http://localhost:8000/cover.html
+
+
+============================= 
+PASSWORD SIAGRA
+
+Guru:
+
+Elma Noor Safitri, S.Pd.
+email: elmamazkira@gmail.com
+password: Imani19@
+
+Jamsiah
+email: yayahmazkira@gmail.com
+password: Imani19@
+
+Nurul Fatimah, S.Pd.
+email: imahmazkira@gmail.com
+password: Imani19@
+
+Nadila Ramadhan P.S.
+email: nadilamazkira@gmail.com
+password: Imani19@
+
+Halimatus Sa'diah, S.Pd.
+email: diahmazkira@gmail.com
+password: Imani19@
+
+Tendik:
+
+Puspa Erma Sari
+email: puspamazkira@gmail.com
+password: Imani19@
+
+kepsek :
+
+Sugianto, S.Pd., Gr.
+email: sugianto.spd.2021@gmail.com
+pass: Permatahijau4No4
+
+admin: 
+
+Anto
+email: boss.antobjm@gmail.com
+pass: Permatahijau4No4
+===================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+python -m http.server 8000

@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="logo-siagra.png">
+<title>SIAGRA - To Do</title>
+<meta name="description" content="SIAGRA — Daftar Tugas Kepala Sekolah">
+<meta name="theme-color" content="#1E3A8A">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SIAGRA">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --bg:#0A0A0A;
+    --card:#0F1A3A;
+    --card-inner:#0A0F26;
+    --text:#F1F5F9;
+    --sub:#94A3B8;
+    --border:#1E3A8A;
+    --primary:#3B82F6;
+    --primary-dark:#1E40AF;
+    --primary-light:#1E3A8A;
+    --accent:#60A5FA;
+    --success:#4ADE80;
+    --danger:#F87171;
+    --yellow:#FCD34D;
+    --red:#DC2626;
+    --red-dark:#991B1B;
+    --green:#10B981;
+    --green-bright:#34D399;
+  }
+
+  body.light{
+    --bg:#F0F4FF;
+    --card:#FFFFFF;
+    --card-inner:#F8FAFF;
+    --text:#1E293B;
+    --sub:#64748B;
+    --border:#BFDBFE;
+    --primary:#3B82F6;
+    --primary-dark:#1E40AF;
+    --primary-light:#DBEAFE;
+    --accent:#2563EB;
+    --success:#059669;
+    --danger:#DC2626;
+    --yellow:#D97706;
+  }
+
+  body.light{
+    background:#F0F4FF;
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(191,219,254,.4) 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(147,197,253,.3) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(96,165,250,.2) 0%, transparent 40%);
+  }
+
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(30,58,138,.25) 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(59,130,246,.15) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(30,64,175,.12) 0%, transparent 40%);
+    background-attachment:fixed;
+    min-height:100vh;color:var(--text);
+    transition:background .3s,color .3s;
+    position:relative;overflow-x:hidden;
+    font-size:15px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ORNAMEN — 17 buah (warna tema biru kepsek) */
+  .ornament{position:fixed;pointer-events:none;z-index:0;opacity:.35;animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(10deg)}}
+  @keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(-25px) rotate(-12deg) scale(1.08)}}
+  @keyframes floatFast{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(15deg)}}
+  .orn-love-1{top:8%;left:3%;font-size:38px;color:#60A5FA;animation-delay:0s}
+  .orn-love-2{top:45%;left:5%;font-size:30px;color:#93C5FD;animation-delay:1.5s;animation-name:floatSlow}
+  .orn-love-3{bottom:12%;right:6%;font-size:34px;color:#3B82F6;animation-delay:2.5s;animation-name:floatFast}
+  .orn-star-1{top:15%;right:4%;font-size:42px;color:#FCD34D;animation-delay:1s;animation-name:floatSlow}
+  .orn-star-2{top:62%;left:2%;font-size:36px;color:#FBBF24;animation-delay:3s}
+  .orn-star-3{bottom:35%;right:3%;font-size:30px;color:#FDE68A;animation-delay:.5s;animation-name:floatFast}
+  .orn-leaf-1{bottom:20%;left:4%;font-size:36px;color:#6EE7B7;animation-delay:1.8s;animation-name:floatSlow}
+  .orn-leaf-2{top:72%;right:7%;font-size:32px;color:#86EFAC;animation-delay:.8s}
+  .orn-spark-1{bottom:25%;right:2%;font-size:34px;color:#93C5FD;animation-delay:.3s;animation-name:floatSlow}
+  .orn-spark-2{top:52%;right:4%;font-size:26px;color:#60A5FA;animation-delay:2.8s}
+  .orn-purple-1{top:38%;right:8%;font-size:32px;color:#C4B5FD;animation-delay:1.7s}
+  .orn-dot-1{top:88%;left:30%;font-size:20px;color:#FDBA74;animation-delay:1.4s}
+  .orn-flower-1{top:25%;left:7%;font-size:28px;color:#F472B6;animation-delay:.4s;animation-duration:7s}
+  .orn-flower-2{bottom:32%;left:6%;font-size:26px;color:#A78BFA;animation-delay:1.8s;animation-name:floatSlow}
+  .orn-sparkle-1{bottom:15%;right:10%;font-size:24px;color:#FACC15;animation-delay:2.2s;animation-duration:7.5s}
+  .orn-sparkle-2{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s;animation-name:floatFast}
+  .orn-diamond-1{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s;animation-duration:9s}
+  @media(max-width:768px){
+    .orn-leaf-2,.orn-spark-2,.orn-star-2,.orn-dot-1,
+    .orn-flower-1,.orn-flower-2,.orn-sparkle-1,.orn-sparkle-2{display:none}
+  }
+  @media(max-width:480px){.ornament{opacity:.22;font-size:22px!important}}
+
+  /* HEADER */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:linear-gradient(135deg,#1E3A8A,#1E40AF);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(30,58,138,.5);
+    gap:12px;
+  }
+  .header-left{flex:0 1 auto;min-width:0;display:flex;align-items:center;gap:10px}
+  .header-left h1{font-size:17px;color:#FCD34D;font-weight:800;letter-spacing:.02em}
+  .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
+  .jam-box{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.15);
+    border:1.5px solid rgba(96,165,250,.5);
+    color:#F1F5F9;padding:8px 18px;border-radius:100px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;
+    backdrop-filter:blur(10px);
+  }
+  .jam-dot{
+    width:8px;height:8px;border-radius:50%;background:#FCD34D;
+    box-shadow:0 0 0 3px rgba(252,211,77,.4);
+    animation:pulse 2s ease-in-out infinite;flex-shrink:0;
+  }
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(252,211,77,.4)}50%{box-shadow:0 0 0 6px rgba(252,211,77,.1)}}
+  .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
+  .theme-toggle{
+    background:rgba(255,255,255,.18);border:none;color:#fff;
+    width:38px;height:38px;border-radius:50%;
+    font-size:17px;cursor:pointer;transition:transform .2s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);background:rgba(255,255,255,.3)}
+  .header-right button.logout{
+    background:linear-gradient(135deg,#DC2626,#991B1B);
+    color:#fff;border:none;
+    padding:8px 16px;border-radius:8px;cursor:pointer;
+    font-family:inherit;font-weight:700;transition:all .2s;
+    font-size:13px;
+    box-shadow:0 2px 8px rgba(220,38,38,.4);
+  }
+  .header-right button.logout:hover{
+    background:linear-gradient(135deg,#EF4444,#B91C1C);
+    transform:translateY(-1px);
+    box-shadow:0 4px 12px rgba(220,38,38,.6);
+  }
+
+  /* ============================================================
+     MAIN WRAPPER: 2 KOLOM
+     ============================================================ */
+  .main-wrapper{
+    max-width:1400px;
+    margin:0 auto;
+    padding:24px 16px;
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:24px;
+    position:relative;
+    z-index:1;
+    align-items:start;
+  }
+
+  .col-menu{min-width:0}
+
+  /* KOLOM KIRI: PROFIL */
+  .col-profil{
+    position:sticky;
+    top:88px;
+    height:calc(100vh - 110px);
+    max-height:calc(100vh - 110px);
+  }
+
+  .profile-card{
+    background:var(--card);
+    border-radius:16px;
+    border:2px solid var(--border);
+    box-shadow:
+      0 0 0 1px rgba(96,165,250,.2),
+      0 0 25px rgba(59,130,246,.25),
+      0 8px 24px rgba(0,0,0,.6);
+    border-top:4px solid var(--accent);
+    height:100%;max-height:100%;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    transition:background .3s;
+  }
+
+  .profile-card-header{
+    padding:20px 18px 16px;
+    text-align:center;
+    border-bottom:1px dashed rgba(96,165,250,.25);
+    flex-shrink:0;
+    background:rgba(30,58,138,.35);
+    transition:background .3s;
+  }
+  body.light .profile-card-header{
+    background:rgba(219,234,254,.5);
+  }
+
+  .profile-photo{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#1E3A8A,#3B82F6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:800;color:#F1F5F9;
+    overflow:hidden;flex-shrink:0;
+    border:3px solid var(--accent);
+    box-shadow:0 4px 14px rgba(59,130,246,.4);
+    margin:0 auto 12px;
+  }
+  .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
+
+  .profile-card-header h2{
+    font-size:14.5px;font-weight:800;
+    color:var(--text);margin-bottom:6px;
+    line-height:1.35;
+  }
+  .profile-card-header .jabatan-badge{
+    display:inline-block;
+    padding:4px 12px;border-radius:100px;
+    font-size:10.5px;font-weight:700;
+    background:rgba(96,165,250,.25);color:#93C5FD;
+    text-transform:uppercase;letter-spacing:.03em;
+    margin-bottom:6px;
+  }
+  body.light .profile-card-header .jabatan-badge{
+    background:rgba(37,99,235,.15);color:#1E40AF;
+  }
+
+  .profile-card-header .lama-text{
+    display:block;
+    font-size:11.5px;font-weight:700;
+    color:var(--yellow);
+    margin-top:4px;
+  }
+
+  .profile-card-body{
+    flex:1;overflow-y:auto;
+    padding:14px 18px 18px;
+  }
+  .profile-card-body::-webkit-scrollbar{width:6px}
+  .profile-card-body::-webkit-scrollbar-track{background:transparent}
+  .profile-card-body::-webkit-scrollbar-thumb{
+    background:rgba(96,165,250,.4);
+    border-radius:10px;
+  }
+  .profile-card-body{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(96,165,250,.4) transparent;
+  }
+
+  .info-section-title{
+    font-size:10px;font-weight:800;
+    color:#93C5FD;text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:8px;margin-top:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  body.light .info-section-title{color:#1E40AF}
+  .info-section-title::before{
+    content:'';width:3px;height:12px;
+    background:var(--accent);border-radius:2px;
+  }
+
+  .info-list{
+    display:flex;flex-direction:column;
+    gap:6px;margin-bottom:14px;
+  }
+  .info-item{
+    display:flex;justify-content:space-between;
+    gap:8px;padding:7px 10px;
+    background:var(--card-inner);
+    border:1px solid rgba(96,165,250,.15);
+    border-radius:8px;
+    font-size:11.5px;line-height:1.4;
+    transition:background .2s;
+  }
+  body.light .info-item{ border:1px solid rgba(37,99,235,.15); }
+  .info-item:hover{
+    background:rgba(30,58,138,.6);
+    border-color:rgba(96,165,250,.4);
+  }
+  body.light .info-item:hover{ background:rgba(219,234,254,.6); }
+  .info-item .lbl{color:#93C5FD;font-weight:600;flex-shrink:0}
+  body.light .info-item .lbl{color:#1E40AF}
+  .info-item .val{
+    color:var(--text);font-weight:700;
+    text-align:right;word-break:break-word;min-width:0;
+  }
+
+  /* ============================================================
+     ✨ INTRO CARD
+     ============================================================ */
+  .intro-card{
+    background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 55%,#3B82F6 100%);
+    color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:22px;
+    border:2px solid rgba(191,219,254,.5);
+    box-shadow:0 10px 30px rgba(59,130,246,.45);
+    position:relative;overflow:hidden;
+    transition:background .3s,box-shadow .3s,border-color .3s;
+  }
+  .intro-card::before{
+    content:'';position:absolute;top:-60px;right:-60px;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);
+    pointer-events:none;
+  }
+  .intro-card h2{
+    font-size:20px;font-weight:800;margin-bottom:6px;
+    position:relative;z-index:1;
+    text-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  .intro-card p{
+    font-size:13px;font-weight:600;line-height:1.5;
+    opacity:.95;position:relative;z-index:1;
+    text-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  body.light .intro-card{
+    background:linear-gradient(135deg,#1E40AF 0%,#2563EB 55%,#3B82F6 100%);
+    border-color:rgba(96,165,250,.5);
+  }
+
+  /* ============================================================
+     ✨ FORM HEADER INLINE — Teks "To Do" kiri + tombol Kembali kanan
+     ============================================================ */
+  .form-header-inline{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:18px;flex-wrap:wrap;
+  }
+  .form-header-inline .form-title-text{
+    display:flex;align-items:center;gap:8px;
+    font-size:16px;font-weight:800;
+    color:var(--yellow);margin:0;
+    text-shadow:0 0 12px rgba(252,211,77,.4);
+  }
+  body.light .form-header-inline .form-title-text{
+    color:#D97706;
+    text-shadow:0 0 10px rgba(217,119,6,.25);
+  }
+  .form-header-inline .form-title-text .emoji{font-size:20px}
+
+  .form-header-inline .btn-back-inline{
+    background:var(--card);color:var(--text);
+    border:2px solid var(--border);
+    padding:10px 20px;border-radius:10px;
+    font-family:inherit;font-size:13px;font-weight:700;
+    cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    transition:all .25s cubic-bezier(.34,1.56,.64,1);
+    white-space:nowrap;
+    text-decoration:none;
+    box-shadow:0 0 0 1px rgba(96,165,250,.15),0 4px 12px rgba(0,0,0,.3);
+  }
+  a.btn-back-inline{color:var(--text)}
+  a.btn-back-inline:visited{color:var(--text)}
+  .form-header-inline .btn-back-inline:hover{
+    background:linear-gradient(135deg,#1E3A8A,#3B82F6);
+    border-color:var(--accent);
+    color:#fff;
+    transform:translateY(-2px);
+    box-shadow:
+      0 0 0 1px rgba(96,165,250,.5),
+      0 0 20px rgba(59,130,246,.55),
+      0 8px 20px rgba(59,130,246,.4);
+  }
+  body.light .form-header-inline .btn-back-inline:hover{
+    background:linear-gradient(135deg,#1E40AF,#3B82F6);
+    color:#fff;
+  }
+
+  @media(max-width:640px){
+    .form-header-inline{flex-direction:column;align-items:stretch}
+    .form-header-inline .btn-back-inline{justify-content:center}
+  }
+
+  /* ============================================================
+     ✨ CARD-BTN — Setiap tombol dibungkus card sendiri
+     ============================================================ */
+  .card-btn-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  @media(max-width:640px){
+    .card-btn-row{grid-template-columns:1fr}
+  }
+
+  .card-btn{
+    background:var(--card);
+    border-radius:14px;
+    padding:14px 16px;
+    border:2px solid var(--border);
+    box-shadow:
+      0 0 0 1px rgba(96,165,250,.15),
+      0 0 15px rgba(59,130,246,.15),
+      0 4px 14px rgba(0,0,0,.3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .25s cubic-bezier(.34,1.56,.64,1);
+    position:relative;
+    overflow:hidden;
+  }
+  .card-btn::before{
+    content:'';
+    position:absolute;
+    top:-40px;right:-40px;
+    width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle, var(--btn-glow-color, rgba(96,165,250,.4)), transparent 70%);
+    opacity:.5;
+    pointer-events:none;
+    transition:opacity .3s, transform .3s;
+  }
+  .card-btn:hover{
+    transform:translateY(-3px);
+    border-color:var(--btn-hover-border, var(--accent));
+    box-shadow:
+      0 0 0 1px var(--btn-hover-glow, rgba(96,165,250,.4)),
+      0 0 24px var(--btn-hover-glow, rgba(96,165,250,.5)),
+      0 10px 24px rgba(0,0,0,.4);
+  }
+  .card-btn:hover::before{
+    opacity:1;
+    transform:scale(1.4);
+  }
+
+  .card-btn.card-add{
+    --btn-glow-color: rgba(16,185,129,.5);
+    --btn-hover-border: #10B981;
+    --btn-hover-glow: rgba(16,185,129,.5);
+  }
+  .card-btn.card-del{
+    --btn-glow-color: rgba(220,38,38,.5);
+    --btn-hover-border: #DC2626;
+    --btn-hover-glow: rgba(220,38,38,.5);
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:11px 20px;
+    border-radius:10px;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:800;
+    cursor:pointer;
+    transition:all .2s;
+    border:none;
+    white-space:nowrap;
+    width:100%;
+    justify-content:center;
+    position:relative;
+    z-index:1;
+  }
+  .btn-add{
+    background:linear-gradient(135deg,#10B981,#059669);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(16,185,129,.4);
+  }
+  .btn-add:hover{box-shadow:0 8px 22px rgba(16,185,129,.55);transform:translateY(-1px)}
+  .btn-reset{
+    background:linear-gradient(135deg,#DC2626,#991B1B);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(220,38,38,.4);
+  }
+  .btn-reset:hover{box-shadow:0 8px 22px rgba(220,38,38,.55);transform:translateY(-1px)}
+
+  /* DASHBOARD STAT */
+  .dash{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .dash-card{
+    background:var(--card);
+    border-radius:14px;
+    padding:16px;
+    border:2px solid var(--border);
+    box-shadow:
+      0 0 0 1px rgba(96,165,250,.15),
+      0 0 15px rgba(59,130,246,.15);
+    text-align:center;
+  }
+  .dash-card .d-icon{font-size:28px;margin-bottom:6px}
+  .dash-card .d-num{
+    font-size:28px;font-weight:900;
+    line-height:1;margin-bottom:4px;
+  }
+  .dash-card .d-label{
+    font-size:11px;font-weight:700;
+    color:#93C5FD;text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  body.light .dash-card .d-label{color:#1E40AF}
+  .dash-card.pending .d-num{color:#F87171}
+  .dash-card.done .d-num{color:#4ADE80}
+  .dash-card.total .d-num{color:#FCD34D}
+  .dash-card.progress .d-num{color:#60A5FA}
+
+  /* 2 KOLOM TODO */
+  .todo-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media(max-width:800px){
+    .todo-grid{grid-template-columns:1fr}
+  }
+
+  .todo-col{
+    background:var(--card);
+    border-radius:16px;
+    border:2px solid var(--border);
+    box-shadow:
+      0 0 0 1px rgba(96,165,250,.15),
+      0 0 15px rgba(59,130,246,.15);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    min-height:300px;
+  }
+
+  .todo-col-header{
+    padding:16px 20px;
+    border-bottom:2px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .todo-col.pending .todo-col-header{
+    background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(153,27,27,.1));
+    border-bottom-color:rgba(220,38,38,.4);
+  }
+  .todo-col.done .todo-col-header{
+    background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(5,150,105,.1));
+    border-bottom-color:rgba(16,185,129,.4);
+  }
+
+  .todo-col-header h3{
+    font-size:15px;
+    font-weight:900;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .todo-col.pending .todo-col-header h3{color:#F87171}
+  .todo-col.done .todo-col-header h3{color:#4ADE80}
+
+  .todo-count{
+    font-size:12px;
+    font-weight:800;
+    padding:4px 12px;
+    border-radius:100px;
+  }
+  .todo-col.pending .todo-count{
+    background:rgba(220,38,38,.25);
+    color:#FCA5A5;
+    border:1px solid rgba(220,38,38,.4);
+  }
+  body.light .todo-col.pending .todo-count{color:#B91C1C}
+  .todo-col.done .todo-count{
+    background:rgba(16,185,129,.25);
+    color:#6EE7B7;
+    border:1px solid rgba(16,185,129,.4);
+  }
+  body.light .todo-col.done .todo-count{color:#047857}
+
+  .todo-list{
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+  }
+
+  .todo-item{
+    padding:12px 14px;
+    border-radius:12px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    transition:all .2s;
+    position:relative;
+    border:2px solid transparent;
+  }
+
+  .todo-item.pending{
+    background:rgba(220,38,38,.08);
+    border-color:rgba(220,38,38,.3);
+  }
+  .todo-item.pending:hover{
+    background:rgba(220,38,38,.15);
+    border-color:rgba(220,38,38,.5);
+    transform:translateX(2px);
+  }
+  body.light .todo-item.pending{
+    background:rgba(220,38,38,.06);
+    border-color:rgba(220,38,38,.25);
+  }
+
+  .todo-item.done{
+    background:rgba(16,185,129,.08);
+    border-color:rgba(16,185,129,.3);
+  }
+  .todo-item.done:hover{
+    background:rgba(16,185,129,.15);
+    border-color:rgba(16,185,129,.5);
+    transform:translateX(2px);
+  }
+  body.light .todo-item.done{
+    background:rgba(16,185,129,.06);
+    border-color:rgba(16,185,129,.25);
+  }
+
+  .todo-check{
+    font-size:18px;
+    line-height:1;
+    flex-shrink:0;
+    margin-top:2px;
+  }
+
+  .todo-body{
+    flex:1;
+    min-width:0;
+  }
+
+  .todo-text{
+    font-size:13.5px;
+    font-weight:700;
+    line-height:1.5;
+    color:var(--text);
+    word-wrap:break-word;
+    margin-bottom:4px;
+  }
+
+  .todo-item.pending .todo-text{
+    color:#FCA5A5;
+  }
+  body.light .todo-item.pending .todo-text{color:#991B1B}
+
+  .todo-item.done .todo-text{
+    color:#6EE7B7;
+  }
+  body.light .todo-item.done .todo-text{color:#047857}
+
+  .todo-meta{
+    font-size:11px;
+    font-weight:600;
+    color:var(--sub);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+
+  .todo-tag{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:100px;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .tag-penting{background:rgba(220,38,38,.2);color:#FCA5A5;border:1px solid rgba(220,38,38,.4)}
+  .tag-biasa{background:rgba(96,165,250,.2);color:#93C5FD;border:1px solid rgba(96,165,250,.4)}
+  .tag-segera{background:rgba(252,211,77,.2);color:#FCD34D;border:1px solid rgba(252,211,77,.4)}
+  body.light .tag-penting{color:#991B1B}
+  body.light .tag-biasa{color:#1E40AF}
+  body.light .tag-segera{color:#B45309}
+
+  .todo-actions{
+    display:flex;
+    gap:5px;
+    flex-shrink:0;
+    align-self:flex-start;
+  }
+
+  .btn-mini{
+    padding:5px 10px;
+    border-radius:7px;
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .2s;
+    border:1px solid transparent;
+  }
+  .btn-mini-done{
+    background:rgba(16,185,129,.2);
+    color:#6EE7B7;
+    border-color:rgba(16,185,129,.4);
+  }
+  .btn-mini-done:hover{background:rgba(16,185,129,.4)}
+  body.light .btn-mini-done{color:#047857}
+  .btn-mini-undo{
+    background:rgba(220,38,38,.2);
+    color:#FCA5A5;
+    border-color:rgba(220,38,38,.4);
+  }
+  .btn-mini-undo:hover{background:rgba(220,38,38,.4)}
+  body.light .btn-mini-undo{color:#B91C1C}
+  .btn-mini-edit{
+    background:rgba(96,165,250,.2);
+    color:#93C5FD;
+    border-color:rgba(96,165,250,.4);
+  }
+  .btn-mini-edit:hover{background:rgba(96,165,250,.4)}
+  body.light .btn-mini-edit{color:#1E40AF}
+  .btn-mini-del{
+    background:rgba(220,38,38,.2);
+    color:#F87171;
+    border-color:rgba(220,38,38,.4);
+  }
+  .btn-mini-del:hover{background:rgba(220,38,38,.4)}
+  body.light .btn-mini-del{color:#B91C1C}
+
+  .empty-todo{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--sub);
+    font-style:italic;
+    font-size:12.5px;
+    line-height:1.6;
+  }
+  .empty-todo .e-icon{
+    font-size:42px;
+    opacity:.4;
+    margin-bottom:10px;
+  }
+
+  /* MODAL */
+  .modal-overlay{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(6px);
+    z-index:999;display:none;
+    align-items:center;justify-content:center;
+    padding:20px;overflow-y:auto;
+  }
+  .modal-overlay.active{display:flex}
+  .modal{
+    background:var(--card);
+    border-radius:20px;
+    width:100%;max-width:480px;
+    border:2px solid var(--border);
+    box-shadow:
+      0 0 0 1px rgba(96,165,250,.3),
+      0 0 30px rgba(59,130,246,.3),
+      0 25px 70px rgba(0,0,0,.7);
+    animation:slideUp .3s ease;
+    max-height:calc(100vh - 40px);
+    display:flex;flex-direction:column;
+  }
+  @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-header{
+    padding:18px 22px;
+    border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(30,58,138,.2);
+  }
+  body.light .modal-header{background:rgba(191,219,254,.3)}
+  .modal-header h3{font-size:15px;font-weight:800;color:var(--yellow)}
+  body.light .modal-header h3{color:#D97706}
+  .modal-close{
+    width:30px;height:30px;border-radius:8px;border:none;
+    background:rgba(220,38,38,.2);color:#FCA5A5;
+    cursor:pointer;font-size:15px;font-weight:700;
+    border:1px solid rgba(220,38,38,.4);
+  }
+  .modal-close:hover{background:rgba(220,38,38,.4)}
+  body.light .modal-close{color:#B91C1C}
+  .modal-body{padding:20px;overflow-y:auto;flex:1}
+  .modal-footer{
+    padding:14px 22px;
+    border-top:1px solid var(--border);
+    display:flex;justify-content:flex-end;gap:10px;
+  }
+
+  .form-field{margin-bottom:12px}
+  .form-field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:700;
+    margin-bottom:5px;
+    color:var(--text);
+  }
+  .form-field label .req{color:#F87171}
+  .form-field input,
+  .form-field select,
+  .form-field textarea{
+    width:100%;
+    padding:11px 13px;
+    background:var(--card-inner);
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    font-family:inherit;
+    font-size:13.5px;
+    color:var(--text);
+    outline:none;
+    transition:all .2s;
+  }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 4px rgba(96,165,250,.2);
+  }
+  .form-field textarea{min-height:80px;resize:vertical;line-height:1.5}
+
+  .btn-cancel{
+    padding:9px 20px;border-radius:10px;
+    background:transparent;color:var(--sub);
+    border:1.5px solid var(--border);
+    font-family:inherit;font-size:13px;font-weight:700;
+    cursor:pointer;transition:all .2s;
+  }
+  .btn-cancel:hover{background:rgba(255,255,255,.05);color:var(--text)}
+  body.light .btn-cancel:hover{background:rgba(0,0,0,.05)}
+
+  .btn-save{
+    padding:9px 20px;border-radius:10px;
+    background:linear-gradient(135deg,#3B82F6,#1E40AF);
+    color:#fff;border:none;
+    font-family:inherit;font-size:13px;font-weight:700;
+    cursor:pointer;transition:all .2s;
+    box-shadow:0 4px 12px rgba(59,130,246,.4);
+  }
+  .btn-save:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(59,130,246,.55)}
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#1E3A8A;color:#F1F5F9;
+    padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:0 20px 40px rgba(0,0,0,.5), 0 0 20px rgba(96,165,250,.4);
+    border:1px solid rgba(96,165,250,.5);
+    opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);
+    z-index:99999;max-width:calc(100vw - 32px);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.success{background:linear-gradient(135deg,#065F46,#047857)}
+  .toast.error{background:linear-gradient(135deg,#7F1D1D,#B91C1C)}
+  .toast.info{background:linear-gradient(135deg,#1E3A8A,#1D4ED8)}
+  .toast.warn{background:linear-gradient(135deg,#78350F,#D97706)}
+
+  .footer{
+    text-align:center;
+    padding:20px 12px;
+    font-size:13px;
+    color:var(--yellow);
+    font-weight:700;
+    text-shadow:0 0 10px rgba(252,211,77,.35);
+    margin-top:30px;
+  }
+  body.light .footer{
+    color:#D97706;
+    text-shadow:0 0 8px rgba(217,119,6,.2);
+  }
+  .footer strong{color:var(--yellow);font-weight:900;font-size:14px}
+  body.light .footer strong{color:#D97706}
+
+  @media(max-width:900px){
+    .main-wrapper{
+      grid-template-columns:1fr;
+      gap:18px;
+    }
+    .col-profil{
+      position:static;
+      height:auto;
+      max-height:none;
+    }
+    .profile-card{
+      max-height:none;
+      height:auto;
+    }
+    .profile-card-body{
+      overflow-y:visible;
+      max-height:none;
+    }
+  }
+
+  @media(max-width:640px){
+    .header{flex-wrap:wrap;padding:12px 16px;position:relative}
+    .header-left{flex:1 1 100%;text-align:center;justify-content:center}
+    .header-center{flex:1 1 100%;order:2}
+    .header-right{flex:1 1 100%;justify-content:center;order:3}
+    .jam-box{font-size:11px;padding:6px 14px}
+    .main-wrapper{padding:16px 12px}
+    .intro-card h2{font-size:17px}
+    .intro-card p{font-size:12px}
+    .btn{font-size:12.5px;padding:10px 14px}
+    .todo-item{flex-wrap:wrap}
+    .todo-actions{width:100%;justify-content:flex-end}
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ORNAMEN — 17 buah -->
+<div class="ornament orn-love-1">♡</div>
+<div class="ornament orn-love-2">❤</div>
+<div class="ornament orn-love-3">♡</div>
+<div class="ornament orn-star-1">★</div>
+<div class="ornament orn-star-2">☆</div>
+<div class="ornament orn-star-3">✦</div>
+<div class="ornament orn-leaf-1">🍃</div>
+<div class="ornament orn-leaf-2">🌿</div>
+<div class="ornament orn-spark-1">✨</div>
+<div class="ornament orn-spark-2">✧</div>
+<div class="ornament orn-purple-1">◆</div>
+<div class="ornament orn-dot-1">●</div>
+<div class="ornament orn-flower-1">✿</div>
+<div class="ornament orn-flower-2">❀</div>
+<div class="ornament orn-sparkle-1">✺</div>
+<div class="ornament orn-sparkle-2">✹</div>
+<div class="ornament orn-diamond-1">♦</div>
+
+<!-- HEADER (TANPA tombol Kembali) -->
+<div class="header">
+  <div class="header-left">
+    <h1>Halaman Kepala Sekolah</h1>
+  </div>
+  <div class="header-center">
+    <div class="jam-box">
+      <span class="jam-dot"></span>
+      <span id="liveClock">Memuat...</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="logout" onclick="logout()">Keluar</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Ganti Tema">🌙</button>
+  </div>
+</div>
+
+<!-- MAIN WRAPPER: 2 KOLOM -->
+<div class="main-wrapper">
+
+  <!-- KOLOM KIRI: PROFIL KEPSEK -->
+  <div class="col-profil">
+    <div class="profile-card">
+
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+        <span class="lama-text" id="profileLama">-</span>
+      </div>
+
+      <div class="profile-card-body" id="profileBody">
+        <!-- diisi JavaScript -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: KONTEN TODO -->
+  <div class="col-menu">
+
+    <!-- ✨ INTRO CARD -->
+    <div class="intro-card">
+      <h2>📝 Daftar Tugas Kepala Sekolah</h2>
+      <p>Kelola tugas yang akan dan sudah dikerjakan — catat, tandai selesai, dan pantau progress harian Anda.</p>
+    </div>
+
+    <!-- ✨ FORM HEADER INLINE -->
+    <div class="form-header-inline">
+      <div class="form-title-text">
+        <span class="emoji">📝</span>
+        <span>To Do</span>
+      </div>
+      <a class="btn-back-inline" href="../kepsek.html" title="Kembali ke halaman utama">
+        ← Kembali ke Menu
+      </a>
+    </div>
+
+    <!-- ✨ TOOLBAR — 2 tombol, masing-masing dibungkus card -->
+    <div class="card-btn-row">
+      <div class="card-btn card-add">
+        <button class="btn btn-add" onclick="bukaForm()">+ Tambah Tugas</button>
+      </div>
+      <div class="card-btn card-del">
+        <button class="btn btn-reset" onclick="hapusSemua()">🗑️ Hapus Semua</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dash" id="dashBox"></div>
+
+    <!-- 2 KOLOM TODO -->
+    <div class="todo-grid">
+
+      <!-- KOLOM: AKAN DIKERJAKAN -->
+      <div class="todo-col pending">
+        <div class="todo-col-header">
+          <h3>❌ Akan Dikerjakan</h3>
+          <span class="todo-count" id="countPending">0 tugas</span>
+        </div>
+        <div class="todo-list" id="listPending"></div>
+      </div>
+
+      <!-- KOLOM: SUDAH DIKERJAKAN -->
+      <div class="todo-col done">
+        <div class="todo-col-header">
+          <h3>✅ Sudah Dikerjakan</h3>
+          <span class="todo-count" id="countDone">0 tugas</span>
+        </div>
+        <div class="todo-list" id="listDone"></div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      ~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="modalForm">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalFormTitle">📝 Tambah Tugas</h3>
+      <button class="modal-close" onclick="tutupForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="todoId">
+      <div class="form-field">
+        <label>Isi Tugas <span class="req">*</span></label>
+        <textarea id="todoText" placeholder="Contoh: Memeriksa RPPH guru minggu ini..."></textarea>
+      </div>
+      <div class="form-field">
+        <label>Prioritas <span class="req">*</span></label>
+        <select id="todoPrioritas">
+          <option value="biasa">🔵 Biasa</option>
+          <option value="segera">🟡 Segera</option>
+          <option value="penting">🔴 Penting</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Catatan (opsional)</label>
+        <input type="text" id="todoCatatan" placeholder="Contoh: Deadline Jumat">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="tutupForm()">Batal</button>
+      <button class="btn-save" onclick="simpanTodo()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✨</div>
+
+<!-- MODUL BERSAMA -->
+<script src="../panggilan.js"></script>
+
+<script>
+/* ============================================================
+   KONFIGURASI STORAGE
+   ============================================================ */
+const PREFIX_TODO = 'ra_todo_';
+const KEY_GURU = 'ra_guru';
+
+function load(key, def){
+  try{
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : (def !== undefined ? def : null);
+  }catch(e){ return def !== undefined ? def : null; }
+}
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('light', theme === 'light');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+function toggleTheme(){
+  const current = localStorage.getItem('theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', next);
+  applyTheme();
+  showToast(next === 'light' ? '☀️ Mode Terang aktif' : '🌙 Mode Gelap aktif', 'info');
+}
+applyTheme();
+
+/* ============================================================
+   JAM WITA
+   ============================================================ */
+function updateClock(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const wita = new Date(utc + (8 * 3600000));
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const h = String(wita.getHours()).padStart(2,'0');
+  const m = String(wita.getMinutes()).padStart(2,'0');
+  const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+  const el = document.getElementById('liveClock');
+  if(el) el.textContent = teks;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   CEK LOGIN
+   ============================================================ */
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if(!user || user.role !== 'kepala'){
+  alert('Anda harus login sebagai Kepala Sekolah!');
+  window.location.href = '../index.html';
+}
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatTanggalPanjang(iso){
+  if(!iso) return '-';
+  const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const d = new Date(iso);
+  if(isNaN(d)) return iso;
+  return hari[d.getDay()] + ', ' + d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+/* ✨ Hitung lama mengajar (format "X thn Y bln") — sama seperti kepsek.html */
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+
+function namaKeFile(nama){
+  let bersih = String(nama).split(',')[0].trim();
+  bersih = bersih.replace(/\s+/g, '-');
+  bersih = bersih.replace(/[^a-zA-Z0-9\-]/g, '');
+  return bersih;
+}
+
+/* ============================================================
+   STORAGE TODO (per-kepsek)
+   ============================================================ */
+function keyTodo(){
+  return PREFIX_TODO + user.nama.replace(/\s+/g, '_');
+}
+function loadTodo(){
+  return load(keyTodo(), []);
+}
+function saveTodo(arr){
+  save(keyTodo(), arr);
+}
+
+/* ============================================================
+   AVATAR SVG
+   ============================================================ */
+function avatarSvg(nama, warnaAksen){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+
+  const palettes = [
+    { bg1:'#1E3A8A', bg2:'#3D1A1A', fg:'#F5F5F5', accent:'#EF4444' },
+    { bg1:'#1E40AF', bg2:'#1A2A3D', fg:'#F5F5F5', accent:'#60A5FA' },
+    { bg1:'#0C4A6E', bg2:'#3D2A1A', fg:'#F5F5F5', accent:'#FBBF24' },
+    { bg1:'#312E81', bg2:'#2A1A3D', fg:'#F5F5F5', accent:'#C4B5FD' }
+  ];
+  const p = palettes[variant];
+  const accent = warnaAksen || p.accent;
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+
+  const shapes = [
+    `<circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+     <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>`,
+    `<circle cx="60" cy="40" r="17" fill="url(#g${id})"/>
+     <path d="M 22 100 Q 22 70 60 70 Q 98 70 98 100 Z" fill="url(#g${id})"/>
+     <path d="M 50 72 L 60 84 L 70 72" fill="none" stroke="${p.bg1}" stroke-width="3" stroke-linejoin="round"/>`,
+    `<path d="M 60 22 Q 82 22 82 48 Q 82 62 78 66 L 78 78 L 42 78 L 42 66 Q 38 62 38 48 Q 38 22 60 22 Z" fill="url(#g${id})"/>
+     <circle cx="60" cy="46" r="12" fill="${p.bg1}" opacity="0.4"/>
+     <path d="M 22 100 Q 22 78 60 78 Q 98 78 98 100 Z" fill="url(#g${id})"/>`,
+    `<circle cx="60" cy="44" r="16" fill="url(#g${id})"/>
+     <rect x="42" y="26" width="36" height="10" rx="4" fill="${accent}" opacity="0.7"/>
+     <path d="M 22 100 Q 22 72 60 72 Q 98 72 98 100 Z" fill="url(#g${id})"/>`
+  ];
+
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/>
+      </linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${p.bg1}"/>
+        <stop offset="100%" stop-color="${p.bg2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    ${shapes[variant]}
+  </svg>`;
+}
+
+function muatFoto(nama){
+  const el = document.getElementById('profilePhoto');
+  if(!el) return;
+
+  const fotoUpload = localStorage.getItem('ra_foto_' + nama);
+  if(fotoUpload){
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">';
+    return;
+  }
+
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
+  let idx = 0;
+  function cobaLoad(){
+    if(idx >= exts.length){ el.innerHTML = avatarSvg(nama); return; }
+    const img = new Image();
+    img.onload = function(){ el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; };
+    img.onerror = function(){ idx++; cobaLoad(); };
+    img.src = '../foto/' + baseName + '.' + exts[idx];
+  }
+  cobaLoad();
+}
+
+/* ============================================================
+   CARI DATA KEPSEK
+   ============================================================ */
+function cariDataKepsek(){
+  const guruList = load(KEY_GURU, []);
+  if(!guruList || guruList.length === 0) return null;
+
+  const namaLogin = user.nama.trim().toLowerCase();
+
+  let found = guruList.find(g => {
+    const jabatan = (g.jabatan || '').toLowerCase();
+    if(!jabatan.includes('kepala')) return false;
+    return g.nama.trim().toLowerCase() === namaLogin;
+  });
+
+  if(!found){
+    found = guruList.find(g => g.nama.trim().toLowerCase() === namaLogin);
+  }
+
+  if(!found){
+    const namaLoginDepan = user.nama.split(',')[0].trim().split(' ')[0].toLowerCase();
+    found = guruList.find(g => {
+      const namaGuruDepan = g.nama.split(',')[0].trim().split(' ')[0].toLowerCase();
+      return namaGuruDepan === namaLoginDepan;
+    });
+  }
+
+  if(!found){
+    found = guruList.find(g => {
+      const namaGuru = g.nama.split(',')[0].trim().toLowerCase();
+      return namaLogin.includes(namaGuru) || namaGuru.includes(namaLogin);
+    });
+  }
+
+  return found || null;
+}
+
+const dataKepsek = cariDataKepsek();
+
+/* ============================================================
+   ✨ RENDER PROFIL KEPSEK — SAMA PERSIS DENGAN kepsek.html
+   ============================================================ */
+function renderProfil(){
+  const nama = user.nama;
+  const body = document.getElementById('profileBody');
+  if(!body) return;
+
+  if(!dataKepsek){
+    document.getElementById('profileNama').textContent = nama;
+    document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
+    document.getElementById('profileLama').textContent = '';
+    body.innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:36px;margin-bottom:8px">📋</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Data Belum Lengkap</div>
+        <div style="font-size:11.5px;color:#93C5FD;line-height:1.5">
+          Profil Anda belum terdaftar di Data Guru.<br>Silakan hubungi Admin.
+        </div>
+      </div>`;
+    muatFoto(nama);
+    return;
+  }
+
+  document.getElementById('profileNama').textContent = dataKepsek.nama;
+  document.getElementById('profileJabatan').textContent = dataKepsek.jabatan || 'Kepala Sekolah';
+
+  const lama = hitungLamaMengajar(dataKepsek.tmt);
+  document.getElementById('profileLama').textContent = dataKepsek.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+
+  /* ---------- IDENTITAS ---------- */
+  const identitas = [];
+  if(dataKepsek.nip) identitas.push({ l: 'NIP', v: dataKepsek.nip });
+  if(dataKepsek.npk) identitas.push({ l: 'NPK/PEGID', v: dataKepsek.npk });
+  if(dataKepsek.jk) identitas.push({ l: 'Jenis Kelamin', v: dataKepsek.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(dataKepsek.tempatLahir) identitas.push({ l: 'Tempat Lahir', v: dataKepsek.tempatLahir });
+  if(dataKepsek.tglLahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataKepsek.tglLahir) });
+
+  if(identitas.length){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    identitas.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  /* ---------- KEPEGAWAIAN ---------- */
+  const pegawai = [];
+  if(dataKepsek.pendidikan) pegawai.push({ l: 'Pendidikan', v: dataKepsek.pendidikan });
+  if(dataKepsek.tmt) pegawai.push({ l: 'TMT', v: formatTanggalPanjang(dataKepsek.tmt) });
+  if(dataKepsek.tmt) pegawai.push({ l: 'Lama Mengajar', v: lama.teks });
+  if(dataKepsek.jabatan) pegawai.push({ l: 'Jabatan', v: dataKepsek.jabatan });
+  if(dataKepsek.kelas) pegawai.push({ l: 'Kelas Diampu', v: dataKepsek.kelas });
+
+  if(pegawai.length){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    pegawai.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  /* ---------- KONTAK ---------- */
+  const kontak = [];
+  if(dataKepsek.hp) kontak.push({ l: 'HP/WA', v: dataKepsek.hp });
+  if(dataKepsek.email) kontak.push({ l: 'Email', v: dataKepsek.email });
+  if(dataKepsek.alamat) kontak.push({ l: 'Alamat', v: dataKepsek.alamat });
+
+  if(kontak.length){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  body.innerHTML = html;
+  muatFoto(dataKepsek.nama);
+}
+
+/* ============================================================
+   RENDER DASHBOARD
+   ============================================================ */
+function renderDash(){
+  const box = document.getElementById('dashBox');
+  if(!box) return;
+
+  const list = loadTodo();
+  const total = list.length;
+  const pending = list.filter(t => t.status === 'pending').length;
+  const done = list.filter(t => t.status === 'done').length;
+  const progress = total > 0 ? Math.round(done / total * 100) : 0;
+
+  box.innerHTML = `
+    <div class="dash-card total">
+      <div class="d-icon">📋</div>
+      <div class="d-num">${total}</div>
+      <div class="d-label">Total Tugas</div>
+    </div>
+    <div class="dash-card pending">
+      <div class="d-icon">❌</div>
+      <div class="d-num">${pending}</div>
+      <div class="d-label">Akan Dikerjakan</div>
+    </div>
+    <div class="dash-card done">
+      <div class="d-icon">✅</div>
+      <div class="d-num">${done}</div>
+      <div class="d-label">Sudah Dikerjakan</div>
+    </div>
+    <div class="dash-card progress">
+      <div class="d-icon">🎯</div>
+      <div class="d-num">${progress}%</div>
+      <div class="d-label">Progress</div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   LABEL PRIORITAS
+   ============================================================ */
+function labelPrioritas(p){
+  if(p === 'penting') return '<span class="todo-tag tag-penting">🔴 Penting</span>';
+  if(p === 'segera') return '<span class="todo-tag tag-segera">🟡 Segera</span>';
+  return '<span class="todo-tag tag-biasa">🔵 Biasa</span>';
+}
+
+/* ============================================================
+   RENDER 2 KOLOM
+   ============================================================ */
+function renderList(){
+  const pendingBox = document.getElementById('listPending');
+  const doneBox = document.getElementById('listDone');
+  const countPendingEl = document.getElementById('countPending');
+  const countDoneEl = document.getElementById('countDone');
+  if(!pendingBox || !doneBox) return;
+
+  const list = loadTodo();
+  const pending = list.filter(t => t.status === 'pending')
+    .sort((a, b) => {
+      const rank = { penting: 1, segera: 2, biasa: 3 };
+      const rA = rank[a.prioritas] || 4;
+      const rB = rank[b.prioritas] || 4;
+      if(rA !== rB) return rA - rB;
+      return (b.createdAt || '').localeCompare(a.createdAt || '');
+    });
+  const done = list.filter(t => t.status === 'done')
+    .sort((a, b) => (b.doneAt || '').localeCompare(a.doneAt || ''));
+
+  if(countPendingEl) countPendingEl.textContent = pending.length + ' tugas';
+  if(countDoneEl) countDoneEl.textContent = done.length + ' tugas';
+
+  /* ---------- KOLOM PENDING ---------- */
+  if(pending.length === 0){
+    pendingBox.innerHTML = `
+      <div class="empty-todo">
+        <div class="e-icon">🎉</div>
+        Tidak ada tugas yang menunggu.<br>Alhamdulillah!
+      </div>`;
+  } else {
+    pendingBox.innerHTML = pending.map(t => `
+      <div class="todo-item pending">
+        <div class="todo-check">❌</div>
+        <div class="todo-body">
+          <div class="todo-text">${escapeHtml(t.text)}</div>
+          <div class="todo-meta">
+            ${labelPrioritas(t.prioritas)}
+            ${t.catatan ? `📝 ${escapeHtml(t.catatan)}` : ''}
+            ${t.createdAt ? `• ${formatTanggalPanjang(t.createdAt)}` : ''}
+          </div>
+        </div>
+        <div class="todo-actions">
+          <button class="btn-mini btn-mini-done" onclick="tandaiSelesai('${t.id}')" title="Tandai Selesai">✅</button>
+          <button class="btn-mini btn-mini-edit" onclick="bukaForm('${t.id}')" title="Edit">✏️</button>
+          <button class="btn-mini btn-mini-del" onclick="hapusTodo('${t.id}')" title="Hapus">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ---------- KOLOM DONE ---------- */
+  if(done.length === 0){
+    doneBox.innerHTML = `
+      <div class="empty-todo">
+        <div class="e-icon">📭</div>
+        Belum ada tugas yang selesai.<br>Yuk mulai kerjakan!
+      </div>`;
+  } else {
+    doneBox.innerHTML = done.map(t => `
+      <div class="todo-item done">
+        <div class="todo-check">✅</div>
+        <div class="todo-body">
+          <div class="todo-text">${escapeHtml(t.text)}</div>
+          <div class="todo-meta">
+            ${labelPrioritas(t.prioritas)}
+            ${t.catatan ? `📝 ${escapeHtml(t.catatan)}` : ''}
+            ${t.doneAt ? `• selesai ${formatTanggalPanjang(t.doneAt)}` : ''}
+          </div>
+        </div>
+        <div class="todo-actions">
+          <button class="btn-mini btn-mini-undo" onclick="batalkanSelesai('${t.id}')" title="Batalkan">↩️</button>
+          <button class="btn-mini btn-mini-del" onclick="hapusTodo('${t.id}')" title="Hapus">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+/* ============================================================
+   MODAL FORM
+   ============================================================ */
+function bukaForm(id){
+  if(id){
+    const list = loadTodo();
+    const t = list.find(x => x.id === id);
+    if(!t) return;
+    document.getElementById('modalFormTitle').textContent = '✏️ Edit Tugas';
+    document.getElementById('todoId').value = t.id;
+    document.getElementById('todoText').value = t.text || '';
+    document.getElementById('todoPrioritas').value = t.prioritas || 'biasa';
+    document.getElementById('todoCatatan').value = t.catatan || '';
+  } else {
+    document.getElementById('modalFormTitle').textContent = '📝 Tambah Tugas';
+    document.getElementById('todoId').value = '';
+    document.getElementById('todoText').value = '';
+    document.getElementById('todoPrioritas').value = 'biasa';
+    document.getElementById('todoCatatan').value = '';
+  }
+  document.getElementById('modalForm').classList.add('active');
+  setTimeout(() => document.getElementById('todoText').focus(), 100);
+}
+
+function tutupForm(){
+  document.getElementById('modalForm').classList.remove('active');
+}
+
+function simpanTodo(){
+  const id = document.getElementById('todoId').value;
+  const text = document.getElementById('todoText').value.trim();
+  const prioritas = document.getElementById('todoPrioritas').value;
+  const catatan = document.getElementById('todoCatatan').value.trim();
+
+  if(!text){ showToast('❌ Isi tugas wajib diisi', 'error'); return; }
+
+  let list = loadTodo();
+
+  if(id){
+    const lama = list.find(x => x.id === id);
+    if(!lama){ showToast('❌ Data tidak ditemukan', 'error'); return; }
+    list = list.map(x => x.id === id ? {
+      ...x,
+      text,
+      prioritas,
+      catatan,
+      updatedAt: new Date().toISOString()
+    } : x);
+    showToast('✅ Tugas diperbarui', 'success');
+  } else {
+    list.push({
+      id: 'todo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+      text,
+      prioritas,
+      catatan,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      doneAt: null
+    });
+    showToast('✅ Tugas ditambahkan', 'success');
+  }
+
+  saveTodo(list);
+  tutupForm();
+  renderDash();
+  renderList();
+}
+
+/* ============================================================
+   TANDAI SELESAI
+   ============================================================ */
+function tandaiSelesai(id){
+  const list = loadTodo();
+  const t = list.find(x => x.id === id);
+  if(!t) return;
+  if(!confirm('Tandai tugas ini sebagai SUDAH DIKERJAKAN?\n\n"' + t.text + '"')) return;
+
+  saveTodo(list.map(x => x.id === id ? {
+    ...x,
+    status: 'done',
+    doneAt: new Date().toISOString()
+  } : x));
+
+  showToast('✅ Tugas selesai!', 'success');
+  renderDash();
+  renderList();
+}
+
+function batalkanSelesai(id){
+  const list = loadTodo();
+  const t = list.find(x => x.id === id);
+  if(!t) return;
+  if(!confirm('Batalkan status selesai? Tugas akan kembali ke "Akan Dikerjakan".')) return;
+
+  saveTodo(list.map(x => x.id === id ? {
+    ...x,
+    status: 'pending',
+    doneAt: null
+  } : x));
+
+  showToast('↩️ Tugas dikembalikan', 'info');
+  renderDash();
+  renderList();
+}
+
+/* ============================================================
+   HAPUS
+   ============================================================ */
+function hapusTodo(id){
+  const list = loadTodo();
+  const t = list.find(x => x.id === id);
+  if(!t) return;
+  if(!confirm('Yakin ingin menghapus tugas:\n\n"' + t.text + '"?')) return;
+
+  saveTodo(list.filter(x => x.id !== id));
+  showToast('🗑️ Tugas dihapus', 'info');
+  renderDash();
+  renderList();
+}
+
+function hapusSemua(){
+  const list = loadTodo();
+  if(list.length === 0){ showToast('⚠️ Belum ada data', 'warn'); return; }
+  if(!confirm('⚠️ HAPUS SEMUA ' + list.length + ' tugas?\n\nTindakan ini tidak bisa dibatalkan!')) return;
+  if(!confirm('Konfirmasi terakhir — klik OK untuk hapus semua.')) return;
+
+  saveTodo([]);
+  showToast('🗑️ Semua tugas dihapus', 'success');
+  renderDash();
+  renderList();
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function logout(){
+  if(confirm('Yakin ingin keluar?')){
+    localStorage.removeItem('user');
+    window.location.href = '../index.html';
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderProfil();
+renderDash();
+renderList();
+
+// Klik overlay untuk tutup modal
+document.getElementById('modalForm').addEventListener('click', function(e){
+  if(e.target === this) tutupForm();
+});
+
+// ESC tutup modal
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    const modal = document.getElementById('modalForm');
+    if(modal && modal.classList.contains('active')) tutupForm();
+  }
+});
+
+console.log('✅ todo.html loaded — SIAGRA v.2.s (Profil = kepsek.html)');
+console.log('👤 Kepsek:', user.nama);
+console.log('📋 Storage key:', keyTodo());
+</script>
+
+<!-- SERVICE WORKER -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+  });
+}
+</script>
+<script src="../auto-update.js"></script>
+</body>
+</html>

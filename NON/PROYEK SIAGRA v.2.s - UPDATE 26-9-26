@@ -1,0 +1,46 @@
+PROYEK: SIAGRA v.2.s
+SEKOLAH: RA Mazkira Imani, Barito Kuala
+
+=== FILE UTAMA ===
+├── index.html     (login - sudah + suara error password)
+├── admin.html     (admin - Konsep B, Data GTK, tema hitam+merah)
+├── guru.html      (guru - tema hijau soft + banner RPP)
+├── tendik.html    (TU - tema cokelat/gold + panel Pembayaran)
+├── kepsek.html    (kepsek - tema biru/lavender, BOP only)
+├── manifest.json  (PWA)
+├── service-worker.js (PWA cache)
+├── icons/         (icon PWA)
+└── foto/          (foto guru)
+
+=== STORAGE (localStorage) ===
+- ra_anak         (data siswa)
+- ra_guru         (data guru)
+- ra_tendik       (data tendik - Puspa Erma Sari)
+- ra_kelas        (data rombel)
+- ra_alumni       (rekap alumni per tahun)
+- ra_rpp_TANGGAL_NAMA  (RPP per guru per hari)
+- ra_foto_NAMA    (foto upload)
+
+=== AKUN LOGIN ===
+Guru:   Elma Noor Safitri, Halimatus Sa'diah, Jamsiah, 
+        Nadila Ramadhan P.S., Nurul Fatimah
+Tendik: PUSPA ERMA SARI
+Kepsek: Sugianto, S.Pd., Gr. | Password: Permatahijau4No4
+Admin:  Sugianto, S.Pd., Gr. / Anto | Password: Permatahijau4No4
+
+=== YANG SUDAH SELESAI ===
+✅ Login multi-role + suara error password
+✅ Admin: Data GTK (Konsep B), Rombel, Alumni
+✅ Guru: Profil + banner notifikasi RPP
+✅ Tendik: Profil + Pembayaran (SPP, PMBM, Tabungan)
+✅ Kepsek: Statistik + Grafik Line + BOP only
+✅ PWA ready (install ke homescreen)
+✅ Tema per role (merah, hijau, cokelat, biru)
+
+=== PENDING (FASE 4) ===
+🔴 Fitur RPP lengkap (form + simpan + riwayat)
+🔴 Anekdot & Observasi guru
+🔴 Penilaian & Rapor
+🔴 Surat Masuk/Keluar (TU)
+🔴 Inventaris (TU)
+🔴 Laporan administrasi (TU)
