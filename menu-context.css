@@ -1,0 +1,177 @@
+/* ============================================================
+   menu-context.css — SIAGRA Fase 4 (FIX)
+   Konteks Menu Klik Kanan untuk semua halaman
+   Berlaku: admin.html, guru.html, kepsek.html, tendik.html
+   ============================================================ */
+
+/* ---------- MENU UTAMA ---------- */
+.siagra-ctx-menu{
+  position:fixed;
+  z-index:999999;
+  min-width:240px;
+  background:var(--card, #0A0A0A);
+  border:2px solid var(--card-border, #DC2626);
+  border-radius:12px;
+  box-shadow:
+    0 0 0 1px var(--card-border-glow, rgba(220,38,38,.35)),
+    0 0 25px var(--card-border-glow, rgba(220,38,38,.35)),
+    0 20px 50px rgba(0,0,0,.7);
+  padding:6px;
+  display:none;
+  animation:siagraCtxIn .18s cubic-bezier(.34,1.56,.64,1);
+  backdrop-filter:blur(8px);
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+}
+
+.siagra-ctx-menu.show{ display:block }
+
+@keyframes siagraCtxIn{
+  from{ opacity:0; transform:scale(.94) translateY(-6px) }
+  to  { opacity:1; transform:scale(1) translateY(0) }
+}
+
+.siagra-ctx-header{
+  padding:8px 12px 10px;
+  border-bottom:1px solid var(--border, #2A2A2A);
+  margin-bottom:6px;
+}
+.siagra-ctx-header .ctx-title{
+  font-size:11px;
+  font-weight:800;
+  color:var(--sub, #A0A0A8);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.siagra-ctx-header .ctx-sub{
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--text, #F5F5F5);
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:220px;
+}
+
+.siagra-ctx-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 12px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text, #F5F5F5);
+  cursor:pointer;
+  transition:background .15s, transform .15s;
+  user-select:none;
+}
+.siagra-ctx-item:hover{
+  background:rgba(220,38,38,.15);
+  transform:translateX(2px);
+}
+.siagra-ctx-item .ctx-icon{
+  width:22px;
+  text-align:center;
+  font-size:15px;
+  flex-shrink:0;
+}
+.siagra-ctx-item .ctx-label{ flex:1 }
+.siagra-ctx-item .ctx-hint{
+  font-size:10.5px;
+  color:var(--sub, #A0A0A8);
+  font-weight:600;
+}
+
+.siagra-ctx-sep{
+  height:1px;
+  background:var(--border, #2A2A2A);
+  margin:5px 8px;
+}
+
+/* ---------- INDIKATOR ⋯ DI POJOK KANAN ATAS ---------- */
+.menu-card[data-ctx-enabled="true"],
+.hero[data-ctx-enabled="true"],
+.rpp-alert[data-ctx-enabled="true"]{
+  position:relative;
+}
+
+.menu-card[data-ctx-enabled="true"]::after,
+.hero[data-ctx-enabled="true"]::after,
+.rpp-alert[data-ctx-enabled="true"]::after{
+  content:'⋯';
+  position:absolute;
+  top:8px;
+  right:10px;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:1px;
+  color:var(--sub, #A0A0A8);
+  opacity:0;
+  transition:opacity .2s;
+  pointer-events:none;
+}
+.menu-card[data-ctx-enabled="true"]:hover::after,
+.hero[data-ctx-enabled="true"]:hover::after,
+.rpp-alert[data-ctx-enabled="true"]:hover::after{
+  opacity:.6;
+}
+
+/* Warna indikator di hero (background gelap) */
+.hero[data-ctx-enabled="true"]::after{
+  color:rgba(255,255,255,.7);
+  top:10px;
+  right:14px;
+  font-size:16px;
+}
+
+/* Warna indikator di rpp-alert (background terang di light mode) */
+.rpp-alert[data-ctx-enabled="true"]::after{
+  color:rgba(153,27,27,.6);
+  top:10px;
+  right:14px;
+  font-size:16px;
+}
+body.dark .rpp-alert[data-ctx-enabled="true"]::after{
+  color:rgba(252,165,165,.7);
+}
+
+/* ---------- TOAST KECIL KONTEKS ---------- */
+.siagra-ctx-toast{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:linear-gradient(135deg,#059669,#047857);
+  color:#fff;
+  padding:11px 18px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  z-index:999999;
+  opacity:0;
+  transform:translateY(20px);
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+  border:1px solid rgba(255,255,255,.15);
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+}
+.siagra-ctx-toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:480px){
+  .siagra-ctx-menu{ min-width:200px }
+  .siagra-ctx-header .ctx-sub{ max-width:170px }
+  .siagra-ctx-toast{
+    right:12px;
+    left:12px;
+    bottom:16px;
+    text-align:center;
+  }
+}

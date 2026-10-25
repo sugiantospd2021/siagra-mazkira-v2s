@@ -1,0 +1,60 @@
+{
+  "id": "/index.html",
+  "name": "SIAGRA - Sistem Informasi & Administrasi Guru RA",
+  "short_name": "SIAGRA",
+  "description": "Sistem Informasi & Administrasi Guru Raudhatul Athfal",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#0D0D12",
+  "theme_color": "#22C55E",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Login SIAGRA",
+      "short_name": "Login",
+      "description": "Masuk ke akun SIAGRA",
+      "url": "/index.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Menu Guru",
+      "short_name": "Guru",
+      "description": "Buka menu utama guru",
+      "url": "/guru.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Menu Admin",
+      "short_name": "Admin",
+      "description": "Buka panel admin",
+      "url": "/admin.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
