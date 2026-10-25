@@ -1,6 +1,6 @@
-# siagra-mazkira-v2s
+# App Guru RA Mazkira Imani
 
-(SIAGRA) Sistem Informasi & Administrasi Guru Raudhatul Athfal — Mazkira Imani
+Aplikasi manajemen pembelajaran untuk guru RA Mazkira Imani - Barito Kuala.
 
 ## Fitur
 - Multi-role: Guru, Kepala RA, Admin

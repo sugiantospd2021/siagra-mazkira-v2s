@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<meta charset="UTF-8">
+
+<!-- ===== ANTI-CACHE ===== -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="logo-siagra.png">
+<title>SIAGRA — Tendik</title>
+<meta name="theme-color" content="#B45309">
+<!-- ✨ PERBAIKAN: Icon Title -->
+<link rel="icon" type="image/png" href="logo-SIAGRA.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#FAF7F2;--card:#FFFFFF;--card-inner:#FAF6EF;
+    --text:#2A1F14;--sub:#7A6A55;--border:#E8DCC5;
+    --primary:#B45309;--primary-dark:#92400E;--primary-light:#FEF3C7;
+    --accent:#D97706;--danger:#B91C1C;--success:#10B981;
+    --warning:#D97706;--yellow:#B45309;
+    --card-border:#B45309;--card-border-glow:rgba(180,83,9,.3);
+  }
+  body.dark{
+    --bg:#000000;--card:#0F0A05;--card-inner:#1A1208;
+    --text:#F5EFE5;--sub:#A89880;--border:#2A1F14;
+    --primary:#FCD34D;--primary-dark:#FBBF24;--primary-light:#2A1F08;
+    --accent:#FCD34D;--danger:#F87171;--success:#4ADE80;
+    --warning:#FBBF24;--yellow:#FCD34D;
+    --card-border:#B45309;--card-border-glow:rgba(180,83,9,.5);
+  }
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(180,83,9,.06) 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(217,119,6,.04) 0%, transparent 40%);
+    background-attachment:fixed;
+    min-height:100vh;color:var(--text);
+    transition:background .3s,color .3s;
+    position:relative;overflow-x:hidden;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+
+  /* ORNAMEN */
+  .ornament{
+    position:fixed;pointer-events:none;z-index:0;
+    opacity:.45;animation:float 6s ease-in-out infinite;font-weight:900;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0) rotate(0)}
+    50%{transform:translateY(-18px) rotate(10deg)}
+  }
+  @keyframes spinSlow{100%{transform:rotate(360deg)}}
+  @keyframes twinkle{
+    0%,100%{opacity:.35;transform:scale(1)}
+    50%{opacity:.9;transform:scale(1.2)}
+  }
+  .orn1{top:8%;left:3%;color:#4ADE80;font-size:40px}
+  .orn2{top:12%;right:4%;color:#86EFAC;font-size:34px;animation-delay:1.5s}
+  .orn3{bottom:15%;left:5%;color:#22C55E;font-size:34px;animation-delay:2s}
+  .orn4{bottom:20%;right:5%;color:#4ADE80;font-size:32px;animation-delay:.8s}
+  .orn5{top:50%;left:2%;color:#86EFAC;font-size:26px;animation-delay:1.2s}
+  .orn6{top:22%;left:8%;color:#FCD34D;font-size:28px;animation-delay:.4s;animation-duration:7s}
+  .orn7{top:35%;right:6%;color:#60A5FA;font-size:30px;animation-delay:1s;animation-duration:8s}
+  .orn8{bottom:35%;left:8%;color:#F472B6;font-size:26px;animation-delay:1.8s;animation-duration:6.5s}
+  .orn9{bottom:8%;right:10%;color:#A78BFA;font-size:24px;animation-delay:2.4s;animation-duration:7.5s}
+  .orn10{top:18%;left:50%;color:#FB923C;font-size:22px;animation:twinkle 3s ease-in-out infinite}
+  .orn11{top:60%;right:3%;color:#22D3EE;font-size:26px;animation:spinSlow 12s linear infinite}
+  .orn12{bottom:50%;left:3%;color:#FACC15;font-size:24px;animation-delay:1.4s;animation-duration:9s}
+  .orn13{top:5%;right:25%;color:#F87171;font-size:20px;animation:twinkle 2.5s ease-in-out infinite .5s}
+  .orn14{bottom:5%;left:30%;color:#34D399;font-size:22px;animation:twinkle 3.5s ease-in-out infinite 1s}
+  .orn15{top:42%;left:22%;color:#A3E635;font-size:20px;animation-delay:.6s;animation-duration:7s}
+  .orn16{top:68%;left:15%;color:#FBBF24;font-size:18px;animation:twinkle 4s ease-in-out infinite}
+  .orn17{bottom:25%;right:20%;color:#818CF8;font-size:22px;animation-delay:2.2s}
+  @media(max-width:768px){.ornament{display:none}}
+
+  /* HEADER */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:linear-gradient(135deg,#1A0F08,#0A0503);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);
+    border-bottom:2px solid #B45309;gap:12px;
+  }
+  .header-left{flex:0 1 auto;min-width:0}
+  .header-left h1{font-size:17px;color:#FCD34D;font-weight:800}
+  .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
+  .jam-box{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1.5px solid rgba(180,83,9,.5);
+    color:#fff;padding:8px 18px;border-radius:100px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;
+    backdrop-filter:blur(10px);
+  }
+  .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
+
+  /* TOMBOL LOGOUT */
+  .header-right button.logout{
+    background:linear-gradient(135deg,#EF4444,#B91C1C);
+    color:#fff;border:2px solid transparent;
+    padding:8px 16px;border-radius:8px;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:13px;
+    box-shadow:0 2px 8px rgba(239,68,68,.4);
+    transition:all .3s ease;
+  }
+  .header-right button.logout:hover{
+    background:linear-gradient(135deg,#F87171,#DC2626);
+    color:#fff;border-color:#FCA5A5;
+    transform:translateY(-2px) scale(1.05);
+    box-shadow:
+      0 0 0 2px rgba(248,113,113,.4),
+      0 0 15px rgba(239,68,68,.6),
+      0 0 30px rgba(239,68,68,.4),
+      0 6px 20px rgba(239,68,68,.5);
+  }
+  .header-right button.logout:active{
+    transform:translateY(0) scale(1);
+    box-shadow:0 0 10px rgba(239,68,68,.5);
+  }
+  .theme-toggle{
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.15);
+    color:#fff;width:38px;height:38px;border-radius:50%;
+    font-size:17px;cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .theme-toggle:hover{
+    transform:scale(1.1) rotate(15deg);
+    background:rgba(255,255,255,.2);
+  }
+
+  /* WRAPPER + PROFIL */
+  .wrapper{
+    max-width:1200px;margin:0 auto;padding:24px 16px;
+    display:grid;grid-template-columns:300px 1fr;gap:24px;
+    position:relative;z-index:1;align-items:start;
+  }
+  .col-profil{
+    position:sticky;top:88px;
+    height:calc(100vh - 110px);max-height:calc(100vh - 110px);
+  }
+  .profile-card{
+    background:var(--card);border-radius:16px;
+    border:2px solid var(--card-border);
+    box-shadow:0 0 25px var(--card-border-glow),0 8px 24px rgba(0,0,0,.6);
+    height:100%;max-height:100%;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .profile-card-header{
+    padding:20px 18px 16px;text-align:center;
+    border-bottom:1px dashed var(--border);flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(26,18,8,.6));
+  }
+  body:not(.dark) .profile-card-header{
+    background:linear-gradient(135deg,rgba(250,246,239,.6),rgba(245,240,230,.8));
+  }
+  .profile-photo{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#1A1208,#0F0A05);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:800;color:#F5EFE5;
+    overflow:hidden;border:3px solid var(--card-border);
+    margin:0 auto 12px;
+  }
+  body:not(.dark) .profile-photo{background:linear-gradient(135deg,#FAF6EF,#F0E8D8)}
+  .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
+  .profile-card-header h2{
+    font-size:14.5px;font-weight:800;
+    color:var(--text);margin-bottom:6px;line-height:1.35;
+  }
+  .profile-card-header .jabatan-badge{
+    display:inline-block;padding:4px 12px;border-radius:100px;
+    font-size:10.5px;font-weight:700;
+    background:rgba(0,0,0,.4);color:#FCD34D;
+    border:1px solid rgba(180,83,9,.5);
+    text-transform:uppercase;margin-bottom:6px;
+  }
+  body:not(.dark) .profile-card-header .jabatan-badge{
+    background:rgba(180,83,9,.15);color:#92400E;
+  }
+  .profile-card-header .lama-text{
+    display:block;font-size:11.5px;font-weight:700;
+    color:#FCD34D;margin-top:4px;
+  }
+  body:not(.dark) .profile-card-header .lama-text{color:var(--primary-dark)}
+  .profile-card-body{
+    flex:1;overflow-y:auto;padding:14px 18px 18px;
+  }
+  .info-section-title{
+    font-size:10px;font-weight:800;color:var(--sub);
+    text-transform:uppercase;letter-spacing:.06em;
+    margin-bottom:8px;margin-top:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .info-section-title::before{
+    content:'';width:3px;height:12px;
+    background:var(--card-border);border-radius:2px;
+  }
+  .info-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .info-item{
+    display:flex;justify-content:space-between;gap:8px;
+    padding:7px 10px;background:var(--card-inner);
+    border:1px solid var(--border);border-radius:8px;font-size:11.5px;
+  }
+  .info-item .lbl{color:var(--sub);font-weight:600;flex-shrink:0}
+  .info-item .val{
+    color:var(--text);font-weight:700;text-align:right;
+    word-break:break-word;min-width:0;
+  }
+</style>
+
+<style>
+  .col-menu{min-width:0}
+
+  /* ============================================================
+     WELCOME CARD
+     ============================================================ */
+  .welcome{
+    position:relative;overflow:hidden;border-radius:18px;
+    padding:24px 26px;margin-bottom:18px;
+    border:2px solid var(--card-border);
+    box-shadow:0 10px 30px rgba(180,83,9,.25);
+  }
+  .welcome::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.18),rgba(0,0,0,.04));
+    pointer-events:none;z-index:1;
+  }
+  .welcome-content{
+    position:relative;z-index:2;
+    display:flex;align-items:center;gap:18px;
+  }
+  .welcome-emoji{font-size:52px;line-height:1;flex-shrink:0}
+  .welcome-text{flex:1;min-width:0}
+  .welcome-text h2{
+    font-size:22px;font-weight:800;margin-bottom:6px;color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,.55),0 0 14px rgba(0,0,0,.4);
+  }
+  .welcome-text p{
+    font-size:13.5px;font-weight:700;color:#fff;
+    text-shadow:0 1px 6px rgba(0,0,0,.6);
+  }
+  .welcome.w-pagi{background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 45%,#FCD34D 100%)}
+  .welcome.w-siang{background:linear-gradient(135deg,#0EA5E9 0%,#38BDF8 50%,#7DD3FC 100%)}
+  .welcome.w-sore{background:linear-gradient(135deg,#F97316 0%,#FB923C 45%,#FDBA74 100%)}
+  .welcome.w-malam{background:linear-gradient(135deg,#312E81 0%,#4C1D95 50%,#6D28D9 100%)}
+
+  /* ============================================================
+     MENU GRID + CARD (HOVER & GLOW warna per menu)
+     ============================================================ */
+  .menu-section-title{
+    font-size:13px;font-weight:700;color:var(--sub);
+    text-transform:uppercase;letter-spacing:.05em;margin:0 0 14px;
+  }
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:14px;margin-bottom:24px;
+  }
+  .menu-card{
+    background:var(--card);
+    border-radius:16px;padding:20px;cursor:pointer;
+    border:2px solid var(--menu-glow, var(--card-border));
+    box-shadow:
+      0 0 0 1px var(--menu-glow-soft, var(--card-border-glow)),
+      0 0 10px var(--menu-glow-soft, var(--card-border-glow)),
+      0 4px 14px rgba(0,0,0,.15);
+    display:flex;align-items:flex-start;gap:14px;
+    text-align:left;text-decoration:none;color:var(--text);
+    position:relative;overflow:hidden;isolation:isolate;
+    transition:all .32s cubic-bezier(.34,1.56,.64,1);
+  }
+  a.menu-card{color:var(--text)}
+  a.menu-card:visited{color:var(--text)}
+
+  .menu-card::before{
+    content:'';
+    position:absolute;
+    top:-50px;right:-50px;
+    width:140px;height:140px;
+    border-radius:50%;
+    background:radial-gradient(circle, var(--menu-glow, var(--card-border)) 0%, transparent 70%);
+    opacity:.08;
+    transition:opacity .4s ease, transform .4s ease;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .menu-card:hover{
+    border-color:var(--menu-glow, var(--card-border));
+    transform:translateY(-5px) scale(1.015);
+    box-shadow:
+      0 0 0 3px var(--menu-glow, var(--card-border)),
+      0 0 20px var(--menu-glow, var(--card-border-glow)),
+      0 0 42px var(--menu-glow-soft, rgba(180,83,9,.55)),
+      0 0 70px var(--menu-glow-soft, rgba(180,83,9,.35)),
+      0 12px 28px var(--menu-glow-soft, rgba(180,83,9,.6));
+  }
+  .menu-card:hover::before{opacity:.35;transform:scale(1.5)}
+
+  .menu-card .icon{
+    width:46px;height:46px;border-radius:12px;
+    background:var(--card-inner);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;flex-shrink:0;
+    border:1px solid var(--card-border-glow);
+    position:relative;z-index:1;
+    transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .menu-card:hover .icon{
+    transform:scale(1.12) rotate(-6deg);
+    background:linear-gradient(135deg,
+      var(--menu-glow, var(--card-border)),
+      color-mix(in srgb, var(--menu-glow, var(--card-border)) 70%, #000));
+    box-shadow:
+      0 0 0 2px var(--menu-glow-soft, rgba(180,83,9,.4)),
+      0 4px 18px var(--menu-glow, rgba(180,83,9,.55));
+    border-color:var(--menu-glow, var(--card-border));
+  }
+  .menu-card .card-text{flex:1;min-width:0;position:relative;z-index:1}
+  .menu-card h3{
+    font-size:14.5px;font-weight:800;margin-bottom:3px;
+    color:var(--text);transition:color .25s;
+  }
+  .menu-card:hover h3{color:var(--menu-glow, var(--card-border))}
+  .menu-card p{
+    font-size:12px;color:var(--sub);font-weight:500;
+    line-height:1.4;transition:color .25s;
+  }
+  .menu-card:hover p{color:var(--text)}
+
+  /* ============================================================
+     WARNA MENU CARD — variasi glow per menu (dengan :hover masing-masing)
+     ============================================================ */
+
+  /* Absensi — MERAH */
+  .menu-card.menu-absensi{
+    --menu-glow:#EF4444;
+    --menu-glow-soft:rgba(239,68,68,.55);
+    border-color:rgba(239,68,68,.6);
+    box-shadow:
+      0 0 0 1px rgba(239,68,68,.35),
+      0 0 10px rgba(239,68,68,.2),
+      0 4px 14px rgba(239,68,68,.25);
+  }
+  .menu-card.menu-absensi .icon{
+    background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(239,68,68,.04));
+    border:1px solid rgba(239,68,68,.45);
+  }
+  .menu-card.menu-absensi h3{color:#DC2626}
+  body.dark .menu-card.menu-absensi h3{color:#F87171}
+  .menu-card.menu-absensi:hover{
+    border-color:#EF4444;
+    box-shadow:
+      0 0 0 3px rgba(239,68,68,.7),
+      0 0 24px rgba(239,68,68,1),
+      0 0 55px rgba(239,68,68,.7),
+      0 0 80px rgba(239,68,68,.4),
+      0 12px 28px rgba(239,68,68,.6);
+  }
+  .menu-card.menu-absensi:hover h3{color:#EF4444}
+  body.dark .menu-card.menu-absensi:hover h3{color:#FCA5A5}
+  .menu-card.menu-absensi:hover .icon{
+    background:linear-gradient(135deg,#EF4444,#B91C1C);
+    box-shadow:
+      0 0 0 2px rgba(239,68,68,.5),
+      0 4px 18px rgba(239,68,68,.7);
+    border-color:#EF4444;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.menu-absensi:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* Surat Masuk — BIRU */
+  .menu-card.c-surat-masuk{
+    --menu-glow:#3B82F6;
+    --menu-glow-soft:rgba(59,130,246,.55);
+    border-color:rgba(59,130,246,.55);
+    box-shadow:
+      0 0 0 1px rgba(59,130,246,.35),
+      0 0 10px rgba(59,130,246,.2),
+      0 4px 14px rgba(0,0,0,.15);
+  }
+  .menu-card.c-surat-masuk:hover{
+    border-color:#3B82F6;
+    box-shadow:
+      0 0 0 3px rgba(59,130,246,.7),
+      0 0 24px rgba(59,130,246,1),
+      0 0 55px rgba(59,130,246,.7),
+      0 0 80px rgba(59,130,246,.4),
+      0 12px 28px rgba(59,130,246,.6);
+  }
+  .menu-card.c-surat-masuk:hover h3{color:#3B82F6}
+  .menu-card.c-surat-masuk:hover .icon{
+    background:linear-gradient(135deg,#3B82F6,#1D4ED8);
+    box-shadow:
+      0 0 0 2px rgba(59,130,246,.5),
+      0 4px 18px rgba(59,130,246,.7);
+    border-color:#3B82F6;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.c-surat-masuk:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* Surat Keluar — UNGU */
+  .menu-card.c-surat-keluar{
+    --menu-glow:#8B5CF6;
+    --menu-glow-soft:rgba(139,92,246,.55);
+    border-color:rgba(139,92,246,.55);
+    box-shadow:
+      0 0 0 1px rgba(139,92,246,.35),
+      0 0 10px rgba(139,92,246,.2),
+      0 4px 14px rgba(0,0,0,.15);
+  }
+  .menu-card.c-surat-keluar:hover{
+    border-color:#8B5CF6;
+    box-shadow:
+      0 0 0 3px rgba(139,92,246,.7),
+      0 0 24px rgba(139,92,246,1),
+      0 0 55px rgba(139,92,246,.7),
+      0 0 80px rgba(139,92,246,.4),
+      0 12px 28px rgba(139,92,246,.6);
+  }
+  .menu-card.c-surat-keluar:hover h3{color:#8B5CF6}
+  .menu-card.c-surat-keluar:hover .icon{
+    background:linear-gradient(135deg,#8B5CF6,#6D28D9);
+    box-shadow:
+      0 0 0 2px rgba(139,92,246,.5),
+      0 4px 18px rgba(139,92,246,.7);
+    border-color:#8B5CF6;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.c-surat-keluar:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* Inventaris — HIJAU */
+  .menu-card.c-inventaris{
+    --menu-glow:#10B981;
+    --menu-glow-soft:rgba(16,185,129,.55);
+    border-color:rgba(16,185,129,.55);
+    box-shadow:
+      0 0 0 1px rgba(16,185,129,.35),
+      0 0 10px rgba(16,185,129,.2),
+      0 4px 14px rgba(0,0,0,.15);
+  }
+  .menu-card.c-inventaris:hover{
+    border-color:#10B981;
+    box-shadow:
+      0 0 0 3px rgba(16,185,129,.7),
+      0 0 24px rgba(16,185,129,1),
+      0 0 55px rgba(16,185,129,.7),
+      0 0 80px rgba(16,185,129,.4),
+      0 12px 28px rgba(16,185,129,.6);
+  }
+  .menu-card.c-inventaris:hover h3{color:#10B981}
+  .menu-card.c-inventaris:hover .icon{
+    background:linear-gradient(135deg,#10B981,#059669);
+    box-shadow:
+      0 0 0 2px rgba(16,185,129,.5),
+      0 4px 18px rgba(16,185,129,.7);
+    border-color:#10B981;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.c-inventaris:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* Pembayaran — ORANYE EMAS */
+  .menu-card.c-pembayaran{
+    --menu-glow:#F59E0B;
+    --menu-glow-soft:rgba(245,158,11,.55);
+    border-color:rgba(245,158,11,.55);
+    box-shadow:
+      0 0 0 1px rgba(245,158,11,.35),
+      0 0 10px rgba(245,158,11,.2),
+      0 4px 14px rgba(0,0,0,.15);
+  }
+  .menu-card.c-pembayaran:hover{
+    border-color:#F59E0B;
+    box-shadow:
+      0 0 0 3px rgba(245,158,11,.7),
+      0 0 24px rgba(245,158,11,1),
+      0 0 55px rgba(245,158,11,.7),
+      0 0 80px rgba(245,158,11,.4),
+      0 12px 28px rgba(245,158,11,.6);
+  }
+  .menu-card.c-pembayaran:hover h3{color:#F59E0B}
+  .menu-card.c-pembayaran:hover .icon{
+    background:linear-gradient(135deg,#F59E0B,#B45309);
+    box-shadow:
+      0 0 0 2px rgba(245,158,11,.5),
+      0 4px 18px rgba(245,158,11,.7);
+    border-color:#F59E0B;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.c-pembayaran:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* Laporan — CYAN */
+  .menu-card.c-laporan{
+    --menu-glow:#06B6D4;
+    --menu-glow-soft:rgba(6,182,212,.55);
+    border-color:rgba(6,182,212,.55);
+    box-shadow:
+      0 0 0 1px rgba(6,182,212,.35),
+      0 0 10px rgba(6,182,212,.2),
+      0 4px 14px rgba(0,0,0,.15);
+  }
+  .menu-card.c-laporan:hover{
+    border-color:#06B6D4;
+    box-shadow:
+      0 0 0 3px rgba(6,182,212,.7),
+      0 0 24px rgba(6,182,212,1),
+      0 0 55px rgba(6,182,212,.7),
+      0 0 80px rgba(6,182,212,.4),
+      0 12px 28px rgba(6,182,212,.6);
+  }
+  .menu-card.c-laporan:hover h3{color:#06B6D4}
+  .menu-card.c-laporan:hover .icon{
+    background:linear-gradient(135deg,#06B6D4,#0E7490);
+    box-shadow:
+      0 0 0 2px rgba(6,182,212,.5),
+      0 4px 18px rgba(6,182,212,.7);
+    border-color:#06B6D4;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.c-laporan:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* Arsip Digital — PINK */
+  .menu-card.c-arsip{
+    --menu-glow:#EC4899;
+    --menu-glow-soft:rgba(236,72,153,.55);
+    border-color:rgba(236,72,153,.55);
+    box-shadow:
+      0 0 0 1px rgba(236,72,153,.35),
+      0 0 10px rgba(236,72,153,.2),
+      0 4px 14px rgba(0,0,0,.15);
+  }
+  .menu-card.c-arsip:hover{
+    border-color:#EC4899;
+    box-shadow:
+      0 0 0 3px rgba(236,72,153,.7),
+      0 0 24px rgba(236,72,153,1),
+      0 0 55px rgba(236,72,153,.7),
+      0 0 80px rgba(236,72,153,.4),
+      0 12px 28px rgba(236,72,153,.6);
+  }
+  .menu-card.c-arsip:hover h3{color:#EC4899}
+  .menu-card.c-arsip:hover .icon{
+    background:linear-gradient(135deg,#EC4899,#BE185D);
+    box-shadow:
+      0 0 0 2px rgba(236,72,153,.5),
+      0 4px 18px rgba(236,72,153,.7);
+    border-color:#EC4899;
+    transform:scale(1.12) rotate(-6deg);
+  }
+  .menu-card.c-arsip:hover::before{opacity:.4;transform:scale(1.5)}
+
+  /* ============================================================
+     FOOTER + TOAST
+     ============================================================ */
+  .footer{
+    text-align:center;padding:20px 12px;
+    color:var(--sub);font-size:12.5px;
+  }
+  .footer strong{color:#FCD34D}
+  body:not(.dark) .footer strong{color:var(--primary-dark)}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#0F0A05;color:#fff;
+    padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:0 20px 40px rgba(0,0,0,.5);
+    border:2px solid var(--card-border);
+    opacity:0;transition:all .3s;z-index:99999;
+    max-width:calc(100vw - 32px);text-align:center;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.success{background:linear-gradient(135deg,#059669,#047857);border-color:#10B981}
+  .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
+  .toast.info{background:linear-gradient(135deg,#B45309,#78350F);border-color:#FCD34D}
+  .toast.warn{background:linear-gradient(135deg,#D97706,#B45309);border-color:#FBBF24}
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media(max-width:900px){
+    .wrapper{grid-template-columns:1fr;gap:18px}
+    .col-profil{position:static;height:auto;max-height:none}
+    .profile-card{max-height:none;height:auto}
+    .profile-card-body{overflow-y:visible;max-height:none}
+  }
+  @media(max-width:640px){
+    .header{flex-wrap:wrap;padding:12px 16px;position:relative}
+    .header-left,.header-center,.header-right{
+      flex:1 1 100%;justify-content:center;text-align:center;
+    }
+    .wrapper{padding:16px 12px}
+    .menu-grid{grid-template-columns:1fr}
+    .welcome-content{flex-direction:column;text-align:center;gap:10px}
+    .welcome-emoji{font-size:44px}
+  }
+</style>
+</head>
+
+<body class="dark">
+
+<!-- ORNAMEN (17 buah) -->
+<div class="ornament orn1">♡</div>
+<div class="ornament orn2">✦</div>
+<div class="ornament orn3">✿</div>
+<div class="ornament orn4">◆</div>
+<div class="ornament orn5">★</div>
+<div class="ornament orn6">✧</div>
+<div class="ornament orn7">❋</div>
+<div class="ornament orn8">✿</div>
+<div class="ornament orn9">♦</div>
+<div class="ornament orn10">★</div>
+<div class="ornament orn11">✦</div>
+<div class="ornament orn12">✺</div>
+<div class="ornament orn13">❀</div>
+<div class="ornament orn14">♢</div>
+<div class="ornament orn15">✹</div>
+<div class="ornament orn16">☆</div>
+<div class="ornament orn17">✵</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left"><h1>Halaman Tenaga Kependidikan</h1></div>
+  <div class="header-center">
+    <div class="jam-box"><span id="liveClock">Memuat...</span></div>
+  </div>
+  <div class="header-right">
+    <button class="logout" onclick="logout()">Keluar</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<!-- WRAPPER -->
+<div class="wrapper">
+
+  <!-- KOLOM KIRI: PROFIL -->
+  <div class="col-profil">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+        <span class="lama-text" id="profileLama">-</span>
+      </div>
+      <div class="profile-card-body" id="profileBody"></div>
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: MENU -->
+  <div class="col-menu">
+
+    <!-- WELCOME CARD -->
+    <div class="welcome" id="welcomeCard">
+      <div class="welcome-content">
+        <div class="welcome-emoji" id="welcomeEmoji">🌅</div>
+        <div class="welcome-text">
+          <h2 id="welcomeText">Selamat datang!</h2>
+          <p id="welcomeSub">Apa yang ingin Anda kerjakan hari ini?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-section-title">Menu Tata Usaha</div>
+    <div class="menu-grid">
+
+      <!-- Absensi — MERAH -->
+      <a class="menu-card menu-absensi" href="menu-guru/absensi.html">
+        <div class="icon">📅</div>
+        <div class="card-text">
+          <h3>Absensi</h3>
+          <p>Kehadiran harian &amp; rekap</p>
+        </div>
+      </a>
+
+      <!-- Surat Masuk — BIRU -->
+      <div class="menu-card c-surat-masuk" onclick="showToast('📥 Fitur Surat Masuk akan dibuat nanti','info')">
+        <div class="icon">📥</div>
+        <div class="card-text">
+          <h3>Surat Masuk</h3>
+          <p>Catat &amp; arsip surat masuk</p>
+        </div>
+      </div>
+
+      <!-- Surat Keluar — UNGU -->
+      <div class="menu-card c-surat-keluar" onclick="showToast('📤 Fitur Surat Keluar akan dibuat nanti','info')">
+        <div class="icon">📤</div>
+        <div class="card-text">
+          <h3>Surat Keluar</h3>
+          <p>Catat &amp; arsip surat keluar</p>
+        </div>
+      </div>
+
+      <!-- Inventaris — HIJAU -->
+      <div class="menu-card c-inventaris" onclick="showToast('📦 Fitur Inventaris akan dibuat nanti','info')">
+        <div class="icon">📦</div>
+        <div class="card-text">
+          <h3>Inventaris</h3>
+          <p>Kelola aset &amp; barang sekolah</p>
+        </div>
+      </div>
+
+      <!-- Pembayaran — ORANYE EMAS -->
+      <div class="menu-card c-pembayaran" onclick="showToast('💰 Fitur Pembayaran akan dibuat nanti','info')">
+        <div class="icon">💰</div>
+        <div class="card-text">
+          <h3>Pembayaran</h3>
+          <p>SPP, PMBM, &amp; tabungan</p>
+        </div>
+      </div>
+
+      <!-- Laporan — CYAN -->
+      <div class="menu-card c-laporan" onclick="showToast('📊 Fitur Laporan akan dibuat nanti','info')">
+        <div class="icon">📊</div>
+        <div class="card-text">
+          <h3>Laporan</h3>
+          <p>Rekap administrasi TU</p>
+        </div>
+      </div>
+
+      <!-- Arsip Digital — PINK -->
+      <div class="menu-card c-arsip" onclick="showToast('📁 Fitur Arsip akan dibuat nanti','info')">
+        <div class="icon">📁</div>
+        <div class="card-text">
+          <h3>Arsip Digital</h3>
+          <p>Penyimpanan dokumen</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✨</div>
+
+<script src="panggilan.js"></script>
+
+<script>
+/* ============================================================
+   SIAGRA v.2.s — Tendik (FINAL + AUTO-UPDATE)
+   ============================================================ */
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('dark', theme === 'dark');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme(){
+  const current = localStorage.getItem('theme') || 'dark';
+  localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
+  applyTheme();
+  showToast(localStorage.getItem('theme') === 'dark' ? '🌙 Mode Gelap' : '☀️ Mode Terang','info');
+}
+applyTheme();
+
+/* ============================================================
+   JAM WITA
+   ============================================================ */
+function updateClock(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const wita = new Date(utc + (8 * 3600000));
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const h = String(wita.getHours()).padStart(2,'0');
+  const m = String(wita.getMinutes()).padStart(2,'0');
+  const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+  const el = document.getElementById('liveClock');
+  if(el) el.textContent = teks;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   CEK LOGIN
+   ============================================================ */
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if(!user || user.role !== 'tendik'){
+  alert('Anda harus login sebagai Tenaga Kependidikan!');
+  window.location.href = 'index.html';
+}
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+function namaKeFile(nama){
+  let bersih = String(nama||'').split(',')[0].trim();
+  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Pd\.?/gi, ' ');
+  bersih = bersih.replace(/\bM\.?\s*Pd\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Ag\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Si\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Kom\.?/gi, ' ');
+  bersih = bersih.replace(/\bM\.?\s*Si\.?/gi, ' ');
+  bersih = bersih.replace(/\bGr\.?/gi, ' ');
+  bersih = bersih.replace(/\bDrs\.?/gi, ' ');
+  bersih = bersih.replace(/\bDra\.?/gi, ' ');
+  bersih = bersih.replace(/\bDr\.?/gi, ' ');
+  bersih = bersih.replace(/\s+/g, '-');
+  bersih = bersih.replace(/-+/g, '-');
+  bersih = bersih.replace(/^-|-$/g, '');
+  bersih = bersih.replace(/[^a-zA-Z0-9\-]/g, '');
+  return bersih;
+}
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function normalisasiNama(nama){
+  if(!nama) return '';
+  let s = String(nama).trim().toLowerCase();
+  s = s.split(',')[0].trim();
+  s = s.replace(/[.,']/g, ' ');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+function formatTanggalPanjang(tgl){
+  if(!tgl) return '-';
+  const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+/* ============================================================
+   AVATAR SVG
+   ============================================================ */
+function avatarSvg(nama){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+  const palettes = [
+    { bg1:'#2A1F08', bg2:'#3D1A1A', fg:'#F5F5F5' },
+    { bg1:'#1A1208', bg2:'#1A2A3D', fg:'#F5F5F5' },
+    { bg1:'#1F1A14', bg2:'#3D2A1A', fg:'#F5F5F5' },
+    { bg1:'#1A141F', bg2:'#2A1A3D', fg:'#F5F5F5' }
+  ];
+  const p = palettes[variant];
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/>
+      </linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${p.bg1}"/>
+        <stop offset="100%" stop-color="${p.bg2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    <circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+    <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>
+  </svg>`;
+}
+function pakaiFotoAtauAvatar(el, nama){
+  if(!el) return;
+  // Gunakan email sebagai key agar lebih stabil, fallback ke nama jika email kosong
+  const userEmail = user && user.email ? user.email : nama;
+  const fotoUpload = localStorage.getItem('ra_foto_' + userEmail);
+  
+  if(fotoUpload){ 
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">'; 
+    return; 
+  }
+  
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
+  let idx = 0;
+  
+  function cobaLoad(){
+    if(idx >= exts.length){ 
+      // PERBAIKAN: Masukkan SVG ke dalam elemen HTML
+      el.innerHTML = avatarSvg(nama); 
+      return; 
+    }
+    const img = new Image();
+    img.onload = function(){ 
+      el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; 
+    };
+    img.onerror = function(){ 
+      idx++; 
+      cobaLoad(); 
+    };
+    img.src = 'foto/' + baseName + '.' + exts[idx];
+  }
+  cobaLoad();
+}
+
+/* ============================================================
+   CARI DATA TENDIK — SUPABASE
+   ============================================================ */
+async function cariDataTendikSupabase(){
+  const namaLogin = normalisasiNama(user.nama);
+  let { data, error } = await sb
+    .from('tendik').select('*')
+    .ilike('nama', `%${namaLogin}%`)
+    .limit(1).maybeSingle();
+  if(error){
+    console.error('Error cari tendik:', error);
+    showToast('❌ Gagal ambil data', 'error');
+    return null;
+  }
+  if(data) return data;
+  const namaDepan = namaLogin.split(' ')[0];
+  if(namaDepan.length > 2){
+    let { data: data2 } = await sb
+      .from('tendik').select('*')
+      .ilike('nama', `%${namaDepan}%`)
+      .limit(1).maybeSingle();
+    if(data2) return data2;
+  }
+  return null;
+}
+
+/* ============================================================
+   RENDER PROFIL
+   ============================================================ */
+async function renderProfil(){
+  const body = document.getElementById('profileBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data...</div>';
+  const dataTendik = await cariDataTendikSupabase();
+  const nama = user.nama;
+
+  if(!dataTendik){
+    document.getElementById('profileNama').textContent = nama;
+    document.getElementById('profileJabatan').textContent = 'Tenaga Kependidikan';
+    document.getElementById('profileLama').textContent = '';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0"><div style="font-size:36px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Data Belum Lengkap</div><div style="font-size:11.5px;color:#FCD34D;line-height:1.5">Profil Anda belum terdaftar di Data GTK.<br>Silakan hubungi Admin.</div></div>';
+    pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), nama);
+    return;
+  }
+
+  document.getElementById('profileNama').textContent = dataTendik.nama;
+  document.getElementById('profileJabatan').textContent = dataTendik.jabatan || 'Tenaga Kependidikan';
+  const lama = hitungLamaMengajar(dataTendik.tmt);
+  document.getElementById('profileLama').textContent = dataTendik.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+  const identitas = [];
+  if(dataTendik.nik) identitas.push({ l: 'NIK', v: dataTendik.nik });
+  if(dataTendik.npk) identitas.push({ l: 'NPK/PEGID', v: dataTendik.npk });
+  if(dataTendik.jk) identitas.push({ l: 'Jenis Kelamin', v: dataTendik.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(dataTendik.tempat_lahir) identitas.push({ l: 'Tempat Lahir', v: dataTendik.tempat_lahir });
+  if(dataTendik.tanggal_lahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataTendik.tanggal_lahir) });
+  if(identitas.length > 0){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    identitas.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const pegawai = [];
+  if(dataTendik.pendidikan) pegawai.push({ l: 'Pendidikan', v: dataTendik.pendidikan });
+  if(dataTendik.tmt) pegawai.push({ l: 'TMT', v: formatTanggalPanjang(dataTendik.tmt) });
+  if(dataTendik.tmt) pegawai.push({ l: 'Lama Bertugas', v: lama.teks });
+  if(dataTendik.jabatan) pegawai.push({ l: 'Jabatan', v: dataTendik.jabatan });
+  if(pegawai.length > 0){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    pegawai.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const kontak = [];
+  if(dataTendik.hp) kontak.push({ l: 'HP/WA', v: dataTendik.hp });
+  if(dataTendik.email) kontak.push({ l: 'Email', v: dataTendik.email });
+  if(dataTendik.alamat) kontak.push({ l: 'Alamat', v: dataTendik.alamat });
+  if(kontak.length > 0){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  body.innerHTML = html;
+  pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataTendik.nama);
+}
+renderProfil();
+
+/* ============================================================
+   GREETING — pakai panggilan.js
+   ============================================================ */
+function updateGreeting(){
+  const sapaan = ambilSapaanWaktu();
+  const namaPanggilan = ambilNamaPanggilan(user.nama);
+  const card = document.getElementById('welcomeCard');
+  if(card){
+    card.classList.remove('w-pagi','w-siang','w-sore','w-malam');
+    card.classList.add(sapaan.kelas);
+  }
+  document.getElementById('welcomeEmoji').textContent = sapaan.emoji;
+  document.getElementById('welcomeText').textContent = sapaan.sapaan + ', ' + namaPanggilan + '!';
+  document.getElementById('welcomeSub').textContent = sapaan.sub;
+}
+updateGreeting();
+setInterval(updateGreeting, 60000);
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function logout(){
+  if(confirm('Yakin ingin keluar?')){
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  }
+}
+
+console.log('✅ tendik.html loaded (7 menu dengan glow warna + absensi merah + dark mode default)');
+
+/* ============================================================
+   SERVICE WORKER REGISTER + AUTO-UPDATE CHECKER
+   ============================================================ */
+(function autoUpdateChecker(){
+  const VERSI_KEY = 'siagra_versi_terakhir';
+  const CEK_INTERVAL = 60 * 1000;
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').then(reg => {
+      reg.update().catch(() => {});
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        if (!newSW) return;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('🔄 Versi baru terdeteksi — reload...');
+            newSW.postMessage('SKIP_WAITING');
+            setTimeout(() => location.reload(), 500);
+          }
+        });
+      });
+    }).catch(() => {});
+  }
+
+  async function cekVersi(){
+    try {
+      const urlFile = location.pathname;
+      const res = await fetch(urlFile + '?v=' + Date.now(), {
+        method: 'HEAD',
+        cache: 'no-store'
+      });
+      const etag = res.headers.get('ETag') || res.headers.get('Last-Modified') || '';
+      const versiLama = localStorage.getItem(VERSI_KEY + ':' + urlFile);
+
+      if (etag && versiLama && etag !== versiLama) {
+        console.log('🆕 Versi file berubah — reload...');
+        localStorage.setItem(VERSI_KEY + ':' + urlFile, etag);
+        location.reload();
+      } else if (etag) {
+        localStorage.setItem(VERSI_KEY + ':' + urlFile, etag);
+      }
+    } catch(e){ /* offline → abaikan */ }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') cekVersi();
+  });
+
+  setInterval(cekVersi, CEK_INTERVAL);
+  setTimeout(cekVersi, 3000);
+
+  console.log('✅ Auto-update checker aktif');
+})();
+</script>
+
+</body>
+</html>

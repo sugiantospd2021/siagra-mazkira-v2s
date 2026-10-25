@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<meta charset="UTF-8">
+
+<!-- ===== ANTI-CACHE ===== -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="logo-siagra.png">
+<title>SIAGRA — Guru</title>
+<meta name="theme-color" content="#10B981">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#F0FBF6;--card:#FFFFFF;--card-inner:#F5FDF9;
+    --text:#0F2E22;--sub:#5A7A6B;--border:#D1FAE5;
+    --primary:#34D399;--primary-dark:#10B981;--primary-light:#D1FAE5;
+    --accent:#6EE7B7;--danger:#DC2626;--success:#10B981;
+    --warning:#D97706;--yellow:#B45309;
+    --card-border:#10B981;--card-border-glow:rgba(16,185,129,.3);
+  }
+  body.dark{
+    --bg:#000000;--card:#0A1F17;--card-inner:#0F2A20;
+    --text:#D1FAE5;--sub:#86C7AA;--border:#1F4A36;
+    --primary:#34D399;--primary-dark:#10B981;--primary-light:#065F46;
+    --accent:#6EE7B7;--danger:#F87171;--success:#4ADE80;
+    --warning:#FBBF24;--yellow:#FCD34D;
+    --card-border:#10B981;--card-border-glow:rgba(52,211,153,.5);
+  }
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(52,211,153,.06) 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(110,231,183,.04) 0%, transparent 40%);
+    background-attachment:fixed;
+    min-height:100vh;color:var(--text);
+    transition:background .3s,color .3s;
+    position:relative;overflow-x:hidden;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+
+  /* ============================================================
+     ORNAMEN — 17 buah persis cover.html
+     ============================================================ */
+  .ornament{
+    position:fixed;pointer-events:none;z-index:0;
+    opacity:.45;animation:float 6s ease-in-out infinite;font-weight:900;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0) rotate(0)}
+    50%{transform:translateY(-18px) rotate(10deg)}
+  }
+  @keyframes spinSlow{100%{transform:rotate(360deg)}}
+  @keyframes twinkle{
+    0%,100%{opacity:.35;transform:scale(1)}
+    50%{opacity:.9;transform:scale(1.2)}
+  }
+  .orn1{top:8%;left:3%;color:#4ADE80;font-size:40px}
+  .orn2{top:12%;right:4%;color:#86EFAC;font-size:34px;animation-delay:1.5s}
+  .orn3{bottom:15%;left:5%;color:#22C55E;font-size:34px;animation-delay:2s}
+  .orn4{bottom:20%;right:5%;color:#4ADE80;font-size:32px;animation-delay:.8s}
+  .orn5{top:50%;left:2%;color:#86EFAC;font-size:26px;animation-delay:1.2s}
+  .orn6{top:22%;left:8%;color:#FCD34D;font-size:28px;animation-delay:.4s;animation-duration:7s}
+  .orn7{top:35%;right:6%;color:#60A5FA;font-size:30px;animation-delay:1s;animation-duration:8s}
+  .orn8{bottom:35%;left:8%;color:#F472B6;font-size:26px;animation-delay:1.8s;animation-duration:6.5s}
+  .orn9{bottom:8%;right:10%;color:#A78BFA;font-size:24px;animation-delay:2.4s;animation-duration:7.5s}
+  .orn10{top:18%;left:50%;color:#FB923C;font-size:22px;animation:twinkle 3s ease-in-out infinite}
+  .orn11{top:60%;right:3%;color:#22D3EE;font-size:26px;animation:spinSlow 12s linear infinite}
+  .orn12{bottom:50%;left:3%;color:#FACC15;font-size:24px;animation-delay:1.4s;animation-duration:9s}
+  .orn13{top:5%;right:25%;color:#F87171;font-size:20px;animation:twinkle 2.5s ease-in-out infinite .5s}
+  .orn14{bottom:5%;left:30%;color:#34D399;font-size:22px;animation:twinkle 3.5s ease-in-out infinite 1s}
+  .orn15{top:42%;left:22%;color:#A3E635;font-size:20px;animation-delay:.6s;animation-duration:7s}
+  .orn16{top:68%;left:15%;color:#FBBF24;font-size:18px;animation:twinkle 4s ease-in-out infinite}
+  .orn17{bottom:25%;right:20%;color:#818CF8;font-size:22px;animation-delay:2.2s}
+  @media(max-width:768px){.ornament{display:none}}
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:linear-gradient(135deg,#064E3B,#0A1F17);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);
+    border-bottom:2px solid #10B981;gap:12px;
+  }
+  .header-left{flex:0 1 auto;min-width:0}
+  .header-left h1{font-size:17px;color:#A7F3D0;font-weight:800}
+  .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
+  .jam-box{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1.5px solid rgba(52,211,153,.5);
+    color:#fff;padding:8px 18px;border-radius:100px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;
+    backdrop-filter:blur(10px);
+  }
+  .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
+
+  /* ===== TOMBOL LOGOUT: HOVER + GLOW (persis admin.html) ===== */
+  .header-right button.logout{
+    background:linear-gradient(135deg,#EF4444,#B91C1C);
+    color:#fff;border:2px solid transparent;
+    padding:8px 16px;border-radius:8px;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:13px;
+    box-shadow:0 2px 8px rgba(239,68,68,.4);
+    transition:all .3s ease;
+  }
+  .header-right button.logout:hover{
+    background:linear-gradient(135deg,#F87171,#DC2626);
+    color:#fff;border-color:#FCA5A5;
+    transform:translateY(-2px) scale(1.05);
+    box-shadow:
+      0 0 0 2px rgba(248,113,113,.4),
+      0 0 15px rgba(239,68,68,.6),
+      0 0 30px rgba(239,68,68,.4),
+      0 6px 20px rgba(239,68,68,.5);
+  }
+  .header-right button.logout:active{
+    transform:translateY(0) scale(1);
+    box-shadow:0 0 10px rgba(239,68,68,.5);
+  }
+  .theme-toggle{
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.15);
+    color:#fff;width:38px;height:38px;border-radius:50%;
+    font-size:17px;cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .theme-toggle:hover{
+    transform:scale(1.1) rotate(15deg);
+    background:rgba(255,255,255,.2);
+  }
+
+  /* ============================================================
+     WRAPPER + PROFIL
+     ============================================================ */
+  .wrapper{
+    max-width:1200px;margin:0 auto;padding:24px 16px;
+    display:grid;grid-template-columns:300px 1fr;gap:24px;
+    position:relative;z-index:1;align-items:start;
+  }
+  .col-profil{
+    position:sticky;top:88px;
+    height:calc(100vh - 110px);max-height:calc(100vh - 110px);
+  }
+  .profile-card{
+    background:var(--card);border-radius:16px;
+    border:2px solid var(--card-border);
+    box-shadow:0 0 25px var(--card-border-glow),0 8px 24px rgba(0,0,0,.6);
+    height:100%;max-height:100%;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .profile-card-header{
+    padding:20px 18px 16px;text-align:center;
+    border-bottom:1px dashed var(--border);flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(10,31,23,.6));
+  }
+  body:not(.dark) .profile-card-header{
+    background:linear-gradient(135deg,rgba(240,251,246,.6),rgba(220,245,235,.8));
+  }
+  .profile-photo{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#0A1F17,#0F2A20);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:800;color:#D1FAE5;
+    overflow:hidden;border:3px solid var(--card-border);
+    margin:0 auto 12px;
+  }
+  body:not(.dark) .profile-photo{background:linear-gradient(135deg,#F5FDF9,#E0F5EC)}
+  .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
+  .profile-card-header h2{
+    font-size:14.5px;font-weight:800;
+    color:var(--text);margin-bottom:6px;line-height:1.35;
+  }
+  .profile-card-header .jabatan-badge{
+    display:inline-block;padding:4px 12px;border-radius:100px;
+    font-size:10.5px;font-weight:700;
+    background:rgba(0,0,0,.4);color:#A7F3D0;
+    border:1px solid rgba(16,185,129,.5);
+    text-transform:uppercase;margin-bottom:6px;
+  }
+  body:not(.dark) .profile-card-header .jabatan-badge{
+    background:rgba(16,185,129,.15);color:#065F46;
+  }
+  .profile-card-header .lama-text{
+    display:block;font-size:11.5px;font-weight:700;
+    color:#A7F3D0;margin-top:4px;
+  }
+  body:not(.dark) .profile-card-header .lama-text{color:var(--primary-dark)}
+  .profile-card-body{
+    flex:1;overflow-y:auto;padding:14px 18px 18px;
+    scrollbar-width:thin;scrollbar-color:var(--card-border) transparent;
+  }
+  .profile-card-body::-webkit-scrollbar{width:6px}
+  .profile-card-body::-webkit-scrollbar-thumb{
+    background:rgba(16,185,129,.4);border-radius:10px;
+  }
+  .info-section-title{
+    font-size:10px;font-weight:800;color:var(--sub);
+    text-transform:uppercase;letter-spacing:.06em;
+    margin-bottom:8px;margin-top:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .info-section-title::before{
+    content:'';width:3px;height:12px;
+    background:var(--card-border);border-radius:2px;
+  }
+  .info-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .info-item{
+    display:flex;justify-content:space-between;gap:8px;
+    padding:7px 10px;background:var(--card-inner);
+    border:1px solid var(--border);border-radius:8px;font-size:11.5px;
+  }
+  .info-item .lbl{color:var(--sub);font-weight:600;flex-shrink:0}
+  .info-item .val{
+    color:var(--text);font-weight:700;text-align:right;
+    word-break:break-word;min-width:0;
+  }
+</style>
+
+<style>
+  .col-menu{min-width:0}
+
+  /* ============================================================
+     WELCOME CARD
+     ============================================================ */
+  .welcome{
+    position:relative;overflow:hidden;border-radius:18px;
+    padding:24px 26px;margin-bottom:18px;
+    border:2px solid var(--card-border);
+    box-shadow:0 10px 30px rgba(16,185,129,.25);
+  }
+  .welcome-content{
+    position:relative;z-index:2;
+    display:flex;align-items:center;gap:18px;
+  }
+  .welcome-emoji{font-size:52px;line-height:1;flex-shrink:0}
+  .welcome-text{flex:1;min-width:0}
+  .welcome-text h2{
+    font-size:22px;font-weight:800;margin-bottom:6px;color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  .welcome-text p{
+    font-size:13.5px;font-weight:600;color:rgba(255,255,255,.92);
+  }
+  .welcome.w-pagi{background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 45%,#FCD34D 100%)}
+  .welcome.w-siang{background:linear-gradient(135deg,#0EA5E9 0%,#38BDF8 50%,#7DD3FC 100%)}
+  .welcome.w-sore{background:linear-gradient(135deg,#F97316 0%,#FB923C 45%,#FDBA74 100%)}
+  .welcome.w-malam{background:linear-gradient(135deg,#312E81 0%,#4C1D95 50%,#6D28D9 100%)}
+
+  /* ============================================================
+     MENU GRID + CARD (HOVER & GLOW seperti absensi.html)
+     ============================================================ */
+  .menu-section-title{
+    font-size:13px;font-weight:700;color:var(--sub);
+    text-transform:uppercase;letter-spacing:.05em;margin:0 0 14px;
+  }
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:14px;margin-bottom:24px;
+  }
+  .menu-card{
+    position:relative;overflow:hidden;border-radius:14px;
+    padding:18px;cursor:pointer;
+    display:flex;align-items:flex-start;gap:14px;
+    text-align:left;color:#fff;text-decoration:none;
+    border:2px solid rgba(255,255,255,.25);
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    transition:all .32s cubic-bezier(.34,1.56,.64,1);
+    isolation:isolate;
+  }
+  a.menu-card{color:#fff;text-decoration:none}
+  a.menu-card:visited{color:#fff}
+
+  /* Radial glow di belakang card — inti efek "menyala" */
+  .menu-card::before{
+    content:'';
+    position:absolute;
+    top:-50px;right:-50px;
+    width:140px;height:140px;
+    border-radius:50%;
+    background:radial-gradient(circle, var(--menu-glow, #fff) 0%, transparent 70%);
+    opacity:.10;
+    transition:opacity .4s ease, transform .4s ease;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* Efek "menyala" saat hover */
+  .menu-card:hover{
+    border-color:var(--menu-glow, #fff);
+    transform:translateY(-5px) scale(1.015);
+    box-shadow:
+      0 0 0 2px var(--menu-glow-soft, rgba(255,255,255,.4)),
+      0 0 24px var(--menu-glow, rgba(255,255,255,.45)),
+      0 0 48px var(--menu-glow-soft, rgba(255,255,255,.25)),
+      0 12px 28px var(--menu-glow-soft, rgba(0,0,0,.35));
+  }
+  .menu-card:hover::before{opacity:.35;transform:scale(1.5)}
+
+  /* Ikon dalam kotak rounded */
+  .menu-card .icon{
+    width:46px;height:46px;border-radius:12px;
+    background:rgba(255,255,255,.22);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;flex-shrink:0;
+    border:1px solid rgba(255,255,255,.35);
+    position:relative;z-index:1;
+    transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .menu-card:hover .icon{
+    transform:scale(1.12) rotate(-6deg);
+    background:rgba(255,255,255,.38);
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,.4),
+      0 4px 18px rgba(255,255,255,.35);
+  }
+  .menu-card .card-text{flex:1;min-width:0;padding-right:24px;position:relative;z-index:1}
+  .menu-card h3{
+    font-size:14.5px;font-weight:800;margin-bottom:3px;
+    color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);
+    transition:color .25s;
+  }
+  .menu-card p{
+    font-size:12px;font-weight:500;line-height:1.4;
+    color:rgba(255,255,255,.92);transition:color .25s;
+  }
+
+  /* Arrow expand untuk submenu */
+  .menu-card .expand-arrow{
+    position:absolute;top:50%;right:16px;transform:translateY(-50%);
+    font-size:14px;color:rgba(255,255,255,.85);
+    transition:transform .3s ease;z-index:1;
+  }
+  .menu-card.expanded .expand-arrow{transform:translateY(-50%) rotate(180deg)}
+
+  /* ============================================================
+     WARNA MENU CARD + --menu-glow
+     ============================================================ */
+  .menu-card.c-rpph{
+    background:linear-gradient(135deg,#15803D 0%,#22C55E 50%,#4ADE80 100%);
+    --menu-glow:#4ADE80;
+    --menu-glow-soft:rgba(74,222,128,.45);
+  }
+  .menu-card.c-anekdot{
+    background:linear-gradient(135deg,#6D28D9 0%,#8B5CF6 50%,#A78BFA 100%);
+    --menu-glow:#A78BFA;
+    --menu-glow-soft:rgba(167,139,250,.45);
+  }
+  .menu-card.c-observasi{
+    background:linear-gradient(135deg,#C2410C 0%,#EA580C 50%,#F97316 100%);
+    --menu-glow:#FB923C;
+    --menu-glow-soft:rgba(251,146,60,.45);
+  }
+  .menu-card.c-absensi{
+    background:linear-gradient(135deg,#BE185D 0%,#DB2777 50%,#EC4899 100%);
+    --menu-glow:#F472B6;
+    --menu-glow-soft:rgba(244,114,182,.45);
+  }
+  .menu-card.c-penilaian{
+    background:linear-gradient(135deg,#0E7490 0%,#0891B2 50%,#06B6D4 100%);
+    --menu-glow:#22D3EE;
+    --menu-glow-soft:rgba(34,211,238,.45);
+  }
+
+  /* ============================================================
+     SUBMENU RPPH
+     ============================================================ */
+  .submenu-rpph{
+    display:none;grid-column:1 / -1;
+    background:var(--card);border-radius:14px;
+    border:2px solid rgba(34,197,94,.5);
+    padding:10px;margin-top:-6px;
+    animation:fadeIn .3s ease;
+  }
+  .submenu-rpph.show{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+  .submenu-btn{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;border-radius:10px;
+    color:var(--text);text-decoration:none;
+    background:var(--card-inner);
+    border:1.5px solid var(--border);
+    margin-bottom:8px;width:100%;font-size:13.5px;
+    transition:all .25s;
+  }
+  .submenu-btn:last-child{margin-bottom:0}
+  .submenu-btn:hover{
+    transform:translateX(4px);
+    border-color:var(--card-border);
+    box-shadow:0 0 12px var(--card-border-glow);
+  }
+  .submenu-btn .sb-icon{
+    font-size:22px;width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:9px;flex-shrink:0;
+  }
+  .submenu-btn.sb-buat .sb-icon{
+    background:linear-gradient(135deg,#10B981,#059669);color:#fff;
+  }
+  .submenu-btn.sb-riwayat .sb-icon{
+    background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff;
+  }
+  .submenu-btn .sb-text{flex:1;min-width:0}
+  .submenu-btn .sb-text strong{
+    display:block;font-size:13.5px;font-weight:800;
+    margin-bottom:2px;color:var(--text);
+  }
+  .submenu-btn .sb-text small{
+    display:block;font-size:11px;font-weight:600;
+    color:var(--sub);line-height:1.4;
+  }
+  .submenu-btn .sb-arrow{
+    font-size:16px;color:var(--sub);flex-shrink:0;
+    transition:transform .2s;
+  }
+  .submenu-btn:hover .sb-arrow{transform:translateX(3px);color:var(--card-border)}
+
+  /* ============================================================
+     RPP ALERT
+     ============================================================ */
+  .rpp-alert{
+    background:linear-gradient(135deg,#FEE2E2,#FECACA);
+    border:2px solid #EF4444;border-radius:14px;
+    padding:16px 20px;margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+    box-shadow:0 6px 20px rgba(239,68,68,.3);
+  }
+  body.dark .rpp-alert{
+    background:linear-gradient(135deg,rgba(127,29,29,.55),rgba(153,27,27,.4));
+  }
+  .rpp-alert .alert-icon{font-size:36px;flex-shrink:0}
+  .rpp-alert .alert-text{flex:1;min-width:0}
+  .rpp-alert .alert-text h4{
+    font-size:14.5px;font-weight:800;color:#991B1B;
+    margin-bottom:3px;line-height:1.4;
+  }
+  body.dark .rpp-alert .alert-text h4{color:#FCA5A5}
+  .rpp-alert .alert-text p{
+    font-size:12.5px;color:#7F1D1D;font-weight:600;
+  }
+  body.dark .rpp-alert .alert-text p{color:#FECACA}
+  .rpp-badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:2px 9px;border-radius:100px;
+    background:rgba(153,27,27,.15);color:#991B1B;
+    font-size:11px;font-weight:800;margin-left:6px;
+  }
+  body.dark .rpp-badge{background:rgba(252,165,165,.2);color:#FCA5A5}
+
+  /* ============================================================
+     FOOTER + TOAST
+     ============================================================ */
+  .footer{
+    text-align:center;padding:20px 12px;
+    color:var(--sub);font-size:12.5px;
+  }
+  .footer strong{color:#A7F3D0}
+  body:not(.dark) .footer strong{color:var(--primary-dark)}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#0A1F17;color:#fff;
+    padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:0 20px 40px rgba(0,0,0,.5);
+    border:2px solid var(--card-border);
+    opacity:0;transition:all .3s;z-index:99999;
+    max-width:calc(100vw - 32px);text-align:center;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.success{background:linear-gradient(135deg,#059669,#047857);border-color:#10B981}
+  .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
+  .toast.info{background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-color:#60A5FA}
+  .toast.warn{background:linear-gradient(135deg,#D97706,#B45309);border-color:#FBBF24}
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media(max-width:900px){
+    .wrapper{grid-template-columns:1fr;gap:18px}
+    .col-profil{position:static;height:auto;max-height:none}
+    .profile-card{max-height:none;height:auto}
+    .profile-card-body{overflow-y:visible;max-height:none}
+  }
+  @media(max-width:640px){
+    .header{flex-wrap:wrap;padding:12px 16px;position:relative}
+    .header-left,.header-center,.header-right{
+      flex:1 1 100%;justify-content:center;text-align:center;
+    }
+    .wrapper{padding:16px 12px}
+    .menu-grid{grid-template-columns:1fr}
+    .rpp-alert{flex-direction:column;text-align:center}
+    .welcome-content{flex-direction:column;text-align:center;gap:10px}
+    .welcome-emoji{font-size:44px}
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     17 ORNAMEN (persis cover.html)
+     ============================================================ -->
+<div class="ornament orn1">♡</div>
+<div class="ornament orn2">✦</div>
+<div class="ornament orn3">✿</div>
+<div class="ornament orn4">◆</div>
+<div class="ornament orn5">★</div>
+<div class="ornament orn6">✧</div>
+<div class="ornament orn7">❋</div>
+<div class="ornament orn8">✿</div>
+<div class="ornament orn9">♦</div>
+<div class="ornament orn10">★</div>
+<div class="ornament orn11">✦</div>
+<div class="ornament orn12">✺</div>
+<div class="ornament orn13">❀</div>
+<div class="ornament orn14">♢</div>
+<div class="ornament orn15">✹</div>
+<div class="ornament orn16">☆</div>
+<div class="ornament orn17">✵</div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<div class="header">
+  <div class="header-left"><h1>Halaman Guru</h1></div>
+  <div class="header-center">
+    <div class="jam-box"><span id="liveClock">Memuat...</span></div>
+  </div>
+  <div class="header-right">
+    <button class="logout" onclick="logout()">Keluar</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     WRAPPER
+     ============================================================ -->
+<div class="wrapper">
+
+  <!-- KOLOM KIRI: PROFIL -->
+  <div class="col-profil">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+        <span class="lama-text" id="profileLama">-</span>
+      </div>
+      <div class="profile-card-body" id="profileBody"></div>
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: MENU -->
+  <div class="col-menu">
+
+    <!-- WELCOME CARD -->
+    <div class="welcome" id="welcomeCard">
+      <div class="welcome-content">
+        <div class="welcome-emoji" id="welcomeEmoji">🌅</div>
+        <div class="welcome-text">
+          <h2 id="welcomeText">Selamat datang!</h2>
+          <p id="welcomeSub">Apa yang ingin Anda kerjakan hari ini?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RPP ALERT -->
+    <div class="rpp-alert" id="rppAlert" style="display:none">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-text">
+        <h4>Anda Belum Membuat RPPH/RPPM <span class="rpp-badge" id="rppBadge">0 hari</span></h4>
+        <p id="rppAlertMsg">Segera buat RPPH/RPPM untuk kelancaran administrasi.</p>
+      </div>
+    </div>
+
+    <!-- MENU GURU -->
+    <div class="menu-section-title">Menu Guru</div>
+    <div class="menu-grid">
+
+      <a class="menu-card c-absensi" href="menu-guru/absensi.html">
+        <div class="icon">📅</div>
+        <div class="card-text">
+          <h3>Absensi Guru</h3>
+          <p>Kehadiran harian &amp; rekap</p>
+        </div>
+      </a>
+
+      <div class="menu-card c-rpph" id="cardRPPH" onclick="toggleSubmenuRPPH(event)">
+        <div class="icon">✨</div>
+        <div class="card-text">
+          <h3>RPPH/RPPM</h3>
+          <p>Buat &amp; lihat riwayat (KBC)</p>
+        </div>
+        <div class="expand-arrow">▼</div>
+      </div>
+
+      <div class="submenu-rpph" id="submenuRPPH">
+        <a class="submenu-btn sb-buat" href="menu-guru/rpp.html">
+          <div class="sb-icon">📝</div>
+          <div class="sb-text">
+            <strong>Buat RPPH/RPPM</strong>
+            <small>Buat RPPH/RPPM harian &amp; mingguan</small>
+          </div>
+          <span class="sb-arrow">→</span>
+        </a>
+        <a class="submenu-btn sb-riwayat" href="menu-guru/riwayat-rpp.html">
+          <div class="sb-icon">📚</div>
+          <div class="sb-text">
+            <strong>Riwayat RPPH/RPPM</strong>
+            <small>Lihat RPPH/RPPM yang pernah dibuat</small>
+          </div>
+          <span class="sb-arrow">→</span>
+        </a>
+      </div>
+
+      <a class="menu-card c-anekdot" href="menu-guru/anekdot.html">
+        <div class="icon">📔</div>
+        <div class="card-text">
+          <h3>Catatan Anekdot</h3>
+          <p>Catat kejadian khusus anak (KBC)</p>
+        </div>
+      </a>
+
+      <a class="menu-card c-observasi" href="menu-guru/observasi.html">
+        <div class="icon">👀</div>
+        <div class="card-text">
+          <h3>Observasi Harian</h3>
+          <p>Checklist 6 Nilai Cinta KBC</p>
+        </div>
+      </a>
+
+      <a class="menu-card c-penilaian" href="menu-guru/penilaian.html">
+        <div class="icon">⭐</div>
+        <div class="card-text">
+          <h3>Penilaian KBC</h3>
+          <p>Nilai 6 pilar cinta &amp; raport</p>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="footer">~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✨</div>
+
+<script src="panggilan.js"></script>
+
+<script>
+/* ============================================================
+   SIAGRA v.2.s — Guru (FINAL)
+   - Tombol Keluar: hover + glow (persis admin.html)
+   - 17 ornamen floating (persis cover.html)
+   - Menu card: hover + glow warna (persis absensi.html)
+   - Auto-update: Service Worker Network-First + reload otomatis
+   ============================================================ */
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('dark', theme === 'dark');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme(){
+  const current = localStorage.getItem('theme') || 'dark';
+  localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
+  applyTheme();
+  showToast(localStorage.getItem('theme') === 'dark' ? '🌙 Mode Gelap' : '☀️ Mode Terang','info');
+}
+applyTheme();
+
+/* ============================================================
+   JAM WITA
+   ============================================================ */
+function getWITA(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  return new Date(utc + (8 * 3600000));
+}
+function updateClock(){
+  const wita = getWITA();
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const h = String(wita.getHours()).padStart(2,'0');
+  const m = String(wita.getMinutes()).padStart(2,'0');
+  const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+  const el = document.getElementById('liveClock');
+  if(el) el.textContent = teks;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   CEK LOGIN
+   ============================================================ */
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if(!user || user.role !== 'guru'){
+  alert('Anda harus login sebagai Guru!');
+  window.location.href = 'index.html';
+}
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+function namaKeFile(nama){
+  let bersih = String(nama||'').split(',')[0].trim();
+  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Pd\.?/gi, ' ');
+  bersih = bersih.replace(/\bM\.?\s*Pd\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Ag\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Si\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Kom\.?/gi, ' ');
+  bersih = bersih.replace(/\bM\.?\s*Si\.?/gi, ' ');
+  bersih = bersih.replace(/\bGr\.?/gi, ' ');
+  bersih = bersih.replace(/\bDrs\.?/gi, ' ');
+  bersih = bersih.replace(/\bDra\.?/gi, ' ');
+  bersih = bersih.replace(/\bDr\.?/gi, ' ');
+  bersih = bersih.replace(/\s+/g, '-');
+  bersih = bersih.replace(/-+/g, '-');
+  bersih = bersih.replace(/^-|-$/g, '');
+  bersih = bersih.replace(/[^a-zA-Z0-9\-]/g, '');
+  return bersih;
+}
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function normalisasiNama(nama){
+  if(!nama) return '';
+  let s = String(nama).trim().toLowerCase();
+  s = s.split(',')[0].trim();
+  s = s.replace(/[.,']/g, ' ');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+function kataKunciNama(nama){
+  const n = normalisasiNama(nama);
+  const parts = n.split(' ').filter(x => x.length > 2);
+  return parts.slice(0, 2).join(' ');
+}
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+function formatTanggalPanjang(tgl){
+  if(!tgl) return '-';
+  const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+/* ============================================================
+   AVATAR SVG
+   ============================================================ */
+function avatarSvg(nama){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+  const palettes = [
+    { bg1:'#1F1414', bg2:'#3D1A1A', fg:'#F5F5F5' },
+    { bg1:'#141A1F', bg2:'#1A2A3D', fg:'#F5F5F5' },
+    { bg1:'#1F1A14', bg2:'#3D2A1A', fg:'#F5F5F5' },
+    { bg1:'#1A141F', bg2:'#2A1A3D', fg:'#F5F5F5' }
+  ];
+  const p = palettes[variant];
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/>
+      </linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${p.bg1}"/>
+        <stop offset="100%" stop-color="${p.bg2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    <circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+    <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>
+  </svg>`;
+}
+function pakaiFotoAtauAvatar(el, nama){
+  if(!el) return;
+  // Gunakan email sebagai key agar lebih stabil, fallback ke nama jika email kosong
+  const userEmail = user && user.email ? user.email : nama;
+  const fotoUpload = localStorage.getItem('ra_foto_' + userEmail);
+  
+  if(fotoUpload){ 
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">'; 
+    return; 
+  }
+  
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
+  let idx = 0;
+  
+  function cobaLoad(){
+    if(idx >= exts.length){ 
+      // Masukkan SVG ke dalam elemen HTML
+      el.innerHTML = avatarSvg(nama); 
+      return; 
+    }
+    const img = new Image();
+    img.onload = function(){ 
+      el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; 
+    };
+    img.onerror = function(){ 
+      idx++; 
+      cobaLoad(); 
+    };
+    img.src = 'foto/' + baseName + '.' + exts[idx];
+  }
+  cobaLoad();
+}
+
+/* ============================================================
+   CARI DATA GURU — SUPABASE
+   ============================================================ */
+async function cariDataGuruSupabase(){
+  const namaLogin = normalisasiNama(user.nama);
+  
+  // Pengecekan pengaman jika variabel sb belum siap
+  if (typeof sb === 'undefined') {
+    console.error("Supabase client (sb) belum terdefinisi.");
+    return null;
+  }
+
+  let { data, error } = await sb
+    .from('guru').select('*')
+    .ilike('nama', `%${namaLogin}%`)
+    .limit(1).maybeSingle();
+  if(error){ console.error('Error cari guru:', error); return null; }
+  if(data) return data;
+  const namaDepan = namaLogin.split(' ')[0];
+  if(namaDepan.length > 2){
+    let { data: data2 } = await sb
+      .from('guru').select('*')
+      .ilike('nama', `%${namaDepan}%`)
+      .limit(1).maybeSingle();
+    if(data2) return data2;
+  }
+  return null;
+}
+
+/* ============================================================
+   CARI ROMBEL GURU
+   ============================================================ */
+function cariRombelGuru(guru){
+  if(!guru) return [];
+  const kelas = JSON.parse(localStorage.getItem('ra_kelas_cache') || '[]');
+  const hasil = [];
+  kelas.forEach(k => {
+    const rombel = k.nama || k.kelompok || '';
+    let cocok = false;
+    if(k.guru_utama_id && guru.id && String(k.guru_utama_id) === String(guru.id)) cocok = true;
+    if(!cocok && Array.isArray(k.guru_pendamping_ids) && guru.id){
+      if(k.guru_pendamping_ids.map(String).includes(String(guru.id))) cocok = true;
+    }
+    if(cocok && rombel && !hasil.includes(rombel)) hasil.push(rombel);
+  });
+  return hasil;
+}
+
+/* ============================================================
+   RENDER PROFIL (DIPERBARUI)
+   ============================================================ */
+async function renderProfil(){
+  const nama = user.nama;
+  const body = document.getElementById('profileBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data...</div>';
+
+  const dataGuru = await cariDataGuruSupabase();
+
+  if(!dataGuru){
+    document.getElementById('profileNama').textContent = nama;
+    document.getElementById('profileJabatan').textContent = 'Guru RA';
+    document.getElementById('profileLama').textContent = '';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0"><div style="font-size:36px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Data Belum Lengkap</div><div style="font-size:11.5px;color:#A7F3D0;line-height:1.5">Profil Anda belum terdaftar di Data GTK.<br>Silakan hubungi Admin.</div></div>';
+    pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), nama);
+    return;
+  }
+
+  document.getElementById('profileNama').textContent = dataGuru.nama;
+  document.getElementById('profileJabatan').textContent = dataGuru.jabatan || 'Guru RA';
+  const lama = hitungLamaMengajar(dataGuru.tmt);
+  document.getElementById('profileLama').textContent = dataGuru.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+  const identitas = [];
+  if(dataGuru.nik) identitas.push({ l: 'NIK', v: dataGuru.nik });
+  if(dataGuru.npk) identitas.push({ l: 'NPK/PEGID', v: dataGuru.npk });
+  if(dataGuru.jk) identitas.push({ l: 'Jenis Kelamin', v: dataGuru.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(dataGuru.tempat_lahir) identitas.push({ l: 'Tempat Lahir', v: dataGuru.tempat_lahir });
+  if(dataGuru.tanggal_lahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataGuru.tanggal_lahir) });
+  if(identitas.length > 0){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    identitas.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const pegawai = [];
+  if(dataGuru.pendidikan) pegawai.push({ l: 'Pendidikan', v: dataGuru.pendidikan });
+  if(dataGuru.tmt) pegawai.push({ l: 'TMT', v: formatTanggalPanjang(dataGuru.tmt) });
+  if(dataGuru.tmt) pegawai.push({ l: 'Lama Mengajar', v: lama.teks });
+  if(dataGuru.jabatan) pegawai.push({ l: 'Jabatan', v: dataGuru.jabatan });
+  const rombelGuru = cariRombelGuru(dataGuru);
+  if(rombelGuru.length) pegawai.push({ l: 'Rombel Diampu', v: rombelGuru.join(', ') });
+  if(pegawai.length > 0){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    pegawai.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const kontak = [];
+  if(dataGuru.hp) kontak.push({ l: 'HP/WA', v: dataGuru.hp });
+  if(dataGuru.email) kontak.push({ l: 'Email', v: dataGuru.email });
+  if(dataGuru.alamat) kontak.push({ l: 'Alamat', v: dataGuru.alamat });
+  if(kontak.length > 0){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  body.innerHTML = html;
+
+  // ===== PATCH: Tampilkan Foto Profil =====
+  const fotoEl = document.getElementById('profilePhoto');
+  if (dataGuru.foto_url && dataGuru.foto_url.trim() !== "") {
+    fotoEl.innerHTML = `<img src="${dataGuru.foto_url}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } else {
+    pakaiFotoAtauAvatar(fotoEl, dataGuru.nama);
+  }
+}
+renderProfil();
+
+/* ============================================================
+   LOAD CACHE KELAS
+   ============================================================ */
+async function loadKelasCache(){
+  if (typeof sb === 'undefined') return;
+  const { data, error } = await sb.from('kelas').select('*');
+  if(!error && data) localStorage.setItem('ra_kelas_cache', JSON.stringify(data));
+}
+loadKelasCache();
+
+/* ============================================================
+   GREETING — pakai panggilan.js
+   ============================================================ */
+function updateGreeting(){
+  const sapaan = ambilSapaanWaktu();
+  const namaPanggilan = ambilNamaPanggilan(user.nama);
+  const card = document.getElementById('welcomeCard');
+  if(card){
+    card.classList.remove('w-pagi','w-siang','w-sore','w-malam');
+    card.classList.add(sapaan.kelas);
+  }
+  document.getElementById('welcomeEmoji').textContent = sapaan.emoji;
+  document.getElementById('welcomeText').textContent = sapaan.sapaan + ', ' + namaPanggilan + '!';
+  document.getElementById('welcomeSub').textContent = sapaan.sub;
+}
+
+/* ============================================================
+   CEK RPPH/RPPM
+   ============================================================ */
+function cekRPPM(){
+  const alertEl = document.getElementById('rppAlert');
+  if(!alertEl) return;
+  const riwayatKey = 'siagra_riwayat_rpp_' + (user.nama || '').replace(/[^a-zA-Z0-9]/g, '_');
+  let tglTerakhir = null;
+  try {
+    const raw = localStorage.getItem(riwayatKey);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      const allItems = (parsed.rpph || []).concat(parsed.rppm || []);
+      allItems.forEach(it => {
+        if(!it.tanggal) return;
+        const d = new Date(it.tanggal);
+        if(isNaN(d)) return;
+        if(!tglTerakhir || d > tglTerakhir) tglTerakhir = d;
+      });
+    }
+  } catch(e){}
+  const hariIni = new Date();
+  hariIni.setHours(0,0,0,0);
+  let selisihHari = 999;
+  if(tglTerakhir){
+    selisihHari = Math.floor((hariIni.getTime() - tglTerakhir.getTime()) / (1000*60*60*24));
+  }
+  if(selisihHari >= 7){
+    alertEl.style.display = 'flex';
+    const badgeEl = document.getElementById('rppBadge');
+    if(badgeEl){
+      if(!tglTerakhir) badgeEl.textContent = 'Belum pernah';
+      else badgeEl.textContent = selisihHari + ' hari';
+    }
+  } else {
+    alertEl.style.display = 'none';
+  }
+}
+
+/* ============================================================
+   SUB-MENU RPPH/RPPM
+   ============================================================ */
+function toggleSubmenuRPPH(event){
+  if(event) event.stopPropagation();
+  const card = document.getElementById('cardRPPH');
+  const submenu = document.getElementById('submenuRPPH');
+  const isOpen = submenu.classList.contains('show');
+  if(isOpen){
+    submenu.classList.remove('show');
+    card.classList.remove('expanded');
+  } else {
+    submenu.classList.add('show');
+    card.classList.add('expanded');
+  }
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function logout(){
+  if(confirm('Yakin ingin keluar?')){
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+updateGreeting();
+cekRPPM();
+setInterval(updateGreeting, 60000);
+setInterval(cekRPPM, 300000);
+
+if(location.hash === '#rpph'){
+  setTimeout(function(){
+    const card = document.getElementById('cardRPPH');
+    const submenu = document.getElementById('submenuRPPH');
+    if(card && submenu){
+      submenu.classList.add('show');
+      card.classList.add('expanded');
+    }
+  }, 150);
+}
+
+document.addEventListener('click', function(e){
+  const submenu = document.getElementById('submenuRPPH');
+  const card = document.getElementById('cardRPPH');
+  if(!submenu || !card) return;
+  if(!submenu.classList.contains('show')) return;
+  if(submenu.contains(e.target) || card.contains(e.target)) return;
+  submenu.classList.remove('show');
+  card.classList.remove('expanded');
+});
+
+console.log('✅ guru.html loaded (pakai panggilan.js + 17 ornamen + hover glow + auto-update)');
+
+/* ============================================================
+   SERVICE WORKER REGISTER + AUTO-UPDATE CHECKER
+   ============================================================ */
+(function autoUpdateChecker(){
+  const VERSI_KEY = 'siagra_versi_terakhir';
+  const CEK_INTERVAL = 60 * 1000; // 60 detik
+
+  // 1. Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').then(reg => {
+      reg.update().catch(() => {});
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        if (!newSW) return;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('🔄 Versi baru terdeteksi — reload...');
+            newSW.postMessage('SKIP_WAITING');
+            setTimeout(() => location.reload(), 500);
+          }
+        });
+      });
+    }).catch(() => {});
+  }
+
+  // 2. Cek versi file via HEAD request
+  async function cekVersi(){
+    try {
+      const urlFile = location.pathname;
+      const res = await fetch(urlFile + '?v=' + Date.now(), {
+        method: 'HEAD',
+        cache: 'no-store'
+      });
+      const etag = res.headers.get('ETag') || res.headers.get('Last-Modified') || '';
+      const versiLama = localStorage.getItem(VERSI_KEY + ':' + urlFile);
+
+      if (etag && versiLama && etag !== versiLama) {
+        console.log('🆕 Versi file berubah — reload...');
+        localStorage.setItem(VERSI_KEY + ':' + urlFile, etag);
+        location.reload();
+      } else if (etag) {
+        localStorage.setItem(VERSI_KEY + ':' + urlFile, etag);
+      }
+    } catch(e){ /* offline → abaikan */ }
+  }
+
+  // 3. Cek saat tab kembali aktif
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') cekVersi();
+  });
+
+  // 4. Cek berkala
+  setInterval(cekVersi, CEK_INTERVAL);
+
+  // 5. Cek pertama kali
+  setTimeout(cekVersi, 3000);
+
+  console.log('✅ Auto-update checker aktif');
+})();
+</script>
+
+</body>
+</html>
