@@ -174,25 +174,25 @@
       </div>
     </div>
 
-    <!-- GRAFIK GARIS (LINE CHART) MIRIP EXCEL -->
+    <!-- GRAFIK GARIS (LINE CHART) DENGAN EFEK GLOW -->
     <div class="table-wrap" style="padding: 20px 20px 30px 20px;">
       <div class="card-title" style="font-size:15px; font-weight:800; color:var(--yellow); margin-bottom:20px; text-align:center; display:block;">
         📊 Grafik Penerimaan & Kelulusan Siswa
         <div style="font-size:12px; color:var(--sub); font-weight:600; margin-top:4px;">RA MAZKIRA IMANI - BARITO KUALA</div>
       </div>
       
-      <div style="position:relative; width:100%; height:300px; background:var(--card-inner); border-radius:12px; border:1px solid var(--border); padding:10px; overflow:hidden;">
-        <svg id="chartSvg" width="100%" height="100%" viewBox="0 0 800 300" preserveAspectRatio="none"></svg>
+      <div style="position:relative; width:100%; height:320px; background:var(--card-inner); border-radius:12px; border:1px solid var(--border); padding:10px; overflow:hidden;">
+        <svg id="chartSvg" width="100%" height="100%" viewBox="0 0 800 320" preserveAspectRatio="none"></svg>
       </div>
 
       <!-- Legenda -->
       <div style="display:flex; justify-content:center; gap:24px; margin-top:16px; font-size:12px; font-weight:700;">
         <div style="display:flex; align-items:center; gap:8px;">
-          <span style="display:inline-block; width:16px; height:4px; background:#4ADE80; border-radius:2px;"></span>
+          <span style="display:inline-block; width:16px; height:4px; background:#4ADE80; border-radius:2px; box-shadow: 0 0 8px #4ADE80;"></span>
           <span style="color:var(--text);">PENERIMAAN</span>
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
-          <span style="display:inline-block; width:16px; height:4px; background:#60A5FA; border-radius:2px;"></span>
+          <span style="display:inline-block; width:16px; height:4px; background:#60A5FA; border-radius:2px; box-shadow: 0 0 8px #60A5FA;"></span>
           <span style="color:var(--text);">KELULUSAN</span>
         </div>
       </div>
@@ -295,7 +295,7 @@ async function loadStatistik(){
   tbody.innerHTML = '<tr><td colspan="5" class="empty">⏳ Memuat data dari database...</td></tr>';
 
   // Ambil data dari tabel 'alumni' di Supabase
-  const { data, error } = await sb.from('alumni').select('*').order('tahun', { ascending: true }); // Ascending untuk grafik
+  const { data, error } = await sb.from('alumni').select('*').order('tahun', { ascending: true });
 
   if(error){
     tbody.innerHTML = `<tr><td colspan="5" class="empty">❌ Gagal memuat: ${error.message}</td></tr>`;
@@ -306,7 +306,7 @@ async function loadStatistik(){
   semuaData = data || [];
   hitungKPI();
   renderGrafik();
-  renderTabel([...semuaData].reverse()); // Tabel descending (terbaru di atas)
+  renderTabel([...semuaData].reverse()); 
 }
 
 function hitungKPI(){
@@ -324,87 +324,97 @@ function renderGrafik(){
   if(!svg) return;
   svg.innerHTML = '';
 
-  // Ambil data (maksimal 8 tahun terakhir agar tidak terlalu padat)
+  // Ambil data (maksimal 8 tahun terakhir)
   const dataGrafik = semuaData.slice(-8); 
   if(dataGrafik.length === 0){
     svg.innerHTML = '<text x="400" y="150" fill="#94A3B8" font-size="14" text-anchor="middle">Belum ada data grafik</text>';
     return;
   }
 
-  // Dimensi SVG (ViewBox 800x300)
+  // Dimensi SVG (ViewBox 800x320)
   const width = 800;
-  const height = 300;
+  const height = 320;
   const padding = { top: 30, right: 30, bottom: 40, left: 50 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
 
-  // Cari nilai maksimum untuk skala Y (dibulatkan ke atas ke kelipatan 10)
   const allValues = dataGrafik.flatMap(d => [parseInt(d.masuk) || 0, parseInt(d.lulus) || 0]);
   const maxValRaw = Math.max(...allValues, 10);
-  const maxVal = Math.ceil(maxValRaw / 10) * 10; // Skala maksimal (misal 50, 60)
+  const maxVal = Math.ceil(maxValRaw / 10) * 10; 
   
   const yScale = chartH / maxVal;
   const xStep = chartW / (dataGrafik.length - 1 || 1);
 
   // --- 1. GAMBAR GRID & LABEL Y ---
-  const steps = 5;
+  const steps = 6; // Diperbanyak agar lebih detail
   let gridHtml = '';
   for(let i = 0; i <= steps; i++) {
     const val = Math.round((maxVal / steps) * i);
     const y = padding.top + chartH - (val * yScale);
     
-    // Garis grid horizontal
-    gridHtml += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1" />`;
-    
-    // Label Sumbu Y
+    gridHtml += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" stroke-dasharray="4" />`;
     gridHtml += `<text x="${padding.left - 10}" y="${y + 4}" fill="#94A3B8" font-size="11" font-weight="bold" text-anchor="end">${val}</text>`;
   }
 
-  // --- 2. GAMBAR DATA (GARIS & TITIK) ---
+  // --- 2. GAMBAR DATA (GARIS & KOTAK ANGKA) ---
   let pathMasuk = '';
   let pathLulus = '';
-  let dotsHtml = '';
+  let boxHtml = '';
   let labelsX = '';
   
   dataGrafik.forEach((d, i) => {
     const valMasuk = parseInt(d.masuk) || 0;
     const valLulus = parseInt(d.lulus) || 0;
     
-    // Koordinat titik (x, y)
     const x = padding.left + (i * xStep);
     const yMasuk = padding.top + chartH - (valMasuk * yScale);
     const yLulus = padding.top + chartH - (valLulus * yScale);
     
-    // Bentuk string path garis
     pathMasuk += (i === 0 ? 'M' : 'L') + `${x},${yMasuk} `;
     pathLulus += (i === 0 ? 'M' : 'L') + `${x},${yLulus} `;
 
-    // Titik (Dot) dan Label Angka Penerimaan (Warna Hijau)
-    dotsHtml += `<circle cx="${x}" cy="${yMasuk}" r="4" fill="#4ADE80" stroke="var(--card)" stroke-width="2" />`;
-    dotsHtml += `<text x="${x}" y="${yMasuk - 10}" fill="#4ADE80" font-size="11" font-weight="900" text-anchor="middle">${valMasuk}</text>`;
+    // Kotak Angka Penerimaan (Hijau)
+    boxHtml += `
+      <rect x="${x - 12}" y="${yMasuk - 12}" width="24" height="20" rx="4" fill="#4ADE80" />
+      <text x="${x}" y="${yMasuk + 2}" fill="#ffffff" font-size="12" font-weight="900" text-anchor="middle">${valMasuk}</text>
+    `;
     
-    // Titik (Dot) dan Label Angka Kelulusan (Warna Biru)
-    dotsHtml += `<circle cx="${x}" cy="${yLulus}" r="4" fill="#60A5FA" stroke="var(--card)" stroke-width="2" />`;
-    dotsHtml += `<text x="${x}" y="${yLulus + 16}" fill="#60A5FA" font-size="11" font-weight="900" text-anchor="middle">${valLulus}</text>`;
+    // Kotak Angka Kelulusan (Biru)
+    boxHtml += `
+      <rect x="${x - 12}" y="${yLulus - 12}" width="24" height="20" rx="4" fill="#60A5FA" />
+      <text x="${x}" y="${yLulus + 2}" fill="#ffffff" font-size="12" font-weight="900" text-anchor="middle">${valLulus}</text>
+    `;
 
-    // Label Sumbu X (Tahun)
+    // Label Sumbu X
     const tahunLabel = d.tahun ? d.tahun : '-'; 
     labelsX += `<text x="${x}" y="${height - 15}" fill="#94A3B8" font-size="10" font-weight="bold" text-anchor="middle">${tahunLabel}</text>`;
   });
 
   // --- 3. RENDER KE DALAM SVG ---
   svg.innerHTML = `
-    <!-- Grid -->
+    <defs>
+      <!-- Filter Efek Glow Hijau -->
+      <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+      <!-- Filter Efek Glow Biru -->
+      <filter id="glow-blue" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+
     ${gridHtml}
     
-    <!-- Garis Penerimaan (Hijau) -->
-    <path d="${pathMasuk}" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Garis Penerimaan (Hijau) Menyala -->
+    <path d="${pathMasuk}" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-green)" />
     
-    <!-- Garis Kelulusan (Biru) -->
-    <path d="${pathLulus}" fill="none" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Garis Kelulusan (Biru) Menyala -->
+    <path d="${pathLulus}" fill="none" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-blue)" />
     
-    <!-- Titik & Angka -->
-    ${dotsHtml}
+    <!-- Kotak & Angka -->
+    ${boxHtml}
     
     <!-- Label X (Tahun) -->
     ${labelsX}
