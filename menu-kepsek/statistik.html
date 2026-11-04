@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="logo-siagra.png">
+<title>SIAGRA - Statistik Alumni</title>
+<meta name="theme-color" content="#1E3A8A">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0A0A0A; --card:#0F1A3A; --card-inner:#0A0F26;
+    --text:#F1F5F9; --sub:#94A3B8; --border:#1E3A8A;
+    --primary:#3B82F6; --primary-dark:#1E40AF;
+    --accent:#60A5FA; --success:#4ADE80; --danger:#F87171;
+    --yellow:#FCD34D;
+  }
+  body.light{
+    --bg:#F0F4FF; --card:#FFFFFF; --card-inner:#F8FAFF;
+    --text:#1E293B; --sub:#64748B; --border:#BFDBFE;
+    --primary:#3B82F6; --primary-dark:#1E40AF;
+    --accent:#2563EB; --success:#059669; --danger:#DC2626;
+    --yellow:#D97706;
+  }
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg); background-image:radial-gradient(circle at 10% 10%, rgba(30,58,138,.25) 0%, transparent 40%),radial-gradient(circle at 90% 20%, rgba(59,130,246,.15) 0%, transparent 40%);
+    background-attachment:fixed; min-height:100vh; color:var(--text);
+    transition:background .3s,color .3s; font-size:15px; line-height:1.5;
+  }
+
+  /* HEADER */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:linear-gradient(135deg,#1E3A8A,#0F1A3A); color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6); border-bottom:2px solid #3B82F6;gap:12px;
+  }
+  .header-left h1{font-size:17px;color:#FCD34D;font-weight:800;}
+  .header-center{flex:1;display:flex;justify-content:center}
+  .jam-box{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1.5px solid rgba(59,130,246,.5);color:#fff;padding:8px 18px;border-radius:100px;font-size:12.5px;font-weight:700;white-space:nowrap;}
+  .header-right{display:flex;gap:8px;align-items:center}
+  .header-right button.logout{background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;transition:all .2s;}
+  .header-right button.logout:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(239,68,68,.5);}
+  .theme-toggle{background:rgba(255,255,255,.1);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer;}
+
+  /* WRAPPER */
+  .wrapper{max-width:1280px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;}
+  
+  /* PROFIL KIRI */
+  .profile-card{background:var(--card);border-radius:16px;border:2px solid var(--border);box-shadow:0 0 25px rgba(59,130,246,.25);overflow:hidden;}
+  .profile-card-header{padding:20px;text-align:center;border-bottom:1px dashed var(--border);background:rgba(30,58,138,.35);}
+  .profile-photo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1E3A8A,#3B82F6);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#F1F5F9;margin:0 auto 12px;border:3px solid var(--accent);}
+  .profile-card-header h2{font-size:14.5px;font-weight:800;color:var(--text);}
+  .profile-card-header .jabatan-badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:10.5px;font-weight:700;background:rgba(96,165,250,.25);color:#93C5FD;margin-bottom:6px;}
+  .profile-card-body{padding:14px 18px;}
+  .info-item{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;background:var(--card-inner);border:1px solid var(--border);border-radius:8px;font-size:11.5px;margin-bottom:6px;}
+  .info-item .lbl{color:var(--sub);font-weight:600;}
+  .info-item .val{color:var(--text);font-weight:700;text-align:right;}
+
+  /* KONTEN KANAN */
+  .col-menu{min-width:0;}
+  .intro-card{background:linear-gradient(135deg,#1E3A8A,#2563EB 60%,#60A5FA);color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px;border:2px solid rgba(191,219,254,.5);box-shadow:0 10px 30px rgba(59,130,246,.45);}
+  .intro-card h2{font-size:20px;font-weight:800;margin-bottom:6px;}
+  .intro-card p{font-size:13px;font-weight:600;opacity:.95;}
+
+  .form-header-inline{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:12px;}
+  .form-title-text{font-size:16px;font-weight:800;color:var(--yellow);}
+  .btn-back-inline{background:var(--card);color:var(--text);border:2px solid var(--border);padding:9px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;}
+  .btn-back-inline:hover{background:var(--primary-dark);color:#fff;}
+
+  /* KARTU STATISTIK */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px;}
+  .kpi{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px;text-align:center;position:relative;overflow:hidden;transition:transform .25s;}
+  .kpi:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(59,130,246,.25);}
+  .kpi .kpi-icon{font-size:28px;margin-bottom:6px;}
+  .kpi .kpi-value{font-size:30px;font-weight:900;line-height:1;color:var(--yellow);margin-bottom:4px;}
+  .kpi .kpi-label{font-size:11px;font-weight:700;color:#93C5FD;text-transform:uppercase;}
+  body.light .kpi .kpi-label{color:#1E40AF;}
+
+  /* TABLE WRAP */
+  .table-wrap{background:var(--card);border-radius:14px;border:2px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,.3);overflow:hidden;margin-bottom:18px;}
+  .table-head{padding:14px 18px;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .table-head h3{font-size:14px;font-weight:800;color:var(--yellow);}
+  .search-input{padding:9px 13px;background:var(--card-inner);border:1.5px solid var(--border);border-radius:10px;font-size:13px;color:var(--text);outline:none;min-width:200px;}
+
+  .data-table{width:100%;border-collapse:collapse;font-size:12px;min-width:600px;}
+  .data-table thead{background:rgba(59,130,246,.15);}
+  .data-table th{padding:11px 10px;text-align:left;font-weight:800;font-size:10.5px;text-transform:uppercase;color:var(--yellow);border-bottom:1.5px solid rgba(96,165,250,.3);white-space:nowrap;}
+  .data-table td{padding:10px;color:var(--text);vertical-align:middle;border-top:1px solid rgba(96,165,250,.15);}
+  .data-table tr:hover td{background:rgba(59,130,246,.05);}
+  .data-table .empty{text-align:center;padding:40px 20px;color:#93C5FD;font-style:italic;}
+
+  /* CHART BAR SEDERHANA */
+  .chart-container{display:flex;align-items:flex-end;gap:12px;height:200px;padding:20px;background:var(--card-inner);border-radius:12px;border:1px solid var(--border);overflow-x:auto;}
+  .chart-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;min-width:40px;height:100%;justify-content:flex-end;}
+  .chart-bar{width:100%;background:linear-gradient(135deg,#3B82F6,#1E40AF);border-radius:4px 4px 0 0;transition:height .5s ease;position:relative;}
+  .chart-bar:hover{filter:brightness(1.2);}
+  .chart-label{font-size:10px;color:var(--sub);font-weight:700;margin-top:6px;white-space:nowrap;}
+  .chart-value{font-size:11px;color:var(--yellow);font-weight:800;margin-bottom:4px;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1E3A8A;color:#fff;padding:13px 24px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 20px 40px rgba(0,0,0,.5);opacity:0;transition:all .3s;z-index:99999;}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+  .toast.success{background:linear-gradient(135deg,#065F46,#047857);}
+  .toast.error{background:linear-gradient(135deg,#7F1D1D,#B91C1C);}
+
+  @media(max-width:900px){.wrapper{grid-template-columns:1fr;}}
+  @media(max-width:640px){.header{flex-wrap:wrap;}.header-center{order:3;flex:1 1 100%;}.wrapper{padding:16px 12px;}}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left"><h1>Halaman Kepala Sekolah</h1></div>
+  <div class="header-center">
+    <div class="jam-box"><span id="liveClock">Memuat...</span></div>
+  </div>
+  <div class="header-right">
+    <button class="logout" onclick="logout()">Keluar</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<!-- WRAPPER -->
+<div class="wrapper">
+
+  <!-- KOLOM KIRI: PROFIL -->
+  <div class="col-profil">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+      </div>
+      <div class="profile-card-body" id="profileBody">
+        <div class="info-item"><span class="lbl">Peran</span><span class="val">Kepala Sekolah</span></div>
+        <div class="info-item"><span class="lbl">Status</span><span class="val">Aktif</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: STATISTIK -->
+  <div class="col-menu">
+    
+    <!-- INTRO CARD -->
+    <div class="intro-card">
+      <h2>📈 Statistik Alumni</h2>
+      <p>Pantau rekapitulasi data siswa masuk dan lulusan per tahun ajaran secara langsung dari database.</p>
+    </div>
+
+    <!-- JUDUL & TOMBOL KEMBALI -->
+    <div class="form-header-inline">
+      <div class="form-title-text">📊 Data Statistik</div>
+      <a class="btn-back-inline" href="../kepsek.html">← Kembali ke Menu</a>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-value" id="kpiTahun">0</div>
+        <div class="kpi-label">Tahun Tercatat</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">📥</div>
+        <div class="kpi-value" id="kpiMasuk">0</div>
+        <div class="kpi-label">Total Masuk</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">🎉</div>
+        <div class="kpi-value" id="kpiLulus">0</div>
+        <div class="kpi-label">Total Lulusan</div>
+      </div>
+    </div>
+
+    <!-- GRAFIK SEDERHANA -->
+    <div class="table-wrap" style="padding:16px;">
+      <div class="card-title" style="font-size:14px; font-weight:800; color:var(--yellow); margin-bottom:12px;">📊 Grafik Lulusan per Tahun</div>
+      <div class="chart-container" id="chartContainer">
+        <!-- Diisi via JS -->
+      </div>
+    </div>
+
+    <!-- TABEL DATA -->
+    <div class="table-wrap">
+      <div class="table-head">
+        <h3>📋 Rekap Data Alumni</h3>
+        <input type="text" class="search-input" id="searchStatistik" placeholder="🔍 Cari tahun..." oninput="filterTabel()">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table" id="tblStatistik">
+          <thead>
+            <tr>
+              <th style="width:40px">No</th>
+              <th>Tahun Ajaran</th>
+              <th style="width:100px">Masuk</th>
+              <th style="width:100px">Lulus</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyStatistik">
+            <tr><td colspan="5" class="empty">⏳ Memuat data dari database...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">✨</div>
+
+<script type="module">
+/* ============================================================
+   KONEKSI SUPABASE
+   ============================================================ */
+const URL_SUPABASE = "https://nkothmxdwpkptuvzunkb.supabase.co";
+const KEY_SUPABASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rb3RobXhkd3BrcHR1dnp1bmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTI2NDMsImV4cCI6MjEwNjQ2ODY0M30.h1_TsMUsoiG45RWrZ5t7gY3r-KgGV230czfj0yM-GAY";
+const { createClient } = supabase;
+const sb = createClient(URL_SUPABASE, KEY_SUPABASE);
+
+// Cek Login
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if(!user || user.role !== 'kepala'){
+  alert('Anda harus login sebagai Kepala Sekolah!');
+  window.location.href = '../index.html';
+}
+
+// Tampilkan Profil Sederhana
+document.getElementById('profileNama').textContent = user.nama;
+document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
+document.getElementById('profilePhoto').textContent = user.nama.charAt(0).toUpperCase();
+
+/* ============================================================
+   TOAST & THEME
+   ============================================================ */
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type||'');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('light', theme === 'light');
+  document.getElementById('themeBtn').textContent = theme === 'light' ? '🌙' : '☀️';
+}
+function toggleTheme(){
+  const cur = localStorage.getItem('theme') || 'dark';
+  localStorage.setItem('theme', cur === 'dark' ? 'light' : 'dark');
+  applyTheme();
+}
+applyTheme();
+
+/* ============================================================
+   JAM WITA
+   ============================================================ */
+function updateClock(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const wita = new Date(utc + (8 * 3600000));
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + String(wita.getHours()).padStart(2,'0') + '.' + String(wita.getMinutes()).padStart(2,'0') + ' WITA';
+  document.getElementById('liveClock').textContent = teks;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   AMBIL & RENDER DATA DARI SUPABASE
+   ============================================================ */
+let semuaData = [];
+
+async function loadStatistik(){
+  const tbody = document.getElementById('tbodyStatistik');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty">⏳ Memuat data dari database...</td></tr>';
+
+  // Ambil data dari tabel 'alumni' di Supabase
+  const { data, error } = await sb.from('alumni').select('*').order('tahun', { ascending: false });
+
+  if(error){
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">❌ Gagal memuat: ${error.message}</td></tr>`;
+    showToast('❌ Gagal memuat data', 'error');
+    return;
+  }
+
+  semuaData = data || [];
+  hitungKPI();
+  renderGrafik();
+  renderTabel(semuaData);
+}
+
+function hitungKPI(){
+  const totalTahun = semuaData.length;
+  const totalMasuk = semuaData.reduce((sum, d) => sum + (parseInt(d.masuk) || 0), 0);
+  const totalLulus = semuaData.reduce((sum, d) => sum + (parseInt(d.lulus) || 0), 0);
+
+  document.getElementById('kpiTahun').textContent = totalTahun;
+  document.getElementById('kpiMasuk').textContent = totalMasuk;
+  document.getElementById('kpiLulus').textContent = totalLulus;
+}
+
+function renderGrafik(){
+  const container = document.getElementById('chartContainer');
+  container.innerHTML = '';
+
+  // Ambil 5 tahun terbaru untuk grafik
+  const dataGrafik = semuaData.slice(0, 5).reverse(); 
+  if(dataGrafik.length === 0){
+    container.innerHTML = '<div style="text-align:center;width:100%;color:var(--sub);font-size:12px;">Belum ada data grafik</div>';
+    return;
+  }
+
+  const maxLulus = Math.max(...dataGrafik.map(d => parseInt(d.lulus) || 0), 1);
+
+  dataGrafik.forEach(d => {
+    const val = parseInt(d.lulus) || 0;
+    const tinggi = (val / maxLulus) * 100;
+    
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-bar-wrap';
+    wrap.innerHTML = `
+      <div class="chart-value">${val}</div>
+      <div class="chart-bar" style="height: ${tinggi}%;"></div>
+      <div class="chart-label">${d.tahun}</div>
+    `;
+    container.appendChild(wrap);
+  });
+}
+
+function renderTabel(data){
+  const tbody = document.getElementById('tbodyStatistik');
+  if(data.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">📭 Belum ada data alumni</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map((d, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td style="font-weight:800">${d.tahun || '-'}</td>
+      <td><span style="color:#4ADE80;font-weight:800">📥 ${parseInt(d.masuk) || 0}</span></td>
+      <td><span style="color:#FCD34D;font-weight:800">🎉 ${parseInt(d.lulus) || 0}</span></td>
+      <td>${d.keterangan ? d.keterangan : '-'}</td>
+    </tr>
+  `).join('');
+}
+
+function filterTabel(){
+  const keyword = document.getElementById('searchStatistik').value.toLowerCase().trim();
+  if(!keyword){
+    renderTabel(semuaData);
+    return;
+  }
+  const filtered = semuaData.filter(d => (d.tahun || '').toLowerCase().includes(keyword));
+  renderTabel(filtered);
+}
+
+// Logout
+window.logout = function(){
+  if(confirm('Yakin ingin keluar?')){
+    localStorage.removeItem('user');
+    window.location.href = '../index.html';
+  }
+};
+
+// Jalankan
+loadStatistik();
+
+</script>
+</body>
+</html>
