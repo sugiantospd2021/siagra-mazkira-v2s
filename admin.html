@@ -1597,8 +1597,8 @@ async function renderKelas(){
     const namaUtama = getNamaGuru(k.guru_utama_id);
     const namaPendamping = getNamaGuru(k.guru_pendamping_id);
     return `<tr>
-      <td><span class="badge-rombel ${rombelClass}">${escapeHtml(rombel)}</span></td>
-      <td>${escapeHtml(k.kelompok || '-')}</td>
+  <td>${escapeHtml(k.kelompok || '-')}</td>
+  <td><span class="badge-rombel ${rombelClass}">${escapeHtml(rombel)}</span></td>
       <td>${namaUtama ? escapeHtml(namaUtama) : '<em style="opacity:.5">-</em>'}</td>
       <td>${namaPendamping ? escapeHtml(namaPendamping) : '<em style="opacity:.5">—</em>'}</td>
       <td>${escapeHtml(k.ta || '-')}</td>
@@ -1608,7 +1608,7 @@ async function renderKelas(){
       </div></td>
     </tr>`;
   }).join('');
-  container.innerHTML = `<table><thead><tr><th>Rombel</th><th>Kelompok</th><th>Guru Utama</th><th>Guru Pendamping</th><th>Tahun Ajaran</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table>`;
+  container.innerHTML = `<table><thead><tr><th>Kelompok</th><th>Rombel</th><th>Guru Utama</th><th>Guru Pendamping</th><th>Tahun Ajaran</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 async function refreshDaftarGuruDropdown(){
   const { data: guruList } = await sb.from('guru').select('id, nama, jabatan').order('nama');
