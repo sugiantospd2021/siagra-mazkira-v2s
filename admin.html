@@ -1807,18 +1807,18 @@ function parseTglSuper(str){
   let s = String(str).replace(/\s+/g, ' ').trim();
   if(!s || s === '-' || s === 'null') return null;
 
-  // 1. Format YYYY-MM-DD (Tahun-Bulan-Tanggal)
+  // 1. Jika format YYYY-MM-DD (standar database)
   if(/^\d{4}-\d{2}-\d{2}/.test(s)) {
       return s.substring(0, 10);
   }
 
-  // 2. Format DD-MM-YYYY (Tanggal-Bulan-Tahun) dari Excel Anda
+  // 2. Jika format DD-MM-YYYY dari Excel Anda
   let match = s.match(/^(\d{1,2})[\s\-\/\.]+(\d{1,2})[\s\-\/\.]+(\d{4})$/);
   if(match){
     let d = match[1].padStart(2, '0');
     let m = match[2].padStart(2, '0');
     let y = match[3];
-    return `${y}-${m}-${d}`; // Ubah ke format database YYYY-MM-DD
+    return `${y}-${m}-${d}`; 
   }
 
   return null;
