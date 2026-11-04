@@ -1804,13 +1804,30 @@ async function hapusAlumni(id){
    ============================================================ */
 function parseTglSuper(str){
   if(!str) return null;
-  let s = String(str).replace(/\s+/g, ' ').trim().toLowerCase();
+  let s = String(str).replace(/\s+/g, ' ').trim();
   if(!s || s === '-' || s === 'null') return null;
 
-  // Jika formatnya YYYY-MM-DD HH:MM:SS, ambil YYYY-MM-DD saja
+  // 1. Format YYYY-MM-DD (dengan atau tanpa jam)
   if(/^\d{4}-\d{2}-\d{2}/.test(s)) {
       return s.substring(0, 10);
   }
+
+  // 2. Format Angka Serial Excel
+  if(/^\d+(\.\d+)?$/.test(s)){
+    const num = parseFloat(s);
+    if(num > 20000 && num < 50000){
+      const dt = new Date(Date.UTC(1899, 11, 30) + num * 86400000);
+      if(!isNaN(dt)) return dt.toISOString().split('T')[0];
+    }
+  }
+
+  // 3. Format DD/MM/YYYY
+  let match = s.match(/^(\d{1,2})[\s\-\/\.]+(\d{1,2})[\s\-\/\.]+(\d{4})$/);
+  if(match){
+    let p1 = match[1], p2 = match[2], y = match[3];
+    return `${y}-${p2.padStart(2,'0')}-${p1.padStart(2,'0')}`;
+  }
+
   return null;
 }
 function parseRombelSuper(str){
