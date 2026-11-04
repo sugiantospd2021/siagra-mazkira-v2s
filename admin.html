@@ -1295,8 +1295,10 @@ async function renderAnak(){
     const jkClass = a.jk === 'L' ? 'jk-l' : 'jk-p';
     const rombel = a.rombel || a.kelompok || '';
     const rombelClass = getRombelClass(rombel);
+    // PERBAIKAN: Menambahkan kolom NIK tepat setelah Nama
     return `<tr>
       <td class="cell-nama">${escapeHtml(a.nama)}</td>
+      <td>${a.nik ? escapeHtml(a.nik) : '-'}</td>
       <td>${a.nisn ? escapeHtml(a.nisn) : '-'}</td>
       <td>${a.nis_lokal ? escapeHtml(a.nis_lokal) : '-'}</td>
       <td><span class="cell-jk ${jkClass}">${jkLabel}</span></td>
@@ -1309,7 +1311,8 @@ async function renderAnak(){
       </div></td>
     </tr>`;
   }).join('');
-  container.innerHTML = `<table><thead><tr><th>Nama</th><th>NISN</th><th>NIS Lokal</th><th>JK</th><th>Tempat Lahir</th><th>Tgl Lahir</th><th>Rombel</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table>`;
+  // PERBAIKAN: Menambahkan kolom NIK di Header Tabel
+  container.innerHTML = `<table><thead><tr><th>Nama</th><th>NIK</th><th>NISN</th><th>NIS Lokal</th><th>JK</th><th>Tempat Lahir</th><th>Tgl Lahir</th><th>Rombel</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function refreshDataAnak(){ renderAnak(); renderProfilAdmin(); showToast('🔄 Data siswa diperbarui', 'success'); }
 
@@ -2311,3 +2314,4 @@ window.updateLamaMengajar = updateLamaMengajar;
 
 </body>
 </html>
+
