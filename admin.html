@@ -604,8 +604,7 @@
           <div style="font-size:14px;font-weight:800;color:var(--text)" id="txtBackupTerakhir">Belum pernah backup</div>
         </div>
       </div>
-      <div class="menu-section-title" style="margin-top:20px">📊 Statistik Data Saat Ini</div>
-      <div id="statistikBackup" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px"></div>
+     
       <div class="menu-section-title">💾 Aksi Backup</div>
       <div class="btn-group" style="margin-bottom:14px">
         <button class="btn btn-add" onclick="exportBackupJSON()">💾 Download Backup (JSON)</button>
@@ -1216,8 +1215,7 @@ function openPanel(name){
   if(name === 'kelas') renderKelas();
   if(name === 'alumni') renderAlumni();
   if(name === 'password') muatDaftarEmail();
-  if(name === 'backup') renderStatistikBackup();
-  window.scrollTo({top:0, behavior:'smooth'});
+    window.scrollTo({top:0, behavior:'smooth'});
 }
 function backToMenu(){
   document.querySelectorAll('.panel-view').forEach(p => p.classList.remove('active'));
@@ -2009,30 +2007,7 @@ async function konfirmasiHapusSemua(){
    BACKUP & RESTORE
    ============================================================ */
 const KEY_BACKUP_TERAKHIR = 'ra_backup_terakhir';
-function renderStatistikBackup(){
-  const statBox = document.getElementById('statistikBackup');
-  if(!statBox) return;
-  const anakList = JSON.parse(localStorage.getItem('ra_siswa_cache') || localStorage.getItem('ra_anak_cache') || '[]');
-  const guruList = JSON.parse(localStorage.getItem('ra_guru_cache') || '[]');
-  const tendikList = JSON.parse(localStorage.getItem('ra_tendik_cache') || '[]');
-  const kelasList = JSON.parse(localStorage.getItem('ra_kelas_cache') || '[]');
-  const alumniList = JSON.parse(localStorage.getItem('ra_alumni_cache') || '[]');
-  statBox.innerHTML = `
-    <div class="backup-stat-card"><div class="bs-icon">👶</div><div class="bs-value" style="color:#FCA5A5">${anakList.length}</div><div class="bs-label">Siswa</div></div>
-    <div class="backup-stat-card"><div class="bs-icon">🧑‍🏫</div><div class="bs-value" style="color:#6EE7B7">${guruList.length}</div><div class="bs-label">Guru</div></div>
-    <div class="backup-stat-card"><div class="bs-icon">🧑‍💼</div><div class="bs-value" style="color:#FCD34D">${tendikList.length}</div><div class="bs-label">Tendik</div></div>
-    <div class="backup-stat-card"><div class="bs-icon">🏫</div><div class="bs-value" style="color:#C4B5FD">${kelasList.length}</div><div class="bs-label">Rombel</div></div>
-    <div class="backup-stat-card"><div class="bs-icon">🎓</div><div class="bs-value" style="color:#93C5FD">${alumniList.length}</div><div class="bs-label">Alumni</div></div>`;
-  const txtBackup = document.getElementById('txtBackupTerakhir');
-  if(txtBackup){
-    const terakhir = localStorage.getItem(KEY_BACKUP_TERAKHIR);
-    if(terakhir){
-      const d = new Date(terakhir);
-      const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
-      txtBackup.textContent = d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear() + ' • ' + String(d.getHours()).padStart(2,'0') + '.' + String(d.getMinutes()).padStart(2,'0');
-    }
-  }
-}
+
 async function exportBackupJSON(){
   try{
     const { data: siswa } = await sb.from('siswa').select('*');
