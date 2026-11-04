@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/png" href="logo-siagra.png">
@@ -1589,6 +1590,7 @@
 <script src="../menu-context.js"></script>
 
 <script>
+
 /* ============================================================
    KONFIGURASI STORAGE
    ============================================================ */
@@ -1696,6 +1698,65 @@ updateClock();
 setInterval(updateClock, 1000);
 
 const user = JSON.parse(localStorage.getItem('user') || 'null');
+// KONEKSI SUPABASE UNTUK HALAMAN GURU
+const URL_SUPABASE = "https://nkothmxdwpkptuvzunkb.supabase.co";
+const KEY_SUPABASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rb3RobXhkd3BrcHR1dnp1bmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTI2NDMsImV4cCI6MjEwNjQ2ODY0M30.h1_TsMUsoiG45RWrZ5t7gY3r-KgGV230czfj0yM-GAY";
+const { createClient } = supabase;
+const sb = createClient(URL_SUPABASE, KEY_SUPABASE);
+
+// Fungsi untuk menarik data dari Supabase dan menyimpannya ke localStorage
+async function sinkronDataDariSupabase() {
+  try {
+    // 1. Ambil Data Guru & Tendik
+    const { data: guruList } = await sb.from('guru').select('*');
+    const { data: tendikList } = await sb.from('tendik').select('*');
+    if (guruList) localStorage.setItem('ra_guru', JSON.stringify(guruList));
+    if (tendikList) localStorage.setItem('ra_tendik', JSON.stringify(tendikList));
+
+    // 2. Ambil Data Siswa
+    const { data: siswaList } = await sb.from('siswa').select('*');
+    if (siswaList) {
+      // Sesuaikan format data siswa (Admin pakai 'nama', Guru butuh 'nama')
+      const formattedSiswa = siswaList.map(s => ({
+        ...s,
+        id: s.id, // Pastikan ID ada
+        nama: s.nama,
+        kelompok: s.rombel || s.kelompok,
+        rombel: s.rombel || s.kelompok
+      }));
+      localStorage.setItem('ra_anak', JSON.stringify(formattedSiswa));
+    }
+
+    // 3. Ambil Data Kelas (Rombel)
+    const { data: kelasList } = await sb.from('kelas').select('*');
+    if (kelasList) {
+      // Format ulang agar sesuai dengan yang dibaca oleh fungsi cariRombelGuruLogin()
+      const formattedKelas = kelasList.map(k => ({
+        id: k.id,
+        nama: k.rombel,
+        rombel: k.rombel,
+        kelompok: k.kelompok,
+        guruUtamaId: k.guru_utama_id, // Sesuaikan dengan nama kolom di Supabase
+        guruPendampingIds: k.guru_pendamping_id ? [k.guru_pendamping_id] : [],
+        ta: k.ta
+      }));
+      localStorage.setItem('ra_kelas', JSON.stringify(formattedKelas));
+    }
+
+    console.log("✅ Data dari Supabase berhasil disinkronkan ke localStorage.");
+    
+    // Refresh tampilan setelah data ditarik
+    renderProfilGuru();
+    renderRombelDisplay('rombelDisplayForm');
+    
+  } catch (error) {
+    console.error("❌ Gagal sinkronisasi data:", error);
+    showToast('Gagal memuat data dari server. Periksa koneksi internet.', 'error');
+  }
+}
+
+// Panggil fungsi sinkronisasi saat halaman dimuat
+sinkronDataDariSupabase();
 if(!user || user.role !== 'guru'){
   alert('Anda harus login sebagai Guru!');
   window.location.href = '../index.html';
