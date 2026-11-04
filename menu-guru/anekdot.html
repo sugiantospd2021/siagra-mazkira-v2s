@@ -22,7 +22,6 @@
     --accent:#6EE7B7; --danger:#DC2626; --success:#10B981;
     --warning:#D97706; --yellow:#B45309;
     --card-border:#10B981; --card-border-glow:rgba(16,185,129,.3);
-    /* Warna 5 Komponen Anekdot — disamakan dengan observasi.html */
     --kbc-1:#EF4444; --kbc-2:#8B5CF6; --kbc-3:#F59E0B; --kbc-4:#10B981; --kbc-5:#3B82F6;
   }
   body.dark{
@@ -450,19 +449,15 @@
   body.dark .rombel-empty-warning{color:var(--yellow)}
   .rombel-empty-warning .ico{font-size:20px;flex-shrink:0}
 
-  /* === KOMPONEN ANEKDOT — CARD BERWARNA + MENYALA === */
+  /* === KOMPONEN ANEKDOT === */
   .komponen-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:14px;
     margin-top:8px;
   }
-  @media(min-width:900px){
-    .komponen-grid{grid-template-columns:repeat(2,1fr)}
-  }
-  @media(min-width:1280px){
-    .komponen-grid{grid-template-columns:repeat(3,1fr)}
-  }
+  @media(min-width:900px){.komponen-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1280px){.komponen-grid{grid-template-columns:repeat(3,1fr)}}
 
   .komponen-opt{
     position:relative;
@@ -472,8 +467,7 @@
     background:linear-gradient(135deg,
       color-mix(in srgb, var(--kbc-color) 14%, var(--card-inner)),
       color-mix(in srgb, var(--kbc-color) 6%, var(--card-inner)));
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--kbc-color) 25%, transparent);
+    box-shadow:0 0 0 1px color-mix(in srgb, var(--kbc-color) 25%, transparent);
     cursor:pointer;
     transition:all .32s cubic-bezier(.34,1.56,.64,1);
     overflow:hidden;
@@ -504,10 +498,7 @@
       0 0 48px color-mix(in srgb, var(--kbc-color) 35%, transparent),
       0 12px 28px color-mix(in srgb, var(--kbc-color) 40%, transparent);
   }
-  .komponen-opt:hover::before{
-    opacity:.35;
-    transform:scale(1.5);
-  }
+  .komponen-opt:hover::before{opacity:.35;transform:scale(1.5);}
   .komponen-opt.active{
     border-color:var(--kbc-color);
     background:linear-gradient(135deg,
@@ -518,9 +509,7 @@
       0 0 24px color-mix(in srgb, var(--kbc-color) 45%, transparent),
       0 8px 24px color-mix(in srgb, var(--kbc-color) 35%, transparent);
   }
-  .komponen-opt.active::before{
-    opacity:.30;
-  }
+  .komponen-opt.active::before{opacity:.30;}
 
   .komponen-opt[data-komponen="1"]{--kbc-color:var(--kbc-1)}
   .komponen-opt[data-komponen="2"]{--kbc-color:var(--kbc-2)}
@@ -528,7 +517,6 @@
   .komponen-opt[data-komponen="4"]{--kbc-color:var(--kbc-4)}
   .komponen-opt[data-komponen="5"]{--kbc-color:var(--kbc-5)}
 
-  /* Checkbox pojok kiri dalam kotak ikon */
   .komponen-opt .checkbox{
     width:26px;height:26px;border-radius:8px;
     border:2px solid color-mix(in srgb, var(--kbc-color) 40%, var(--border));
@@ -597,12 +585,8 @@
     line-height:1.3;margin-bottom:5px;
     transition:color .25s;
   }
-  .komponen-opt:hover .nama-komponen{
-    color:var(--kbc-color);
-  }
-  .komponen-opt.active .nama-komponen{
-    color:var(--kbc-color);
-  }
+  .komponen-opt:hover .nama-komponen{color:var(--kbc-color);}
+  .komponen-opt.active .nama-komponen{color:var(--kbc-color);}
   .komponen-opt .fokus-komponen{
     font-size:11px;font-weight:500;color:var(--sub);line-height:1.5;
   }
@@ -824,7 +808,7 @@
   .empty .title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px}
   .empty .desc{font-size:11.5px;font-weight:500;line-height:1.5}
 
-  /* === CARD ANEKDOT RIWAYAT — MENYALA === */
+  /* === CARD ANEKDOT RIWAYAT === */
   .anek-item{
     background:var(--card);border-radius:14px;
     border:2px solid var(--card-border);
@@ -856,10 +840,7 @@
       0 0 48px color-mix(in srgb, var(--kbc-color, var(--primary)) 25%, transparent),
       0 12px 28px rgba(0,0,0,.35);
   }
-  .anek-item:hover::before{
-    opacity:.22;
-    transform:scale(1.5);
-  }
+  .anek-item:hover::before{opacity:.22;transform:scale(1.5);}
   .anek-item[data-komponen="1"]{--kbc-color:var(--kbc-1)}
   .anek-item[data-komponen="2"]{--kbc-color:var(--kbc-2)}
   .anek-item[data-komponen="3"]{--kbc-color:var(--kbc-3)}
@@ -1392,8 +1373,8 @@
         </div>
       </div>
     </div>
-	
-	    <!-- TAB 2: RIWAYAT -->
+
+    <!-- TAB 2: RIWAYAT -->
     <div id="panelList" style="display:none">
       <div class="card" style="padding:16px">
         <div class="filter-bar">
@@ -2122,6 +2103,7 @@ function renderProfilGuru(){
   pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataGuru.nama);
 }
 renderProfilGuru();
+</script>
 
 <script>
 /* STATE */
