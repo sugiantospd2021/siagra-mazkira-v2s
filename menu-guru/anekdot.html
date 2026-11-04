@@ -1687,18 +1687,21 @@ async function sinkronDataDariSupabase() {
     if (guruList) localStorage.setItem('ra_guru', JSON.stringify(guruList));
     if (tendikList) localStorage.setItem('ra_tendik', JSON.stringify(tendikList));
 
-    // 2. Ambil Data Siswa
+        // 2. Ambil Data Siswa
     const { data: siswaList } = await sb.from('siswa').select('*');
     if (siswaList) {
       const formattedSiswa = siswaList.map(s => ({
         ...s,
         id: s.id,
         nama: s.nama,
-        kelompok: s.rombel || s.kelompok,
-        rombel: s.rombel || s.kelompok
+        // Paksa ambil data rombel dari kolom apapun yang tersedia
+        kelompok: s.rombel || s.kelompok || s.rombel_kelas || '',
+        rombel: s.rombel || s.kelompok || s.rombel_kelas || ''
       }));
       localStorage.setItem('ra_anak', JSON.stringify(formattedSiswa));
+      console.log("Contoh data siswa yg ditarik:", formattedSiswa[0]); // Untuk cek di console
     }
+	
 
     // 3. Ambil Data Kelas (Rombel)
     const { data: kelasList } = await sb.from('kelas').select('*');
@@ -2248,12 +2251,15 @@ function isiDropdownAnak(){
   anakTerpilih = '';
   if(!rombel){ sel.disabled = true; return; }
 
-  const anakList = load(KEY_ANAK, []);
-  // PERBAIKAN: Filter nama anak dibuat lebih toleran terhadap spasi & huruf besar/kecil
+   const anakList = load(KEY_ANAK, []);
+  
+  // PERBAIKAN: Filter yang sangat toleran (abaikan spasi, tanda hubung, dan huruf besar/kecil)
+  const bersihkanTeks = (teks) => String(teks || '').replace(/[\s\-_]+/g, '').toUpperCase();
+  
   const filtered = anakList
     .filter(a => {
-      const rombelAnak = String(ambilRombelAnak(a) || '').replace(/\s+/g, '').toUpperCase();
-      const rombelTarget = String(rombel || '').replace(/\s+/g, '').toUpperCase();
+      const rombelAnak = bersihkanTeks(ambilRombelAnak(a));
+      const rombelTarget = bersihkanTeks(rombel);
       return rombelAnak === rombelTarget;
     })
     .sort((a,b) => (a.nama||'').localeCompare(b.nama||''));
