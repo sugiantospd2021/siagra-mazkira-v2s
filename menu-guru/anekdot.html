@@ -1141,7 +1141,6 @@
   }
 </style>
 </head>
-
 <body>
 
 <div class="ornament orn-love-1">♡</div>
@@ -1173,7 +1172,6 @@
 </div>
 
 <div class="wrapper">
-
   <div class="col-profil">
     <div class="profile-card">
       <div class="profile-card-header">
@@ -1187,7 +1185,6 @@
   </div>
 
   <div class="col-menu">
-
     <div class="intro-card">
       <h2>📔 Catatan Anekdot KBC</h2>
       <p>Dokumentasikan momen berharga anak melalui <strong>Unsur dalam Catatan Anekdot KBC</strong> — catatan objektif, hangat, dan bermakna.</p>
@@ -1232,7 +1229,6 @@
       </div>
 
       <div class="card" id="formCardAnekdot">
-
         <div class="form-grid">
           <div class="form-group">
             <label>📅 Tanggal Kejadian <span class="req">*</span></label>
@@ -1396,10 +1392,9 @@
         </div>
       </div>
     </div>
-
-    <!-- TAB 2: RIWAYAT -->
+	
+	    <!-- TAB 2: RIWAYAT -->
     <div id="panelList" style="display:none">
-
       <div class="card" style="padding:16px">
         <div class="filter-bar">
           <div class="form-group">
@@ -1450,7 +1445,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- TAB 3: REKAP ANAK -->
@@ -1578,7 +1572,6 @@
     <div class="footer">
       ~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~
     </div>
-
   </div>
 </div>
 
@@ -1590,7 +1583,6 @@
 <script src="../menu-context.js"></script>
 
 <script>
-
 /* ============================================================
    KONFIGURASI STORAGE
    ============================================================ */
@@ -1698,6 +1690,7 @@ updateClock();
 setInterval(updateClock, 1000);
 
 const user = JSON.parse(localStorage.getItem('user') || 'null');
+
 // KONEKSI SUPABASE UNTUK HALAMAN GURU
 const URL_SUPABASE = "https://nkothmxdwpkptuvzunkb.supabase.co";
 const KEY_SUPABASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rb3RobXhkd3BrcHR1dnp1bmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTI2NDMsImV4cCI6MjEwNjQ2ODY0M30.h1_TsMUsoiG45RWrZ5t7gY3r-KgGV230czfj0yM-GAY";
@@ -1716,10 +1709,9 @@ async function sinkronDataDariSupabase() {
     // 2. Ambil Data Siswa
     const { data: siswaList } = await sb.from('siswa').select('*');
     if (siswaList) {
-      // Sesuaikan format data siswa (Admin pakai 'nama', Guru butuh 'nama')
       const formattedSiswa = siswaList.map(s => ({
         ...s,
-        id: s.id, // Pastikan ID ada
+        id: s.id,
         nama: s.nama,
         kelompok: s.rombel || s.kelompok,
         rombel: s.rombel || s.kelompok
@@ -1730,13 +1722,12 @@ async function sinkronDataDariSupabase() {
     // 3. Ambil Data Kelas (Rombel)
     const { data: kelasList } = await sb.from('kelas').select('*');
     if (kelasList) {
-      // Format ulang agar sesuai dengan yang dibaca oleh fungsi cariRombelGuruLogin()
       const formattedKelas = kelasList.map(k => ({
         id: k.id,
         nama: k.rombel,
         rombel: k.rombel,
         kelompok: k.kelompok,
-        guruUtamaId: k.guru_utama_id, // Sesuaikan dengan nama kolom di Supabase
+        guruUtamaId: k.guru_utama_id,
         guruPendampingIds: k.guru_pendamping_id ? [k.guru_pendamping_id] : [],
         ta: k.ta
       }));
@@ -1757,6 +1748,7 @@ async function sinkronDataDariSupabase() {
 
 // Panggil fungsi sinkronisasi saat halaman dimuat
 sinkronDataDariSupabase();
+
 if(!user || user.role !== 'guru'){
   alert('Anda harus login sebagai Guru!');
   window.location.href = '../index.html';
@@ -2075,11 +2067,16 @@ function renderProfilGuru(){
 
   let html = '';
   const identitas = [];
-  if(dataGuru.nip) identitas.push({ l: 'NIP', v: dataGuru.nip });
+  
+  // PERBAIKAN: Membaca NIP / NIK, Tempat Lahir, dan Tanggal Lahir dengan dua format nama kolom
+  if(dataGuru.nip || dataGuru.nik) identitas.push({ l: 'NIP / NIK', v: dataGuru.nip || dataGuru.nik });
   if(dataGuru.npk) identitas.push({ l: 'NPK/PEGID', v: dataGuru.npk });
   if(dataGuru.jk) identitas.push({ l: 'Jenis Kelamin', v: dataGuru.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
-  if(dataGuru.tempatLahir) identitas.push({ l: 'Tempat Lahir', v: dataGuru.tempatLahir });
-  if(dataGuru.tglLahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataGuru.tglLahir) });
+  
+  const tempatLahir = dataGuru.tempatLahir || dataGuru.tempat_lahir;
+  const tglLahir = dataGuru.tglLahir || dataGuru.tanggal_lahir;
+  if(tempatLahir) identitas.push({ l: 'Tempat Lahir', v: tempatLahir });
+  if(tglLahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(tglLahir) });
 
   if(identitas.length > 0){
     html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
@@ -2125,7 +2122,6 @@ function renderProfilGuru(){
   pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataGuru.nama);
 }
 renderProfilGuru();
-</script>
 
 <script>
 /* STATE */
@@ -2271,8 +2267,13 @@ function isiDropdownAnak(){
   if(!rombel){ sel.disabled = true; return; }
 
   const anakList = load(KEY_ANAK, []);
+  // PERBAIKAN: Filter nama anak dibuat lebih toleran terhadap spasi & huruf besar/kecil
   const filtered = anakList
-    .filter(a => ambilRombelAnak(a) === rombel)
+    .filter(a => {
+      const rombelAnak = String(ambilRombelAnak(a) || '').replace(/\s+/g, '').toUpperCase();
+      const rombelTarget = String(rombel || '').replace(/\s+/g, '').toUpperCase();
+      return rombelAnak === rombelTarget;
+    })
     .sort((a,b) => (a.nama||'').localeCompare(b.nama||''));
 
   if(filtered.length === 0){
