@@ -1246,12 +1246,15 @@ async function muatDaftarEmail() {
   const sel = document.getElementById('pilihEmailUser');
   if (!sel) return;
   sel.innerHTML = '<option value="">-- Pilih Email --</option>';
-  const { data, error } = await sb.from('profiles').select('email, nama_lengkap').neq('role', 'admin');
+  
+  // Mengambil email dari tabel guru (karena Anda tidak punya tabel profiles)
+  const { data, error } = await sb.from('guru').select('email, nama').not('email', 'is', null);
+  
   if (data) {
-    data.forEach(u => {
+    data.forEach(g => {
       const opt = document.createElement('option');
-      opt.value = u.email;
-      opt.textContent = u.email + ' (' + (u.nama_lengkap || 'User') + ')';
+      opt.value = g.email;
+      opt.textContent = g.email + ' (' + (g.nama || 'Guru') + ')';
       sel.appendChild(opt);
     });
   }
@@ -1266,7 +1269,12 @@ async function simpanPasswordBaru() {
   if (!confirm(`Yakin ingin mengubah password untuk ${email}?`)) return;
 
   try {
-    const { error } = await sb.rpc('admin_update_password', { target_email: email, new_password: passBaru });
+    // Memanggil fungsi SQL yang baru saja kita buat
+    const { error } = await sb.rpc('admin_update_password', { 
+      target_email: email, 
+      new_password: passBaru 
+    });
+    
     if (error) throw new Error(error.message);
     alert('✅ Password berhasil diubah!');
     document.getElementById('passwordBaru').value = '';
