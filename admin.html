@@ -1599,47 +1599,55 @@ async function renderKelas(){
   if(!container) return;
   container.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data rombel...</div>';
   
-  // Ambil data kelas dan data guru sekaligus
-  const { data: list, error } = await sb.from('kelas').select('*').order('rombel', { ascending: true });
-  const { data: guruList } = await sb.from('guru').select('id, nama');
-  
-  if(error){ container.innerHTML = `<div class="empty-state"><div class="icon">❌</div><h3>Gagal memuat</h3><p>${error.message}</p></div>`; return; }
-  localStorage.setItem('ra_kelas_cache', JSON.stringify(list || []));
-  
-  if(!list || list.length === 0){
-    container.innerHTML = `<div class="empty-state"><div class="icon">🏫</div><h3>Belum ada data rombel</h3><p>Klik "+ Tambah Rombel"</p></div>`;
-    return;
-  }
-  
-  // Fungsi bantuan untuk mencari nama berdasarkan ID
-  const cariNamaGuru = (id) => {
-    if(!id) return '';
-    const found = (guruList || []).find(g => String(g.id) === String(id));
-    return found ? found.nama : '';
-  };
+  try {
+    // 1. Ambil data guru DULU, lalu simpan ke variabel lokal
+    const { data: guruList, error: errGuru } = await sb.from('guru').select('id, nama');
+    if(errGuru) throw new Error(errGuru.message);
 
-  const rows = list.map(k => {
-    const rombel = k.rombel || k.nama || '';
-    const rombelClass = getRombelClass(rombel);
+    // 2. Ambil data kelas
+    const { data: list, error } = await sb.from('kelas').select('*').order('rombel', { ascending: true });
+    if(error) throw new Error(error.message);
+
+    localStorage.setItem('ra_kelas_cache', JSON.stringify(list || []));
     
-    // Perbaikan: Cari nama guru utama & pendamping dari ID
-    const namaUtama = cariNamaGuru(k.guru_utama_id);
-    const namaPendamping = cariNamaGuru(k.guru_pendamping_id);
+    if(!list || list.length === 0){
+      container.innerHTML = `<div class="empty-state"><div class="icon">🏫</div><h3>Belum ada data rombel</h3><p>Klik "+ Tambah Rombel"</p></div>`;
+      return;
+    }
     
-    return `<tr>
-      <td>${escapeHtml(k.kelompok || '-')}</td>
-      <td><span class="badge-rombel ${rombelClass}">${escapeHtml(rombel)}</span></td>
-      <td>${namaUtama ? escapeHtml(namaUtama) : '<em style="opacity:.5">-</em>'}</td>
-      <td>${namaPendamping ? escapeHtml(namaPendamping) : '<em style="opacity:.5">—</em>'}</td>
-      <td>${escapeHtml(k.ta || '-')}</td>
-      <td><div class="action-btns">
-        <button class="btn-mini btn-edit" onclick="openFormKelas('${k.id}')">✏️</button>
-        <button class="btn-mini btn-del" onclick="hapusKelas('${k.id}')">🗑️</button>
-      </div></td>
-    </tr>`;
-  }).join('');
-  
-  container.innerHTML = `<table><thead><tr><th>Kelompok</th><th>Rombel</th><th>Guru Utama</th><th>Guru Pendamping</th><th>Tahun Ajaran</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table>`;
+    // 3. Fungsi pencari nama yang lebih kebal error (mengubah ID ke String)
+    const cariNamaGuru = (id) => {
+      if(!id) return '';
+      const found = (guruList || []).find(g => String(g.id).trim() === String(id).trim());
+      return found ? found.nama : '';
+    };
+
+    // 4. Render ke HTML
+    const rows = list.map(k => {
+      const rombel = k.rombel || k.nama || '';
+      const rombelClass = getRombelClass(rombel);
+      
+      const namaUtama = cariNamaGuru(k.guru_utama_id);
+      const namaPendamping = cariNamaGuru(k.guru_pendamping_id);
+      
+      return `<tr>
+        <td>${escapeHtml(k.kelompok || '-')}</td>
+        <td><span class="badge-rombel ${rombelClass}">${escapeHtml(rombel)}</span></td>
+        <td>${namaUtama ? escapeHtml(namaUtama) : '<em style="opacity:.5">-</em>'}</td>
+        <td>${namaPendamping ? escapeHtml(namaPendamping) : '<em style="opacity:.5">—</em>'}</td>
+        <td>${escapeHtml(k.ta || '-')}</td>
+        <td><div class="action-btns">
+          <button class="btn-mini btn-edit" onclick="openFormKelas('${k.id}')">✏️</button>
+          <button class="btn-mini btn-del" onclick="hapusKelas('${k.id}')">🗑️</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+    
+    container.innerHTML = `<table><thead><tr><th>Kelompok</th><th>Rombel</th><th>Guru Utama</th><th>Guru Pendamping</th><th>Tahun Ajaran</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table>`;
+    
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">❌</div><h3>Gagal memuat</h3><p>${err.message}</p></div>`;
+  }
 }
 async function refreshDaftarGuruDropdown(){
   const { data: guruList } = await sb.from('guru').select('id, nama, jabatan').order('nama');
