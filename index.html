@@ -693,7 +693,7 @@ function toggleTheme(){
   applyTheme();
 }
 
-/* ---------- JAM LIVE WITA (DIPERBAIKI) ---------- */
+/* ---------- JAM LIVE WITA (1 BARIS) ---------- */
 function updateClock(){
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -705,14 +705,10 @@ function updateClock(){
   const h = String(wita.getHours()).padStart(2,'0');
   const m = String(wita.getMinutes()).padStart(2,'0');
 
-  // 1 BARIS UNTUK SEMUA LAYAR
   const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
 
   const el = document.getElementById('liveClock');
-  if (el) {
-    el.textContent = teks;
-  }
-}
+  if (el) el.textContent = teks;
 }
 
 /* ---------- LOGO AUTO-FALLBACK ---------- */
