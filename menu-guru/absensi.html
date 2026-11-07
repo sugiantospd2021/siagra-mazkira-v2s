@@ -82,16 +82,15 @@
   .orn-sparkle-1{bottom:15%;right:10%;font-size:24px;color:#FACC15;animation-delay:2.2s}
   .orn-sparkle-2{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s}
   .orn-diamond-1{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s}
-  @media(max-width:768px){ .orn-leaf-2,.orn-spark-2,.orn-star-2,.orn-dot-1,.orn-flower-1,.orn-flower-2,.orn-sparkle-1,.orn-sparkle-2{display:none} }
-  @media(max-width:480px){.ornament{opacity:.22;font-size:22px!important}}
-
-  .header{
-    position:sticky;top:0;z-index:100;
-    background:var(--role-header-grad);
-    color:#fff;padding:14px 24px;
-    display:flex;justify-content:space-between;align-items:center;
-    box-shadow:0 4px 16px rgba(0,0,0,.6);
-    border-bottom:2px solid var(--role-header-border);gap:12px;
+  
+    @media(max-width:900px){
+    .wrapper{ display: flex !important; flex-direction: column !important; padding: 12px !important; }
+    .col-profil{ position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
+    .profile-card{ max-width: 100% !important; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .profile-card-body{ display: none !important; } /* Sembunyikan detail panjang di HP */
+    .form-grid, .jam-row{ display: grid !important; grid-template-columns: 1fr !important; }
+    .tabs{ flex-wrap: wrap !important; justify-content: center; }
+    .tab-btn{ flex: 1 1 45% !important; font-size: 12px !important; }
   }
   .header-left h1{font-size:17px;color:var(--role-header-text);font-weight:800}
   .header-center{flex:1;display:flex;justify-content:center}
@@ -657,9 +656,15 @@ function avatarSvg(nama){ return `<svg viewBox="0 0 120 120" xmlns="http://www.w
 
 function pakaiFotoAtauAvatar(el, nama, fotoUrl){
   if(!el) return;
-  if(fotoUrl && fotoUrl.trim() !== ''){ el.innerHTML = `<img src="${fotoUrl}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; return; }
+  if(fotoUrl && fotoUrl.trim() !== ''){ 
+    el.innerHTML = `<img src="${fotoUrl}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; 
+    return; 
+  }
   const fotoUpload = localStorage.getItem('ra_foto_' + nama);
-  if(fotoUpload){ el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; return; }
+  if(fotoUpload){ 
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; 
+    return; 
+  }
   const exts = ['jpg','png','jpeg','JPG','PNG'];
   let idx = 0;
   function coba(){
@@ -684,27 +689,23 @@ function cariDataUser(){
 }
 
 async function muatData(){
-  // 1. Ambil dari cache HP dulu (biar profil langsung muncul tanpa nunggu internet)
+  // Tampilkan dari cache dulu
   dataGuru = load(KEY_GURU, []) || []; 
   dataTendik = load(KEY_TENDIK, []) || []; 
   guruProfil = cariDataUser(); 
   renderPengisiInfo(); 
   renderProfil(); 
 
-  // 2. Jika internet ada, ambil data terbaru dari Supabase dan update profil
   if (typeof sb !== 'undefined') {
     try {
       const { data: t } = await sb.from('tendik').select('*'); 
-      if (t && t.length > 0) { dataTendik = t; localStorage.setItem(KEY_TENDIK, JSON.stringify(t)); }
+      if (t && t.length > 0) { dataTendik = t; save(KEY_TENDIK, t); }
       const { data: g } = await sb.from('guru').select('*'); 
-      if (g && g.length > 0) { dataGuru = g; localStorage.setItem(KEY_GURU, JSON.stringify(g)); }
-      
+      if (g && g.length > 0) { dataGuru = g; save(KEY_GURU, g); }
       guruProfil = cariDataUser(); 
       renderPengisiInfo(); 
       renderProfil(); 
-    } catch(e) {
-      console.warn("Gagal update dari Supabase, pakai data cache lokal.");
-    }
+    } catch(e) {}
   }
 }
 
@@ -1072,6 +1073,18 @@ function logout(){ if(confirm('Keluar?')){ localStorage.removeItem('user'); wind
 
 async function init(){
   applyRoleColors(); await muatData(); setHeaderTitle(); resetForm();
+    // Ambil rombel otomatis
+  if (typeof sb !== 'undefined' && guruProfil) {
+    try {
+      const { data: kelas } = await sb.from('kelas').select('*');
+      if(kelas && kelas.length > 0) {
+        const kelasSaya = kelas.find(k => String(k.guru_utama_id) === String(guruProfil.id) || (k.guru_pendamping_ids && k.guru_pendamping_ids.includes(guruProfil.id)));
+        if(kelasSaya) {
+          document.getElementById('fRombel').value = kelasSaya.nama || kelasSaya.rombel || '';
+        }
+      }
+    } catch(e) {}
+  }
   document.getElementById('fRekapBulan').value = getTodayISO().substring(0,7);
   updateCountBadge(); renderRiwayat(); renderStatistikBackup();
   console.log('✅ absensi.html loaded — SIAGRA v.2.s (Supabase Ready)');
