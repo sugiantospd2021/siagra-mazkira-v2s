@@ -454,12 +454,37 @@
     <div class="panel-view active" id="viewMenu">
       <div class="menu-section-title">Menu Admin</div>
       <div class="menu-grid">
-        <a class="menu-card c-siswa" href="#siswa" onclick="tanganiPanelClick(event,'siswa')"><div class="icon">👥</div><div class="card-text"><h3>Data Siswa</h3><p>Kelola Data Siswa RA</p></div></a>
-        <a class="menu-card c-gtk" href="#guru" onclick="tanganiPanelClick(event,'guru')"><div class="icon">🧑</div><div class="card-text"><h3>Data GTK</h3><p>Kelola Data Guru &amp; Tenaga Kependidikan</p></div></a>
-        <a class="menu-card c-rombel" href="#kelas" onclick="tanganiPanelClick(event,'kelas')"><div class="icon">🏫</div><div class="card-text"><h3>Data Rombel</h3><p>Kelola rombel &amp; guru pengampu</p></div></a>
-        <a class="menu-card c-alumni" href="#alumni" onclick="tanganiPanelClick(event,'alumni')"><div class="icon">🎓</div><div class="card-text"><h3>Alumni</h3><p>Rekap masuk &amp; lulusan per tahun</p></div></a>
-        <a class="menu-card c-backup" href="#backup" onclick="tanganiPanelClick(event,'backup')"><div class="icon">💾</div><div class="card-text"><h3>Backup &amp; Sistem</h3><p>Export, import &amp; restore data</p></div></a>
-        <a class="menu-card" style="--menu-glow:#F59E0B;--menu-glow-soft:rgba(245,158,11,.55);border-color:rgba(245,158,11,.55);" href="#password" onclick="tanganiPanelClick(event,'password')"><div class="icon">🔐</div><div class="card-text"><h3>Ubah Password</h3><p>Kelola password akun GTK</p></div></a>
+
+        <a class="menu-card c-siswa" href="#siswa" onclick="tanganiPanelClick(event,'siswa')">
+          <div class="icon">👥</div>
+          <div class="card-text"><h3>Data Siswa</h3><p>Kelola Data Siswa RA</p></div>
+        </a>
+
+        <a class="menu-card c-gtk" href="#guru" onclick="tanganiPanelClick(event,'guru')">
+          <div class="icon">🧑</div>
+          <div class="card-text"><h3>Data GTK</h3><p>Kelola Data Guru &amp; Tenaga Kependidikan</p></div>
+        </a>
+
+        <a class="menu-card c-rombel" href="#kelas" onclick="tanganiPanelClick(event,'kelas')">
+          <div class="icon">🏫</div>
+          <div class="card-text"><h3>Data Rombel</h3><p>Kelola rombel &amp; guru pengampu</p></div>
+        </a>
+
+        <a class="menu-card c-alumni" href="#alumni" onclick="tanganiPanelClick(event,'alumni')">
+          <div class="icon">🎓</div>
+          <div class="card-text"><h3>Alumni</h3><p>Rekap masuk &amp; lulusan per tahun</p></div>
+        </a>
+
+        <a class="menu-card c-backup" href="#backup" onclick="tanganiPanelClick(event,'backup')">
+          <div class="icon">💾</div>
+          <div class="card-text"><h3>Backup &amp; Sistem</h3><p>Export, import &amp; restore data</p></div>
+        </a>
+
+        <a class="menu-card" style="--menu-glow:#F59E0B;--menu-glow-soft:rgba(245,158,11,.55);border-color:rgba(245,158,11,.55);" href="#password" onclick="tanganiPanelClick(event,'password')">
+          <div class="icon">🔐</div>
+          <div class="card-text"><h3>Ubah Password</h3><p>Kelola password akun GTK</p></div>
+        </a>
+
       </div>
     </div>
 
@@ -548,16 +573,20 @@
       </div>
       <div class="table-wrap" style="padding: 20px;">
         <p style="margin-bottom: 15px; color: var(--sub); font-size: 13px;">Ubah password akun email di bawah ini. (Hanya untuk Guru & Tendik).</p>
+        
         <div class="form-field">
           <label>Pilih Akun Email</label>
           <select id="pilihEmailUser" style="width:100%; padding:10px; border-radius:8px; background:var(--card-inner); border:1px solid var(--border); color:var(--text);">
             <option value="">-- Pilih Email --</option>
+            <!-- Akan diisi otomatis oleh JavaScript -->
           </select>
         </div>
+        
         <div class="form-field">
           <label>Password Baru</label>
           <input type="text" id="passwordBaru" placeholder="Ketik password baru" style="width:100%; padding:10px; border-radius:8px; background:var(--card-inner); border:1px solid var(--border); color:var(--text);">
         </div>
+
         <button class="btn btn-save" onclick="simpanPasswordBaru()" style="margin-top: 10px; background:linear-gradient(135deg,#F59E0B,#B45309);">💾 Simpan Password</button>
       </div>
     </div>
@@ -616,6 +645,8 @@
   </div>
 </div>
 
+<div class="toast" id="toast">✨</div>
+
 <!-- MODAL DATA SISWA -->
 <div class="modal-overlay" id="modalAnak">
   <div class="modal">
@@ -670,7 +701,6 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="guruId">
-      <input type="hidden" id="guruIdKategori">
       <div class="form-field">
         <label>Nama Lengkap &amp; Gelar <span class="req">*</span></label>
         <input type="text" id="guruNama" placeholder="Contoh: Elma Noor Safitri, S.Pd.">
@@ -878,6 +908,8 @@
 
 <!-- PANGGIL MODUL EKSTERNAL -->
 <script src="panggilan.js"></script>
+<!-- HAPUS ATAU KOMENTARI notifikasi.js JIKA FILE TIDAK ADA -->
+<!-- <script src="notifikasi.js"></script> -->
 
 <!-- SCRIPT UTAMA -->
 <script type="module">
@@ -890,7 +922,7 @@ const { createClient } = supabase;
 const sb = createClient(URL_SUPABASE, KEY_SUPABASE);
 
 /* ============================================================
-   TOAST & THEME
+   TOAST
    ============================================================ */
 function showToast(msg, type){
   const t = document.getElementById('toast');
@@ -900,6 +932,10 @@ function showToast(msg, type){
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.remove('show'), 3200);
 }
+
+/* ============================================================
+   THEME
+   ============================================================ */
 function applyTheme(){
   const theme = localStorage.getItem('theme') || 'dark';
   document.body.classList.toggle('dark', theme === 'dark');
@@ -946,14 +982,29 @@ if(!user || user.role !== 'admin'){
    ============================================================ */
 function namaKeFile(nama){
   let bersih = String(nama||'').split(',')[0].trim();
-  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ').replace(/\bS\.?\s*Pd\.?/gi, ' ').replace(/\bM\.?\s*Pd\.?/gi, ' ').replace(/\bS\.?\s*Ag\.?/gi, ' ').replace(/\bS\.?\s*Si\.?/gi, ' ').replace(/\bS\.?\s*Kom\.?/gi, ' ').replace(/\bM\.?\s*Si\.?/gi, ' ').replace(/\bGr\.?/gi, ' ').replace(/\bHj\.?/gi, ' ').replace(/\bDrs\.?/gi, ' ').replace(/\bDra\.?/gi, ' ').replace(/\bDr\.?/gi, ' ');
-  bersih = bersih.replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Pd\.?/gi, ' ');
+  bersih = bersih.replace(/\bM\.?\s*Pd\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Ag\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Si\.?/gi, ' ');
+  bersih = bersih.replace(/\bS\.?\s*Kom\.?/gi, ' ');
+  bersih = bersih.replace(/\bM\.?\s*Si\.?/gi, ' ');
+  bersih = bersih.replace(/\bGr\.?/gi, ' ');
+  bersih = bersih.replace(/\bHj\.?/gi, ' ');
+  bersih = bersih.replace(/\bDrs\.?/gi, ' ');
+  bersih = bersih.replace(/\bDra\.?/gi, ' ');
+  bersih = bersih.replace(/\bDr\.?/gi, ' ');
+  bersih = bersih.replace(/\s+/g, '-');
+  bersih = bersih.replace(/-+/g, '-');
+  bersih = bersih.replace(/^-|-$/g, '');
   bersih = bersih.replace(/[^a-zA-Z0-9\-]/g, '');
   return bersih;
 }
+
+// PERBAIKAN FORMAT TANGGAL: Menerima format YYYY-MM-DD maupun YYYY-MM-DD HH:MM:SS
 function formatTanggal(iso){
   if(!iso) return '-';
-  let tglBersih = String(iso).substring(0, 10);
+  let tglBersih = String(iso).substring(0, 10); // Ambil 10 karakter pertama
   const d = new Date(tglBersih + 'T00:00:00');
   if(isNaN(d)) return iso;
   const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -1027,7 +1078,7 @@ function updateLamaMengajar(){
 }
 
 /* ============================================================
-   AVATAR & FOTO
+   AVATAR SVG
    ============================================================ */
 function avatarSvg(nama){
   let hash = 0;
@@ -1061,7 +1112,7 @@ function pakaiFotoAtauAvatar(el, nama){
 }
 
 /* ============================================================
-   PROFIL ADMIN & UPLOAD FOTO
+   PROFIL ADMIN & UPLOAD FOTO (SUPABASE STORAGE)
    ============================================================ */
 const KEY_FOTO_ADMIN = 'ra_foto_' + user.nama;
 function muatFotoAdmin(){
@@ -1069,12 +1120,16 @@ function muatFotoAdmin(){
   if(!el) return;
   pakaiFotoAtauAvatar(el, user.nama);
 }
+
 async function uploadFoto(event){
   const file = event.target.files[0];
   if(!file) return;
+
   if(!file.type.startsWith('image/')){ showToast('❌ File harus gambar', 'error'); return; }
   if(file.size > 2 * 1024 * 1024){ showToast('❌ Maksimal 2 MB', 'error'); return; }
+
   showToast('⏳ Mengunggah foto ke server...', 'info');
+  
   try {
     const { uploadAvatar } = await import('./js/storage.js');
     const publicUrl = await uploadAvatar(file, 'admin', user.nama.replace(/\s+/g, ''));
@@ -1160,7 +1215,7 @@ function openPanel(name){
   if(name === 'kelas') renderKelas();
   if(name === 'alumni') renderAlumni();
   if(name === 'password') muatDaftarEmail();
-  window.scrollTo({top:0, behavior:'smooth'});
+    window.scrollTo({top:0, behavior:'smooth'});
 }
 function backToMenu(){
   document.querySelectorAll('.panel-view').forEach(p => p.classList.remove('active'));
@@ -1189,7 +1244,10 @@ async function muatDaftarEmail() {
   const sel = document.getElementById('pilihEmailUser');
   if (!sel) return;
   sel.innerHTML = '<option value="">-- Pilih Email --</option>';
+  
+  // Mengambil email dari tabel guru (karena Anda tidak punya tabel profiles)
   const { data, error } = await sb.from('guru').select('email, nama').not('email', 'is', null);
+  
   if (data) {
     data.forEach(g => {
       const opt = document.createElement('option');
@@ -1203,11 +1261,18 @@ async function muatDaftarEmail() {
 async function simpanPasswordBaru() {
   const email = document.getElementById('pilihEmailUser').value;
   const passBaru = document.getElementById('passwordBaru').value;
+
   if (!email || !passBaru) { alert('Pilih email dan ketik password baru!'); return; }
   if (passBaru.length < 6) { alert('Password minimal 6 karakter!'); return; }
   if (!confirm(`Yakin ingin mengubah password untuk ${email}?`)) return;
+
   try {
-    const { error } = await sb.rpc('admin_update_password', { target_email: email, new_password: passBaru });
+    // Memanggil fungsi SQL yang baru saja kita buat
+    const { error } = await sb.rpc('admin_update_password', { 
+      target_email: email, 
+      new_password: passBaru 
+    });
+    
     if (error) throw new Error(error.message);
     alert('✅ Password berhasil diubah!');
     document.getElementById('passwordBaru').value = '';
@@ -1324,9 +1389,7 @@ async function hapusAnak(id){
   renderAnak();
   renderProfilAdmin();
 }
-</script>
 
-<script type="module">
 /* ============================================================
    MODUL DATA GTK
    ============================================================ */
@@ -1397,7 +1460,7 @@ async function openFormGuru(id, kategori){
     if(!data) return;
     document.getElementById('modalGuruTitle').textContent = 'Edit Data GTK';
     document.getElementById('guruId').value = data.id;
-    document.getElementById('guruIdKategori').value = kategori;
+    document.getElementById('guruId').dataset.kategori = kategori;
     document.getElementById('guruNama').value = data.nama;
     document.getElementById('guruNik').value = data.nik || '';
     document.getElementById('guruNpk').value = data.npk || '';
@@ -1413,7 +1476,7 @@ async function openFormGuru(id, kategori){
   } else {
     document.getElementById('modalGuruTitle').textContent = 'Tambah Data GTK';
     document.getElementById('guruId').value = '';
-    document.getElementById('guruIdKategori').value = '';
+    document.getElementById('guruId').dataset.kategori = '';
     document.getElementById('guruNama').value = '';
     document.getElementById('guruNik').value = '';
     document.getElementById('guruNpk').value = '';
@@ -1431,10 +1494,9 @@ async function openFormGuru(id, kategori){
   document.getElementById('modalGuru').classList.add('active');
   setTimeout(() => document.getElementById('guruNama').focus(), 100);
 }
-
 async function saveGuru(){
   const id = document.getElementById('guruId').value;
-  const kategoriLama = document.getElementById('guruIdKategori').value || '';
+  const kategoriLama = document.getElementById('guruId').dataset.kategori || '';
   const nama = document.getElementById('guruNama').value.trim();
   const jabatan = document.getElementById('guruJabatan').value;
   if(!nama){ showToast('❌ Nama wajib diisi', 'error'); return; }
@@ -1518,14 +1580,19 @@ async function openDetailGuru(id, kategori){
       <div class="detail-item"><div class="label">Email</div><div class="value">${escapeHtml(g.email || '-')}</div></div>
       <div class="detail-item full"><div class="label">Alamat</div><div class="value">${escapeHtml(g.alamat || '-')}</div></div>
     </div>`;
+  
   const detailFoto = document.getElementById('detailFotoGuru');
-  if (g.foto_url) { detailFoto.innerHTML = `<img src="${g.foto_url}" alt="Foto">`; } 
-  else { pakaiFotoAtauAvatar(detailFoto, g.nama); }
+  if (g.foto_url) {
+    detailFoto.innerHTML = `<img src="${g.foto_url}" alt="Foto">`;
+  } else {
+    pakaiFotoAtauAvatar(detailFoto, g.nama);
+  }
+  
   document.getElementById('modalDetailGuru').classList.add('active');
 }
 
 /* ============================================================
-   MODUL DATA ROMBEL (PERBAIKAN TOTAL - PETA INSTAN)
+   MODUL DATA ROMBEL
    ============================================================ */
 async function renderKelas(){
   const container = document.getElementById('kelasContainer');
@@ -1533,32 +1600,35 @@ async function renderKelas(){
   container.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data rombel...</div>';
   
   try {
-    // 1. Ambil data GURU terlebih dahulu
+    // 1. Ambil data guru DULU, lalu simpan ke variabel lokal
     const { data: guruList, error: errGuru } = await sb.from('guru').select('id, nama');
-    if(errGuru) throw new Error("Gagal load guru: " + errGuru.message);
+    if(errGuru) throw new Error(errGuru.message);
 
-    // 2. Ambil data KELAS
+    // 2. Ambil data kelas
     const { data: list, error } = await sb.from('kelas').select('*').order('rombel', { ascending: true });
-    if(error) throw new Error("Gagal load kelas: " + error.message);
+    if(error) throw new Error(error.message);
 
+    localStorage.setItem('ra_kelas_cache', JSON.stringify(list || []));
+    
     if(!list || list.length === 0){
       container.innerHTML = `<div class="empty-state"><div class="icon">🏫</div><h3>Belum ada data rombel</h3><p>Klik "+ Tambah Rombel"</p></div>`;
       return;
     }
     
-    // 3. KUNCI PERBAIKAN: Buat peta pencarian instan (Dictionary)
-    const petaGuru = {};
-    (guruList || []).forEach(g => {
-      petaGuru[String(g.id).trim()] = g.nama;
-    });
+    // 3. Fungsi pencari nama yang lebih kebal error (mengubah ID ke String)
+    const cariNamaGuru = (id) => {
+      if(!id) return '';
+      const found = (guruList || []).find(g => String(g.id).trim() === String(id).trim());
+      return found ? found.nama : '';
+    };
 
+    // 4. Render ke HTML
     const rows = list.map(k => {
       const rombel = k.rombel || k.nama || '';
       const rombelClass = getRombelClass(rombel);
       
-      // Pencarian instan menggunakan peta
-      const namaUtama = petaGuru[String(k.guru_utama_id).trim()] || '';
-      const namaPendamping = petaGuru[String(k.guru_pendamping_id).trim()] || '';
+      const namaUtama = cariNamaGuru(k.guru_utama_id);
+      const namaPendamping = cariNamaGuru(k.guru_pendamping_id);
       
       return `<tr>
         <td>${escapeHtml(k.kelompok || '-')}</td>
@@ -1579,7 +1649,6 @@ async function renderKelas(){
     container.innerHTML = `<div class="empty-state"><div class="icon">❌</div><h3>Gagal memuat</h3><p>${err.message}</p></div>`;
   }
 }
-
 async function refreshDaftarGuruDropdown(){
   const { data: guruList } = await sb.from('guru').select('id, nama, jabatan').order('nama');
   
@@ -1612,7 +1681,6 @@ async function refreshDaftarGuruDropdown(){
     selPendamping.innerHTML = html;
   }
 }
-
 async function openFormKelas(id){
   await refreshDaftarGuruDropdown();
   if(id){
@@ -1636,7 +1704,6 @@ async function openFormKelas(id){
   }
   document.getElementById('modalKelas').classList.add('active');
 }
-
 async function saveKelas(){
   const id = document.getElementById('kelasId').value;
   const rombel = document.getElementById('kelasRombel').value;
@@ -1661,7 +1728,6 @@ async function saveKelas(){
   renderKelas();
   renderProfilAdmin();
 }
-
 async function hapusKelas(id){
   const { data: k } = await sb.from('kelas').select('nama, rombel').eq('id', id).single();
   if(!k) return;
@@ -1765,13 +1831,19 @@ async function hapusAlumni(id){
 }
 
 /* ============================================================
-   PARSER EXCEL & IMPORT
+   PARSER EXCEL & IMPORT (PERBAIKAN TOTAL)
    ============================================================ */
 function parseTglSuper(str){
   if(!str) return null;
   let s = String(str).replace(/\s+/g, ' ').trim();
   if(!s || s === '-' || s === 'null') return null;
-  if(/^\d{4}-\d{2}-\d{2}/.test(s)) { return s.substring(0, 10); }
+
+  // 1. Jika format YYYY-MM-DD (standar database)
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) {
+      return s.substring(0, 10);
+  }
+
+  // 2. Jika format DD-MM-YYYY dari Excel Anda (misal: 06-09-2021)
   let match = s.match(/^(\d{1,2})[\s\-\/\.]+(\d{1,2})[\s\-\/\.]+(\d{4})$/);
   if(match){
     let d = match[1].padStart(2, '0');
@@ -1779,6 +1851,7 @@ function parseTglSuper(str){
     let y = match[3];
     return `${y}-${m}-${d}`; 
   }
+
   return null;
 }
 function parseRombelSuper(str){
@@ -1792,6 +1865,20 @@ function parseRombelSuper(str){
   if(s === 'B2') return 'B2';
   return s;
 }
+function parseJKSuper(str){
+  if(!str) return 'L';
+  const s = String(str).toUpperCase().trim();
+  if(s.startsWith('P') || s.includes('PEREMPUAN')) return 'P';
+  return 'L';
+}
+function detectSeparator(line){
+  if(line.includes('\t')) return '\t';
+  if(line.includes('|')) return '|';
+  if(line.includes(';')) return ';';
+  const commas = (line.match(/,/g) || []).length;
+  if(commas >= 2) return ',';
+  return '\t';
+}
 let parsedData = [];
 let importMode = 'siswa';
 
@@ -1803,8 +1890,10 @@ function openImportModal(mode){
   document.getElementById('btnProses').style.display = 'inline-flex';
   document.getElementById('btnSimpan').style.display = 'none';
   parsedData = [];
+  
   const titleEl = document.getElementById('modalImportTitle');
   const helpEl = document.getElementById('importHelp');
+  
   if(importMode === 'guru'){
     titleEl.textContent = '📥 Impor Data GTK dari Excel';
     helpEl.innerHTML = `<strong>Format kolom (10 kolom):</strong><br><code>Nama | NIK | NPK | JK | Tempat Lahir | Tgl Lahir | Pendidikan | TMT | Jabatan | HP | Email | Alamat</code>`;
@@ -1812,49 +1901,75 @@ function openImportModal(mode){
     titleEl.textContent = '📥 Impor Data Siswa dari Excel';
     helpEl.innerHTML = `<strong>Format Excel (Dimulai dari Kolom B):</strong><br><code>Nama | NIK | NISN | NIS Lokal | JK | Tempat Lahir | Tanggal Lahir | Rombel</code>`;
   }
+  
   document.getElementById('modalImport').classList.add('active');
 }
 
 function prosesImport(){
   const raw = document.getElementById('pasteArea').value.trim();
   if(!raw){ showToast('❌ Data kosong', 'error'); return; }
+  
   const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l);
   if(lines.length < 2){ showToast('❌ Minimal 2 baris', 'error'); return; }
+  
   const sep = lines[0].includes('\t') ? '\t' : (lines[0].includes('|') ? '|' : ',');
   parsedData = [];
+  
   lines.forEach(line => {
     let cols = line.split(sep).map(c => c.trim());
+    
     if(cols[0].toLowerCase().includes('nama')) return;
-    if(cols.length > 8) { cols.shift(); }
+
+    // LOGIKA PINTAR: Jika jumlah kolom > 8, berarti ada kolom "NO" di depan.
+    // Kita buang kolom pertama (angka NO) agar indeks data sejajar.
+    if(cols.length > 8) {
+      cols.shift(); 
+    }
+
     let nama = cols[0] || '';
     if(!nama || nama.length < 2) return;
+
     if(importMode === 'guru'){
       parsedData.push({
-        nama: nama, nik: cols[1] || '', npk: cols[2] || '', jk: cols[3] || 'L',
-        tempat_lahir: cols[4] || '', tanggal_lahir: parseTglSuper(cols[5]),
-        pendidikan: cols[6] || '', tmt: parseTglSuper(cols[7]), jabatan: cols[8] || 'Guru',
+        nama: nama, 
+        nik: cols[1] || '', 
+        npk: cols[2] || '',
+        jk: cols[3] || 'L',
+        tempat_lahir: cols[4] || '',
+        tanggal_lahir: parseTglSuper(cols[5]),
+        pendidikan: cols[6] || '',
+        tmt: parseTglSuper(cols[7]),
+        jabatan: cols[8] || 'Guru',
         hp: cols[9] || '', email: cols[10] || '', alamat: cols[11] || ''
       });
     } else {
       parsedData.push({
-        nama: nama, nik: cols[1] || '', nisn: cols[2] || '', nis_lokal: cols[3] || '',
-        jk: cols[4] || 'L', tempat_lahir: cols[5] || '', tanggal_lahir: parseTglSuper(cols[6]), 
-        rombel: parseRombelSuper(cols[7]), kelompok: parseRombelSuper(cols[7])
+        nama: nama, 
+        nik: cols[1] || '', 
+        nisn: cols[2] || '', 
+        nis_lokal: cols[3] || '',
+        jk: cols[4] || 'L', 
+        tempat_lahir: cols[5] || '',
+        tanggal_lahir: parseTglSuper(cols[6]), 
+        rombel: parseRombelSuper(cols[7]),
+        kelompok: parseRombelSuper(cols[7])
       });
     }
   });
 
   if(parsedData.length === 0){
-    document.getElementById('previewBox').innerHTML = '<div class="paste-help" style="border-color:#DC2626;color:#F87171"><strong>❌ Tidak ada data valid yang terbaca.</strong></div>';
+    document.getElementById('previewBox').innerHTML = '<div class="paste-help" style="border-color:#DC2626;color:#F87171"><strong>❌ Tidak ada data valid yang terbaca. Pastikan data di-copy dari Excel (bukan diketik manual).</strong></div>';
     return;
   }
 
   let previewHTML = '<div class="paste-help" style="border-color:#10B981;color:#6EE7B7"><strong>✅ ' + parsedData.length + ' data siap diimpor</strong></div>';
   previewHTML += '<div style="max-height:280px;overflow:auto;border:1px solid var(--border);border-radius:8px"><table style="min-width:600px"><thead><tr><th>Nama</th><th>NIK</th><th>JK</th><th>Tgl Lahir</th><th>Rombel</th></tr></thead><tbody>';
+  
   parsedData.slice(0, 50).forEach(p => {
     previewHTML += `<tr><td>${escapeHtml(p.nama)}</td><td>${escapeHtml(p.nik || '-')}</td><td>${p.jk}</td><td>${p.tanggal_lahir || '-'}</td><td>${p.rombel || '-'}</td></tr>`;
   });
   previewHTML += '</tbody></table></div>';
+  
   document.getElementById('previewBox').innerHTML = previewHTML;
   document.getElementById('btnSimpan').style.display = 'inline-flex';
   showToast('✅ ' + parsedData.length + ' data siap diimpor', 'success');
@@ -1863,6 +1978,7 @@ function prosesImport(){
 async function simpanImport(){
   if(parsedData.length === 0){ showToast('⚠️ Tidak ada data', 'error'); return; }
   const sanitize = (val) => (val && String(val).trim() !== '') ? String(val).trim() : null;
+
   if(importMode === 'guru'){
     const guruData = parsedData.map(p => ({
       nama: sanitize(p.nama), nik: sanitize(p.nik), npk: sanitize(p.npk), jk: p.jk,
