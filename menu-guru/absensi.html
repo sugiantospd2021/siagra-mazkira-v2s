@@ -83,7 +83,7 @@
   .orn-sparkle-2{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s}
   .orn-diamond-1{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s}
   
-  /* === PERBAIKAN 1: HEADER SEJAJAR === */
+  /* === HEADER SEJAJAR === */
   .header{
     position:sticky;top:0;z-index:100;
     background:var(--role-header-grad);
@@ -105,10 +105,9 @@
   .header-right button.logout{ background:linear-gradient(135deg,#EF4444,#B91C1C); color:#fff;border:none; padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;}
   .theme-toggle{ background:rgba(255,255,255,.1);border:none;color:#fff; width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer; }
 
-  /* === PERBAIKAN 1: HEADER DI HP === */
   @media(max-width:900px){
     .header { flex-wrap: nowrap; padding: 10px 16px; }
-    .header-left h1 { display: none; /* Sembunyikan judul di HP agar hemat tempat */ }
+    .header-left h1 { display: none; }
     .header-center { justify-content: flex-start; padding-left: 10px; }
     .jam-box { font-size: 11px; padding: 6px 12px; }
   }
@@ -118,11 +117,14 @@
     display:grid;grid-template-columns:300px 1fr;gap:24px;
     position:relative;z-index:1;align-items:start;
   }
-    .col-profil{ position:sticky;top:88px; }
+  
+  /* === PROFIL TIDAK TERPOTONG === */
+  .col-profil{ position:sticky;top:88px; }
   .profile-card{
     background:var(--role-card);border-radius:16px; border:2px solid var(--role-primary-dark);
-    display:flex;flex-direction:column; /* height:100% dihilangkan */
+    display:flex;flex-direction:column; 
   }
+  
   .profile-card-header{ padding:20px 18px;text-align:center; border-bottom:1px dashed var(--role-border); }
   .profile-photo{ width:80px;height:80px;border-radius:50%; background:var(--role-card-inner); margin:0 auto 12px; border:3px solid var(--role-primary-dark); overflow:hidden; }
   .profile-photo img{width:100%;height:100%;object-fit:cover}
@@ -446,7 +448,17 @@ function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); re
 function escapeHtml(s){ if(s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function normalisasiNama(nama){ if(!nama) return ''; let s = String(nama).trim().toLowerCase(); s = s.split(',')[0].trim(); s = s.replace(/[.,']/g,' ').replace(/\s+/g,' ').trim(); return s; }
 function namaPanggilan(nama){ if(!nama) return ''; return String(nama).split(',')[0].trim().split(/\s+/)[0] || nama; }
-function namaKeFile(nama){ let b = String(nama||'').split(',')[0].trim(); b = b.replace(/\s+/g,'-').replace(/[^a-zA-Z0-9\-]/g,''); return b; }
+
+/* === PERBAIKAN: Buang singkatan titik (P.S., S.Pd.) agar cocok dengan nama file === */
+function namaKeFile(nama){
+  let b = String(nama||'').split(',')[0].trim();
+  // Hapus pola huruf titik seperti P.S. atau S.Pd. di akhir nama
+  b = b.replace(/\s+[A-Z]\.(\s*[A-Z]\.)*\s*$/gi, ''); 
+  b = b.replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  b = b.replace(/[^a-zA-Z0-9\-]/g,'');
+  return b;
+}
+
 function formatTanggalPanjang(tgl){ if(!tgl) return '-'; const d = new Date(tgl + 'T00:00:00'); if(isNaN(d)) return tgl; return d.getDate() + ' ' + NAMA_BULAN_ID[d.getMonth()] + ' ' + d.getFullYear(); }
 function formatTanggalPendek(tgl){ if(!tgl) return '-'; const hari = ['Min','Sen','Sel','Rab','Kam','Jum','Sab']; const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des']; const d = new Date(tgl + 'T00:00:00'); if(isNaN(d)) return tgl; return hari[d.getDay()] + ', ' + d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear(); }
 function getWITA(){ const now = new Date(); const utc = now.getTime() + (now.getTimezoneOffset() * 60000); return new Date(utc + (8 * 3600000)); }
@@ -509,20 +521,20 @@ function avatarSvg(nama){ return `<svg viewBox="0 0 120 120" xmlns="http://www.w
 function pakaiFotoAtauAvatar(el, nama, fotoUrl){
   if(!el) return;
   
-  // 1. Coba ambil dari foto_url Supabase (seperti di guru.html)
+  // 1. Cek link dari Supabase (jika ada)
   if(fotoUrl && fotoUrl.trim() !== ''){ 
     el.innerHTML = `<img src="${fotoUrl}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; 
     return; 
   }
   
-  // 2. Coba ambil dari upload lokal (jika admin upload manual)
+  // 2. Cek dari upload lokal
   const fotoUpload = localStorage.getItem('ra_foto_' + nama);
   if(fotoUpload){ 
     el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; 
     return; 
   }
   
-  // 3. Coba cari file fisik di folder ../foto/ (cadangan)
+  // 3. Cari di folder foto/ dengan nama file yang sudah dibersihkan
   const baseName = namaKeFile(nama);
   const exts = ['jpg','png','jpeg','JPG','PNG'];
   let idx = 0;
@@ -548,14 +560,14 @@ function cariDataUser(){
 }
 
 async function muatData(){
-  // 1. Ambil dari cache HP dulu (biar profil langsung muncul tanpa nunggu internet)
+  // 1. Ambil dari cache HP dulu
   dataGuru = load(KEY_GURU, []) || []; 
   dataTendik = load(KEY_TENDIK, []) || []; 
   guruProfil = cariDataUser(); 
   renderPengisiInfo(); 
   renderProfil(); 
 
-  // 2. Jika internet ada, ambil data terbaru dari Supabase dan update profil
+  // 2. Ambil data terbaru dari Supabase
   if (typeof sb !== 'undefined') {
     try {
       const { data: t } = await sb.from('tendik').select('*'); 
@@ -567,7 +579,7 @@ async function muatData(){
       renderPengisiInfo(); 
       renderProfil(); 
       
-      // Panggil Rombel Otomatis setelah data profil fix
+      // Panggil Rombel Otomatis
       isiRombelOtomatis();
       
     } catch(e) {
@@ -629,24 +641,20 @@ function renderProfil(){
 }
 
 /* ============================================================
-   PERBAIKAN 2 & 5: ROMBEL OTOMATIS (BACA ID GURU PENDAMPING)
+   ROMBEL OTOMATIS
    ============================================================ */
 async function isiRombelOtomatis() {
   if (!guruProfil || typeof sb === 'undefined') return;
-  
   try {
     const { data: kelas } = await sb.from('kelas').select('*');
     if(kelas && kelas.length > 0) {
-      // Cari kelas di mana ID guru ini terdaftar sebagai Guru Utama ATAU Guru Pendamping
       const kelasSaya = kelas.find(k => {
         const isUtama = String(k.guru_utama_id).trim() === String(guruProfil.id).trim();
-        const isPendamping = String(k.guru_pendamping_id).trim() === String(guruProfil.id).trim(); // <-- ID tanpa 's'
+        const isPendamping = String(k.guru_pendamping_id).trim() === String(guruProfil.id).trim(); 
         return isUtama || isPendamping;
       });
-      
       if(kelasSaya) {
-        const namaRombel = kelasSaya.nama || kelasSaya.rombel || kelasSaya.kelompok || '';
-        document.getElementById('fRombel').value = namaRombel;
+        document.getElementById('fRombel').value = kelasSaya.nama || kelasSaya.rombel || kelasSaya.kelompok || '';
       }
     }
   } catch(e) { console.error("Gagal load rombel", e); }
@@ -896,7 +904,6 @@ async function simpanAbsen(){
 
 function resetForm(){
   document.getElementById('fTanggal').value = getTodayISO();
-  // document.getElementById('fRombel').value = ''; // Biarkan rombel tetap ada
   document.getElementById('fJamMasuk').value = ''; document.getElementById('fJamPulang').value = '';
   document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
   document.getElementById('fCatatan').value = ''; document.getElementById('fCutiDari').value = ''; document.getElementById('fCutiSampai').value = '';
