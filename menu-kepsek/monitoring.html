@@ -12,6 +12,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SIAGRA">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ✨ TAMBAHAN SUPABASE ✨ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
@@ -74,7 +79,6 @@
     font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
   }
 
-  /* ORNAMEN — 17 buah */
   .ornament{position:fixed;pointer-events:none;z-index:0;opacity:.35;animation:float 6s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(10deg)}}
   @keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(-25px) rotate(-12deg) scale(1.08)}}
@@ -102,7 +106,6 @@
   }
   @media(max-width:480px){.ornament{opacity:.22;font-size:22px!important}}
 
-  /* HEADER */
   .header{
     position:sticky;top:0;z-index:100;
     background:var(--role-header-grad);
@@ -149,14 +152,12 @@
     transform:translateY(-1px);
   }
 
-  /* WRAPPER */
   .wrapper{
     max-width:1280px;margin:0 auto;padding:24px 16px;
     display:grid;grid-template-columns:300px 1fr;gap:24px;
     position:relative;z-index:1;align-items:start;
   }
 
-  /* PROFIL */
   .col-profil{
     position:sticky;top:88px;
     height:calc(100vh - 110px);max-height:calc(100vh - 110px);
@@ -248,7 +249,6 @@
 
   .col-menu{min-width:0}
 
-  /* INTRO CARD */
   .intro-card{
     background:var(--role-intro-grad);
     color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px;
@@ -295,7 +295,6 @@
     box-shadow:0 6px 18px rgba(0,0,0,.25);
   }
 
-  /* FORM HEADER INLINE */
   .form-header-inline{
     display:flex;align-items:center;justify-content:space-between;
     gap:12px;margin-bottom:14px;flex-wrap:wrap;
@@ -331,7 +330,6 @@
     .form-header-inline .btn-back-inline{justify-content:center}
   }
 
-  /* SUB-TAB */
   .tabs{
     display:flex;gap:6px;margin-bottom:18px;
     background:var(--card);padding:6px;border-radius:14px;
@@ -362,7 +360,6 @@
     color:#fff;box-shadow:0 4px 14px rgba(59,130,246,.4);
   }
 
-  /* CARD */
   .card{
     background:var(--card);border-radius:16px;
     border:2px solid var(--border);
@@ -380,7 +377,6 @@
   }
   .card-title .emoji{font-size:19px}
 
-  /* TOOLBAR FILTER */
   .toolbar{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
@@ -405,13 +401,11 @@
     border-color:var(--accent);
     box-shadow:0 0 0 3px rgba(96,165,250,.25);
   }
-
   .toolbar-actions{
     display:flex;gap:10px;flex-wrap:wrap;
     margin-bottom:18px;
   }
 
-  /* BUTTONS */
   .btn{
     padding:11px 18px;border-radius:10px;border:none;
     font-family:inherit;font-size:13px;font-weight:800;
@@ -449,7 +443,6 @@
   .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(239,68,68,.55)}
   .btn-sm{font-size:11.5px;padding:7px 13px}
 
-  /* KPI CARDS */
   .kpi-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
@@ -482,7 +475,6 @@
   .kpi.done .kpi-value{color:#4ADE80;text-shadow:0 0 15px rgba(74,222,128,.4)}
   .kpi.info .kpi-value{color:#60A5FA;text-shadow:0 0 15px rgba(96,165,250,.4)}
 
-  /* TABEL MONITORING */
   .table-wrap{
     background:var(--card);border-radius:14px;
     border:2px solid var(--border);
@@ -537,7 +529,6 @@
   }
   body.light .data-table .empty{color:#1E40AF}
 
-  /* BADGE */
   .badge{
     display:inline-flex;align-items:center;gap:4px;
     padding:3px 10px;border-radius:100px;
@@ -555,7 +546,6 @@
   }
   body.dark .badge.belum{color:#F87171;background:rgba(248,113,113,.18);border-color:rgba(248,113,113,.5)}
 
-  /* PERSEN BOX */
   .persen-box{
     background:var(--card-inner);border:2px solid var(--border);
     border-radius:12px;padding:16px;margin-bottom:16px;
@@ -584,7 +574,6 @@
     border-radius:100px;transition:width .6s ease;
   }
 
-  /* STAT GRID */
   .stat-grid{
     display:grid;grid-template-columns:repeat(5,1fr);
     gap:10px;margin-bottom:16px;
@@ -612,7 +601,6 @@
   .stat-box[data-s="cuti"]{--status-color:var(--absen-cuti)}
   .stat-box[data-s="alpa"]{--status-color:var(--absen-alpa)}
 
-  /* REKAP GURU CARD */
   .rekap-guru-card{
     background:var(--card);border-radius:14px;
     padding:18px 20px;border:2px solid var(--border);
@@ -692,7 +680,6 @@
   }
   body.light .rekap-empty{color:#1E40AF}
 
-  /* REKAP FILTER */
   .rekap-bulanan-filter{
     display:grid;grid-template-columns:1fr 1fr 1fr;
     gap:10px;margin-bottom:18px;
@@ -717,7 +704,6 @@
     box-shadow:0 0 0 3px rgba(96,165,250,.25);
   }
 
-  /* STATUS PILL */
   .status-pill{
     display:inline-flex;align-items:center;gap:4px;
     padding:3px 9px;border-radius:100px;
@@ -734,7 +720,6 @@
   .status-pill[data-s="alpa"]{--status-color:var(--absen-alpa)}
   .status-pill[data-s="belum"]{--status-color:#64748B}
 
-  /* MODAL */
   .modal-overlay{
     position:fixed;inset:0;
     background:rgba(0,0,0,.75);
@@ -798,7 +783,6 @@
     display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;
   }
 
-  /* TOAST */
   .toast{
     position:fixed;bottom:24px;left:50%;
     transform:translateX(-50%) translateY(100px);
@@ -816,7 +800,6 @@
   .toast.info{background:linear-gradient(135deg,#1E3A8A,#1D4ED8)}
   .toast.warn{background:linear-gradient(135deg,#78350F,#D97706)}
 
-  /* FOOTER */
   .footer{
     text-align:center;padding:20px 12px;
     font-size:14px;color:var(--yellow);font-weight:700;
@@ -826,7 +809,6 @@
   .footer strong{color:var(--yellow);font-weight:900;font-size:15px}
   body.light .footer strong{color:#D97706}
 
-  /* RESPONSIVE */
   @media(max-width:900px){
     .wrapper{grid-template-columns:1fr;gap:18px}
     .col-profil{position:static;height:auto;max-height:none}
@@ -909,7 +891,7 @@
   <!-- KOLOM KANAN: KONTEN MONITORING -->
   <div class="col-menu">
 
-    <!-- INTRO CARD — tanpa tombol -->
+    <!-- INTRO CARD -->
     <div class="intro-card" id="introCardMonitoring">
       <h2>📊 Monitoring Absensi Guru</h2>
       <p>Pantau kehadiran guru dan tenaga kependidikan — lihat status harian, rekap bulanan, dan export data absensi.</p>
@@ -922,8 +904,8 @@
         <span>Monitoring Absensi</span>
       </div>
       <a class="btn-back-inline" href="../kepsek.html" title="Kembali ke halaman utama">
-  ← Kembali ke Menu
-</a>
+        ← Kembali ke Menu
+      </a>
     </div>
 
     <!-- SUB-TAB: HARIAN / REKAP BULANAN -->
@@ -1142,7 +1124,7 @@
 
 <script>
 /* ============================================================
-   KONFIGURASI STORAGE
+   KONFIGURASI STORAGE (Hanya untuk cache fallback)
    ============================================================ */
 const STORAGE = {
   kepsek   : 'ra_kepsek',
@@ -1154,7 +1136,7 @@ const STORAGE = {
 };
 
 /* ============================================================
-   DATA FALLBACK — WAJIB MUNCUL
+   DATA FALLBACK — WAJIB MUNCUL JIKA DB KOSONG
    ============================================================ */
 const FALLBACK_ORANG = [
   {
@@ -1226,17 +1208,15 @@ function keteranganMultiBaris(ket){
   return parts.map(p => '💡 ' + escapeHtml(p)).join('<br>');
 }
 
-/* ✨ PATCH BARU — Bersihkan label rombel */
+/* ✨ Bersihkan label rombel */
 function bersihkanRombel(raw){
   if(!raw) return '—';
   let s = String(raw).trim();
-  // Hilangkan kata "Kelompok", "Rombel", "Kelas", "Group"
   s = s.replace(/\bkelompok\b/gi, '');
   s = s.replace(/\brombel\b/gi, '');
   s = s.replace(/\bkelas\b/gi, '');
   s = s.replace(/\bgroup\b/gi, '');
   s = s.replace(/\s+/g, ' ').trim();
-  // Hilangkan tanda kurung, koma, strip di ujung
   s = s.replace(/^[\(\[\-,\s]+|[\)\]\-,\s]+$/g, '');
   return s || '—';
 }
@@ -1294,7 +1274,7 @@ function downloadFile(filename, content, mime){
 }
 
 /* ============================================================
-   BEEP
+   BEEP & TOAST
    ============================================================ */
 function playBeep(type){
   try{
@@ -1329,9 +1309,6 @@ function playBeep(type){
   }catch(e){}
 }
 
-/* ============================================================
-   TOAST — dengan BEEP
-   ============================================================ */
 function showToast(msg, type){
   const t = document.getElementById('toast');
   if(!t) return;
@@ -1345,7 +1322,7 @@ function showToast(msg, type){
 }
 
 /* ============================================================
-   THEME
+   THEME & JAM
    ============================================================ */
 function applyTheme(){
   const theme = localStorage.getItem('theme') || 'dark';
@@ -1362,9 +1339,6 @@ function toggleTheme(){
 }
 applyTheme();
 
-/* ============================================================
-   JAM WITA
-   ============================================================ */
 function updateClock(){
   const w = getWITA();
   const h = String(w.getHours()).padStart(2,'0');
@@ -1386,38 +1360,27 @@ if(!user || user.role !== 'kepala'){
 }
 
 /* ============================================================
-   CARI DATA KEPSEK
+   CARI DATA KEPSEK (Untuk Profil)
    ============================================================ */
-function cariDataKepsek(){
-  const guruList = getLS(STORAGE.guru, []) || [];
+async function cariDataKepsek(){
   const namaLogin = normalisasiNama(user.nama);
+  if (typeof sb === 'undefined') return null;
 
-  if(guruList.length){
-    let found = guruList.find(g => {
-      const jabatan = (g.jabatan || '').toLowerCase();
-      if(!jabatan.includes('kepala')) return false;
-      return normalisasiNama(g.nama) === namaLogin;
-    });
-    if(!found) found = guruList.find(g => normalisasiNama(g.nama) === namaLogin);
-    if(!found){
-      const depan = namaLogin.split(' ')[0];
-      found = guruList.find(g => normalisasiNama(g.nama).split(' ')[0] === depan);
-    }
-    if(!found){
-      found = guruList.find(g => {
-        const n = normalisasiNama(g.nama);
-        return namaLogin.includes(n) || n.includes(namaLogin);
-      });
-    }
-    if(found) return found;
+  let { data, error } = await sb.from('guru').select('*').ilike('nama', `%${namaLogin}%`).limit(1).maybeSingle();
+  if(error) console.error(error);
+  if(data) return data;
+
+  const depan = namaLogin.split(' ')[0];
+  if(depan.length > 2){
+    let { data: data2 } = await sb.from('guru').select('*').ilike('nama', `%${depan}%`).limit(1).maybeSingle();
+    if(data2) return data2;
   }
 
-  if(namaLogin.includes('sugianto')){
-    return FALLBACK_ORANG[0];
-  }
+  if(namaLogin.includes('sugianto')) return FALLBACK_ORANG[0];
   return null;
 }
-const dataKepsek = cariDataKepsek();
+
+let dataKepsek = null;
 
 /* ============================================================
    AVATAR SVG
@@ -1483,10 +1446,12 @@ function pakaiFotoAtauAvatar(el, nama){
 /* ============================================================
    RENDER PROFIL KEPSEK
    ============================================================ */
-function renderProfil(){
+async function renderProfil(){
   const body = document.getElementById('profileBody');
   const nama = user.nama;
   if(!body) return;
+
+  dataKepsek = await cariDataKepsek();
 
   if(!dataKepsek){
     document.getElementById('profileNama').textContent = nama;
@@ -1553,7 +1518,7 @@ function renderProfil(){
 }
 
 /* ============================================================
-   HELPER — CEK TANPA ROMBEL
+   HELPER: CEK TANPA ROMBEL
    ============================================================ */
 function tanpaRombel(jabatan){
   if(!jabatan) return false;
@@ -1562,19 +1527,20 @@ function tanpaRombel(jabatan){
 }
 
 /* ============================================================
-   LOAD DATA ORANG (GURU + TENDIK + FALLBACK WAJIB)
-   + SORT A-Z
+   LOAD DATA DARI SUPABASE (GURU, TENDIK, ABSENSI)
    ============================================================ */
 let DATA_MONITORING = [];
 let DATA_ORANG = [];
 
-function loadDataOrang(){
-  const guruList   = getLS(STORAGE.guru, []) || [];
-  const tendikList = getLS(STORAGE.tendik, []) || [];
+async function loadDataOrang(){
+  if (typeof sb === 'undefined') return;
+  
+  const { data: guruList, error: errGuru } = await sb.from('guru').select('*');
+  const { data: tendikList, error: errTendik } = await sb.from('tendik').select('*');
 
   let gabung = [
-    ...guruList.map(g => ({ ...g, _sumber: 'guru' })),
-    ...tendikList.map(t => ({ ...t, _sumber: 'tendik' }))
+    ...(guruList || []).map(g => ({ ...g, _sumber: 'guru' })),
+    ...(tendikList || []).map(t => ({ ...t, _sumber: 'tendik' }))
   ];
 
   // Pastikan Sugianto & PUSPA ERMA SARI selalu ada
@@ -1583,7 +1549,7 @@ function loadDataOrang(){
     if(!ada) gabung.push(f);
   });
 
-  // ✨ PATCH: Urutkan A-Z berdasarkan nama
+  // Urutkan A-Z
   gabung.sort((a,b) =>
     (a.nama || '').localeCompare(b.nama || '', 'id', { sensitivity: 'base' })
   );
@@ -1592,18 +1558,27 @@ function loadDataOrang(){
   return DATA_ORANG;
 }
 
-/* ✨ PATCH: Bangun DATA_MONITORING + Rombel bersih + Sort A-Z */
-function buildMonitoringTanggal(tanggal){
+async function buildMonitoringTanggal(tanggal){
   if(!tanggal) tanggal = getTodayISO();
-  const absenList = getLS(STORAGE.absen, []) || [];
+  if (typeof sb === 'undefined') return [];
+
+  // Ambil dari tabel 'absensi' di Supabase berdasarkan tanggal
+  const { data: absenList, error } = await sb
+    .from('absensi')
+    .select('*')
+    .eq('tanggal', tanggal);
+
+  if (error) {
+    console.error("Gagal load absensi dari Supabase:", error);
+    return [];
+  }
+
   const absenHariIni = {};
   absenList.forEach(a => {
-    if(a.tanggal === tanggal){
-      absenHariIni[normalisasiNama(a.guru)] = a;
-    }
+    const namaKey = a.nama_guru || a.guru; 
+    if(namaKey) absenHariIni[normalisasiNama(namaKey)] = a;
   });
 
-  // Urutkan A-Z dulu sebelum map
   const orangSorted = [...DATA_ORANG].sort((a,b) =>
     (a.nama || '').localeCompare(b.nama || '', 'id', { sensitivity: 'base' })
   );
@@ -1612,7 +1587,6 @@ function buildMonitoringTanggal(tanggal){
     const namaNorm = normalisasiNama(o.nama);
     const rec = absenHariIni[namaNorm];
 
-    // ✨ PATCH: Rombel — bersihkan kata "Kelompok/Rombel/Kelas"
     let rombel = '—';
     if(!tanpaRombel(o.jabatan)){
       let raw = '';
@@ -1629,28 +1603,28 @@ function buildMonitoringTanggal(tanggal){
       rombel: rombel,
       tanggal: tanggal,
       status: rec ? 'sudah' : 'belum',
-      statusAbsen: rec ? rec.status : '',
-      jamMasuk: rec ? (rec.jamMasuk || '') : '',
-      jamPulang: rec ? (rec.jamPulang || '') : '',
+      statusAbsen: rec ? (rec.status || rec.keterangan) : '',
+      jamMasuk: rec ? (rec.jam_masuk || rec.jamMasuk || '') : '',
+      jamPulang: rec ? (rec.jam_pulang || rec.jamPulang || '') : '',
       keterangan: rec ? (rec.keterangan || '') : '',
       catatan: rec ? (rec.catatan || '') : '',
-      cutiDari: rec ? (rec.cutiDari || '') : '',
-      cutiSampai: rec ? (rec.cutiSampai || '') : ''
+      cutiDari: rec ? (rec.cuti_dari || '') : '',
+      cutiSampai: rec ? (rec.cuti_sampai || '') : ''
     };
   });
 }
 
-function loadMonitoring(){
-  loadDataOrang();
+async function loadMonitoring(){
+  await loadDataOrang();
   const tgl = (document.getElementById('fTanggal') || {}).value || getTodayISO();
-  DATA_MONITORING = buildMonitoringTanggal(tgl);
+  DATA_MONITORING = await buildMonitoringTanggal(tgl);
   renderKPI(DATA_MONITORING);
   renderTabel(DATA_MONITORING);
   updateProgress(DATA_MONITORING);
 }
 
 /* ============================================================
-   RENDER KPI — 4 kartu
+   RENDER KPI & PROGRESS
    ============================================================ */
 function renderKPI(data){
   const total = data.length;
@@ -1669,9 +1643,6 @@ function renderKPI(data){
   if(elPersen) elPersen.textContent = persen + '%';
 }
 
-/* ============================================================
-   UPDATE PROGRESS BAR
-   ============================================================ */
 function updateProgress(data){
   const total = data.length;
   const sudah = data.filter(d => d.status === 'sudah').length;
@@ -1684,7 +1655,7 @@ function updateProgress(data){
 }
 
 /* ============================================================
-   RENDER TABEL
+   RENDER TABEL MONITORING
    ============================================================ */
 function renderTabel(data){
   const tbody = document.getElementById('tbodyMonitoring');
@@ -1716,15 +1687,15 @@ function renderTabel(data){
 }
 
 /* ============================================================
-   FILTER (Harian)
+   FILTER
    ============================================================ */
-function applyFilter(){
+async function applyFilter(){
   const fR = document.getElementById('fRombel').value;
   const fT = document.getElementById('fTanggal').value;
   const fS = document.getElementById('fStatus').value;
 
   const tgl = fT || getTodayISO();
-  let filtered = buildMonitoringTanggal(tgl);
+  let filtered = await buildMonitoringTanggal(tgl);
 
   if(fR){
     filtered = filtered.filter(d => d.rombel === fR);
@@ -1745,7 +1716,7 @@ function applyFilter(){
     showToast('✅ Filter diterapkan: ' + filtered.length + ' baris', 'info');
   }
 }
-function resetFilter(){
+async function resetFilter(){
   const elR = document.getElementById('fRombel');
   const elT = document.getElementById('fTanggal');
   const elS = document.getElementById('fStatus');
@@ -1753,7 +1724,7 @@ function resetFilter(){
   if(elT) elT.value = getTodayISO();
   if(elS) elS.value = '';
 
-  DATA_MONITORING = buildMonitoringTanggal(getTodayISO());
+  DATA_MONITORING = await buildMonitoringTanggal(getTodayISO());
   renderKPI(DATA_MONITORING);
   renderTabel(DATA_MONITORING);
   updateProgress(DATA_MONITORING);
@@ -1841,14 +1812,30 @@ function isiDropdownGuruRekap(){
 /* ============================================================
    REKAP BULANAN — RENDER
    ============================================================ */
-function renderRekapBulanan(){
+async function renderRekapBulanan(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
   const cont = document.getElementById('rekapContent');
   if(!cont) return;
 
-  const semuaAbsen = getLS(STORAGE.absen, []) || [];
-  let dataBulan = semuaAbsen.filter(d => (d.tanggal || '').substring(0,7) === bulan);
+  if (typeof sb === 'undefined') {
+    cont.innerHTML = `<div class="rekap-empty">❌ Koneksi database terputus.</div>`;
+    return;
+  }
+
+  // Ambil data bulan ini dari Supabase
+  const { data: absenBulan, error } = await sb
+    .from('absensi')
+    .select('*')
+    .like('tanggal', `${bulan}%`);
+
+  if (error) {
+    console.error(error);
+    cont.innerHTML = `<div class="rekap-empty">❌ Gagal mengambil data rekap.</div>`;
+    return;
+  }
+
+  let dataBulan = absenBulan || [];
 
   let orangTampil;
   if(guruFilter){
@@ -1873,7 +1860,7 @@ function renderRekapBulanan(){
   if(guruFilter){
     const g = orangTampil[0];
     const absenGuru = dataBulan
-      .filter(d => normalisasiNama(d.guru) === normalisasiNama(g.nama))
+      .filter(d => normalisasiNama(d.nama_guru || d.guru) === normalisasiNama(g.nama))
       .sort((a,b) => (a.tanggal||'').localeCompare(b.tanggal||''));
 
     const count = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
@@ -1934,8 +1921,8 @@ function renderRekapBulanan(){
           <tr>
             <td style="font-weight:700">${escapeHtml(fmtTanggalPendek(d.tanggal))}</td>
             <td style="text-align:center"><span class="status-pill" data-s="${d.status}">${info.emoji} ${info.nama}</span></td>
-            <td style="text-align:center">${escapeHtml(d.jamMasuk||'-')}</td>
-            <td style="text-align:center">${escapeHtml(d.jamPulang||'-')}</td>
+            <td style="text-align:center">${escapeHtml(d.jam_masuk||'-')}</td>
+            <td style="text-align:center">${escapeHtml(d.jam_pulang||'-')}</td>
             <td style="font-size:11px;line-height:1.6">${ketHtml}</td>
           </tr>`;
       });
@@ -1974,7 +1961,7 @@ function renderRekapBulanan(){
     `;
 
     orangTampil.forEach(g => {
-      const absenG = dataBulan.filter(d => normalisasiNama(d.guru) === normalisasiNama(g.nama));
+      const absenG = dataBulan.filter(d => normalisasiNama(d.nama_guru || d.guru) === normalisasiNama(g.nama));
       const c = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
       absenG.forEach(d => { if(c[d.status] !== undefined) c[d.status]++; });
       const t = absenG.length;
@@ -2192,12 +2179,12 @@ function exportMonitoring(){
 /* ============================================================
    EXPORT REKAP BULANAN (Word)
    ============================================================ */
-function exportRekapBulananWord(){
+async function exportRekapBulananWord(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
 
-  const semuaAbsen = getLS(STORAGE.absen, []) || [];
-  let dataBulan = semuaAbsen.filter(d => (d.tanggal||'').substring(0,7) === bulan);
+  const { data: absenBulan } = await sb.from('absensi').select('*').like('tanggal', `${bulan}%`);
+  let dataBulan = absenBulan || [];
 
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
@@ -2217,7 +2204,7 @@ function exportRekapBulananWord(){
   if(guruFilter){
     const g = orangTampil[0];
     const absenG = dataBulan
-      .filter(d => normalisasiNama(d.guru) === normalisasiNama(g.nama))
+      .filter(d => normalisasiNama(d.nama_guru || d.guru) === normalisasiNama(g.nama))
       .sort((a,b) => (a.tanggal||'').localeCompare(b.tanggal||''));
 
     const c = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
@@ -2233,8 +2220,8 @@ function exportRekapBulananWord(){
       rows += `<tr>
         <td style="text-align:center;white-space:nowrap">${fmtTanggal(d.tanggal)}</td>
         <td style="text-align:center;white-space:nowrap">${info.emoji} ${info.nama}</td>
-        <td style="text-align:center">${escapeHtml(d.jamMasuk||'-')}</td>
-        <td style="text-align:center">${escapeHtml(d.jamPulang||'-')}</td>
+        <td style="text-align:center">${escapeHtml(d.jam_masuk||'-')}</td>
+        <td style="text-align:center">${escapeHtml(d.jam_pulang||'-')}</td>
         <td>${ketHtml}</td>
       </tr>`;
     });
@@ -2266,7 +2253,7 @@ function exportRekapBulananWord(){
     const total = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
     let rows = '';
     orangTampil.forEach(g => {
-      const absenG = dataBulan.filter(d => normalisasiNama(d.guru) === normalisasiNama(g.nama));
+      const absenG = dataBulan.filter(d => normalisasiNama(d.nama_guru || d.guru) === normalisasiNama(g.nama));
       const c = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
       absenG.forEach(d => { if(c[d.status] !== undefined) c[d.status]++; });
       const t = absenG.length;
@@ -2387,12 +2374,12 @@ function exportRekapBulananWord(){
 /* ============================================================
    CETAK REKAP BULANAN (Print)
    ============================================================ */
-function cetakRekapBulanan(){
+async function cetakRekapBulanan(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
 
-  const semuaAbsen = getLS(STORAGE.absen, []) || [];
-  let dataBulan = semuaAbsen.filter(d => (d.tanggal||'').substring(0,7) === bulan);
+  const { data: absenBulan } = await sb.from('absensi').select('*').like('tanggal', `${bulan}%`);
+  let dataBulan = absenBulan || [];
 
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
@@ -2412,7 +2399,7 @@ function cetakRekapBulanan(){
   if(guruFilter){
     const g = orangTampil[0];
     const absenG = dataBulan
-      .filter(d => normalisasiNama(d.guru) === normalisasiNama(g.nama))
+      .filter(d => normalisasiNama(d.nama_guru || d.guru) === normalisasiNama(g.nama))
       .sort((a,b) => (a.tanggal||'').localeCompare(b.tanggal||''));
     const c = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
     absenG.forEach(d => { if(c[d.status] !== undefined) c[d.status]++; });
@@ -2426,8 +2413,8 @@ function cetakRekapBulanan(){
       rows += `<tr>
         <td style="text-align:center">${fmtTanggal(d.tanggal)}</td>
         <td style="text-align:center">${info.emoji} ${info.nama}</td>
-        <td style="text-align:center">${escapeHtml(d.jamMasuk||'-')}</td>
-        <td style="text-align:center">${escapeHtml(d.jamPulang||'-')}</td>
+        <td style="text-align:center">${escapeHtml(d.jam_masuk||'-')}</td>
+        <td style="text-align:center">${escapeHtml(d.jam_pulang||'-')}</td>
         <td>${ketRaw ? keteranganMultiBaris(ketRaw) : '-'}</td>
       </tr>`;
     });
@@ -2459,7 +2446,7 @@ function cetakRekapBulanan(){
     const total = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
     let rows = '';
     orangTampil.forEach(g => {
-      const absenG = dataBulan.filter(d => normalisasiNama(d.guru) === normalisasiNama(g.nama));
+      const absenG = dataBulan.filter(d => normalisasiNama(d.nama_guru || d.guru) === normalisasiNama(g.nama));
       const c = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
       absenG.forEach(d => { if(c[d.status] !== undefined) c[d.status]++; });
       const t = absenG.length;
@@ -2584,7 +2571,7 @@ function logout(){
 }
 
 /* ============================================================
-   HANDLER KLIK
+   HANDLER KLIK & DEEP-LINK
    ============================================================ */
 function tanganiAksiClick(e, hash, namaFungsi){
   if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
@@ -2597,9 +2584,6 @@ function tanganiAksiClick(e, hash, namaFungsi){
   }
 }
 
-/* ============================================================
-   DEEP-LINK DARI HASH
-   ============================================================ */
 function bukaDariHash(){
   const hash = (location.hash || '').toLowerCase();
   if(!hash) return;
@@ -2625,7 +2609,7 @@ function bukaDariHash(){
 }
 
 /* ============================================================
-   KLIK OVERLAY & ESC — TUTUP MODAL
+   KLIK OVERLAY & ESC
    ============================================================ */
 const modalOverlay = document.getElementById('modalDetail');
 if(modalOverlay){
@@ -2641,7 +2625,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ============================================================
-   SEMBUNYIKAN WELCOME CARD INJECTION DARI menu-context.js
+   SEMBUNYIKAN WELCOME CARD
    ============================================================ */
 function sembunyikanWelcomeInjection(){
   const selectors = ['.welcome', '.welcome-card', '.welcome-container', '#welcomeCard'];
@@ -2665,24 +2649,21 @@ function sembunyikanWelcomeInjection(){
 /* ============================================================
    INIT
    ============================================================ */
-function init(){
+async function init(){
   const elTgl = document.getElementById('fTanggal');
   if(elTgl && !elTgl.value) elTgl.value = getTodayISO();
 
   const rkBulan = document.getElementById('rkBulan');
   if(rkBulan && !rkBulan.value) rkBulan.value = getTodayISO().substring(0,7);
 
-  renderProfil();
-  loadMonitoring();
+  await renderProfil();
+  await loadMonitoring();
 
   setTimeout(sembunyikanWelcomeInjection, 50);
   setTimeout(sembunyikanWelcomeInjection, 300);
   setTimeout(sembunyikanWelcomeInjection, 800);
 
-  console.log('✅ monitoring.html loaded — SIAGRA v.2.s');
-  console.log('👤 Kepsek:', user.nama);
-  console.log('📋 Data orang:', DATA_ORANG.length, '(guru + tendik + fallback)');
-  console.log('📊 Data monitoring harian:', DATA_MONITORING.length, 'entri');
+  console.log('✅ monitoring.html loaded — SIAGRA v.2.s (Supabase Ready)');
 }
 init();
 
