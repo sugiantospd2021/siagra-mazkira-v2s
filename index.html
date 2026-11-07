@@ -705,21 +705,14 @@ function updateClock(){
   const h = String(wita.getHours()).padStart(2,'0');
   const m = String(wita.getMinutes()).padStart(2,'0');
 
-  let teks = '';
-  if (window.innerWidth <= 760) {
-    teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + '<br>' + h + '.' + m + ' WITA';
-  } else {
-    teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
-  }
+  // 1 BARIS UNTUK SEMUA LAYAR
+  const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
 
   const el = document.getElementById('liveClock');
   if (el) {
-    if (window.innerWidth <= 760) {
-      el.innerHTML = teks;
-    } else {
-      el.textContent = teks;
-    }
+    el.textContent = teks;
   }
+}
 }
 
 /* ---------- LOGO AUTO-FALLBACK ---------- */
