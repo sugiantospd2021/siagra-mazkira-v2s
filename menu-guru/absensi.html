@@ -83,28 +83,35 @@
   .orn-sparkle-2{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s}
   .orn-diamond-1{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s}
   
-    @media(max-width:900px){
-    .wrapper{ display: flex !important; flex-direction: column !important; padding: 12px !important; }
-    .col-profil{ position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
-    .profile-card{ max-width: 100% !important; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .profile-card-body{ display: none !important; } /* Sembunyikan detail panjang di HP */
-    .form-grid, .jam-row{ display: grid !important; grid-template-columns: 1fr !important; }
-    .tabs{ flex-wrap: wrap !important; justify-content: center; }
-    .tab-btn{ flex: 1 1 45% !important; font-size: 12px !important; }
+  /* === PERBAIKAN 1: HEADER SEJAJAR === */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:var(--role-header-grad);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);
+    border-bottom:2px solid var(--role-header-border);
   }
-  .header-left h1{font-size:17px;color:var(--role-header-text);font-weight:800}
-  .header-center{flex:1;display:flex;justify-content:center}
+  .header-left{display:flex;align-items:center;}
+  .header-left h1{font-size:17px;color:var(--role-header-text);font-weight:800;white-space:nowrap}
+  .header-center{display:flex;justify-content:center;flex:1;}
   .jam-box{
     display:inline-flex;align-items:center;gap:8px;
     background:rgba(255,255,255,.08); border:1.5px solid var(--role-primary);
     color:#fff;padding:8px 18px;border-radius:100px;
-    font-size:12.5px;font-weight:700;backdrop-filter:blur(10px);
+    font-size:12.5px;font-weight:700;
   }
-  .jam-dot{ width:8px;height:8px;border-radius:50%;background:var(--role-accent); animation:pulse 2s ease-in-out infinite; }
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .header-right{display:flex;gap:8px;align-items:center}
+  .header-right{display:flex;gap:8px;align-items:center;}
+  .header-right button.logout{ background:linear-gradient(135deg,#EF4444,#B91C1C); color:#fff;border:none; padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;}
   .theme-toggle{ background:rgba(255,255,255,.1);border:none;color:#fff; width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer; }
-  .header-right button.logout{ background:linear-gradient(135deg,#EF4444,#B91C1C); color:#fff;border:none; padding:8px 16px;border-radius:8px;font-weight:700; }
+
+  /* === PERBAIKAN 1: HEADER DI HP === */
+  @media(max-width:900px){
+    .header { flex-wrap: nowrap; padding: 10px 16px; }
+    .header-left h1 { display: none; /* Sembunyikan judul di HP agar hemat tempat */ }
+    .header-center { justify-content: flex-start; padding-left: 10px; }
+    .jam-box { font-size: 11px; padding: 6px 12px; }
+  }
 
   .wrapper{
     max-width:1280px;margin:0 auto;padding:24px 16px;
@@ -119,8 +126,9 @@
   .profile-card-header{ padding:20px 18px;text-align:center; border-bottom:1px dashed var(--role-border); }
   .profile-photo{ width:80px;height:80px;border-radius:50%; background:var(--role-card-inner); margin:0 auto 12px; border:3px solid var(--role-primary-dark); overflow:hidden; }
   .profile-photo img{width:100%;height:100%;object-fit:cover}
-  .profile-card-header h2{ font-size:14.5px;font-weight:800; color:var(--text); }
-  .profile-card-header .jabatan-badge{ display:inline-block;padding:4px 12px;border-radius:100px; font-size:10.5px;font-weight:700; background:var(--role-primary); color:#fff; margin-top:6px; }
+  .profile-card-header h2{ font-size:14.5px;font-weight:800; color:var(--text); margin-bottom: 4px;}
+  .profile-card-header .jabatan-badge{ display:inline-block;padding:4px 12px;border-radius:100px; font-size:10.5px;font-weight:700; background:var(--role-primary); color:#fff; }
+  .profile-card-header .lama-text{ display:block; font-size: 11.5px; font-weight:700; color: var(--role-header-text); margin-top: 8px;}
   .profile-card-body{ flex:1;overflow-y:auto;padding:14px 18px; }
   .info-section-title{ font-size:10px;font-weight:800;color:var(--sub); margin:10px 0 8px; text-transform:uppercase; }
   .info-list{display:flex;flex-direction:column;gap:6px}
@@ -198,33 +206,14 @@
   .toast.show{ transform:translate(-50%, 0);opacity:1; }
   .toast.success{background:#059669} .toast.error{background:#DC2626} .toast.info{background:#3B82F6} .toast.warn{background:#D97706}
 
-  /* === PAKSA TAMPILAN HP JADI 1 KOLOM === */
   @media (max-width: 900px) {
-    .wrapper {
-      display: flex !important;
-      flex-direction: column !important;
-      padding: 12px !important;
-    }
-    .col-profil {
-      position: static !important;
-      height: auto !important;
-      margin-bottom: 20px;
-    }
-    .profile-card {
-      height: auto !important;
-      max-height: 400px;
-    }
-    .form-grid, .jam-row {
-      display: grid !important;
-      grid-template-columns: 1fr !important; /* Paksa jadi 1 kolom */
-    }
-    .tabs {
-      flex-wrap: wrap !important;
-    }
-    .tab-btn {
-      min-width: 45% !important;
-      font-size: 12px !important;
-    }
+    .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
+    .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
+    .profile-card { max-width: 100% !important; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .profile-card-body{ display: none !important; } 
+    .form-grid, .jam-row{ display: grid !important; grid-template-columns: 1fr !important; }
+    .tabs{ flex-wrap: wrap !important; justify-content: center; }
+    .tab-btn{ flex: 1 1 45% !important; font-size: 12px !important; }
   }
 </style>
 </head>
@@ -252,12 +241,9 @@
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-left">
-    <h1 id="headerTitle">Absensi</h1>
-  </div>
+  <div class="header-left"><h1 id="headerTitle">Absensi</h1></div>
   <div class="header-center">
     <div class="jam-box">
-      <span class="jam-dot"></span>
       <span id="liveClock">Memuat...</span>
     </div>
   </div>
@@ -266,9 +252,6 @@
     <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Ganti Tema">🌙</button>
   </div>
 </div>
-
-<!-- LOGO TERSEMBUNYI UNTUK EXPORT WORD -->
-<img id="logoForWord" src="../logo-mazkira.png" crossorigin="anonymous" style="display:none">
 
 <!-- WRAPPER -->
 <div class="wrapper">
@@ -282,46 +265,28 @@
         <div class="jabatan-badge" id="profileJabatan">-</div>
         <span class="lama-text" id="profileLama">-</span>
       </div>
-      <div class="profile-card-body" id="profileBody">
-        <!-- diisi JavaScript -->
-      </div>
+      <div class="profile-card-body" id="profileBody"></div>
     </div>
   </div>
 
   <!-- KOLOM KANAN: KONTEN -->
   <div class="col-menu">
 
-    <!-- INTRO CARD -->
     <div class="intro-card">
       <h2>📅 Absensi Harian</h2>
       <p>Catat kehadiran Anda setiap hari — data absensi pribadi, riwayat lengkap, dan rekap otomatis.</p>
     </div>
 
-    <!-- JUDUL FORM + TOMBOL KEMBALI -->
     <div class="form-header-inline">
-      <div class="form-title-text">
-        <span class="emoji">📝</span>
-        <span>Formulir Absensi</span>
-      </div>
-      <a class="btn-back-inline" href="../guru.html" id="btnKembaliMenu" title="Kembali ke halaman utama">
-        ← Kembali ke Menu
-      </a>
+      <div class="form-title-text"><span>📝</span><span>Formulir Absensi</span></div>
+      <a class="btn-back-inline" href="../guru.html">← Kembali ke Menu</a>
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
-      <a class="tab-btn active" id="tabForm" href="#absen-hari-ini" onclick="tanganiTabClick(event,'form')">
-        ✍️ Absen Hari Ini
-      </a>
-      <a class="tab-btn" id="tabList" href="#riwayat" onclick="tanganiTabClick(event,'list')">
-        📚 Riwayat <span id="countBadge" style="opacity:.85">(0)</span>
-      </a>
-      <a class="tab-btn" id="tabRekap" href="#rekap-bulanan" onclick="tanganiTabClick(event,'rekap')">
-        📊 Rekap Bulanan
-      </a>
-      <a class="tab-btn" id="tabBackup" href="#backup" onclick="tanganiTabClick(event,'backup')">
-        ☁️ Backup
-      </a>
+      <a class="tab-btn active" id="tabForm" href="#absen-hari-ini" onclick="tanganiTabClick(event,'form')">✍️ Absen Hari Ini</a>
+      <a class="tab-btn" id="tabList" href="#riwayat" onclick="tanganiTabClick(event,'list')">📚 Riwayat <span id="countBadge" style="opacity:.85">(0)</span></a>
+      <a class="tab-btn" id="tabRekap" href="#rekap-bulanan" onclick="tanganiTabClick(event,'rekap')">📊 Rekap Bulanan</a>
+      <a class="tab-btn" id="tabBackup" href="#backup" onclick="tanganiTabClick(event,'backup')">☁️ Backup</a>
     </div>
 
     <!-- TAB 1: FORM ABSEN -->
@@ -352,26 +317,11 @@
         <div class="form-group full" style="margin-top:14px">
           <label>✅ Status Kehadiran <span class="req">*</span></label>
           <div class="status-grid" id="statusGrid">
-            <div class="status-opt" data-status="hadir" onclick="pilihStatus('hadir')">
-              <span class="status-emoji">✅</span>
-              <div><div class="status-nama">Hadir</div><div class="status-desc">Masuk kerja</div></div>
-            </div>
-            <div class="status-opt" data-status="sakit" onclick="pilihStatus('sakit')">
-              <span class="status-emoji">🤒</span>
-              <div><div class="status-nama">Sakit</div><div class="status-desc">Ada surat</div></div>
-            </div>
-            <div class="status-opt" data-status="izin" onclick="pilihStatus('izin')">
-              <span class="status-emoji">📝</span>
-              <div><div class="status-nama">Izin</div><div class="status-desc">Keperluan</div></div>
-            </div>
-            <div class="status-opt" data-status="cuti" onclick="pilihStatus('cuti')">
-              <span class="status-emoji">🏖️</span>
-              <div><div class="status-nama">Cuti</div><div class="status-desc">Disetujui</div></div>
-            </div>
-            <div class="status-opt" data-status="alpa" onclick="pilihStatus('alpa')">
-              <span class="status-emoji">❌</span>
-              <div><div class="status-nama">Alpa</div><div class="status-desc">Tanpa kabar</div></div>
-            </div>
+            <div class="status-opt" data-status="hadir" onclick="pilihStatus('hadir')"><span class="status-emoji">✅</span><div><div class="status-nama">Hadir</div></div></div>
+            <div class="status-opt" data-status="sakit" onclick="pilihStatus('sakit')"><span class="status-emoji">🤒</span><div><div class="status-nama">Sakit</div></div></div>
+            <div class="status-opt" data-status="izin" onclick="pilihStatus('izin')"><span class="status-emoji">📝</span><div><div class="status-nama">Izin</div></div></div>
+            <div class="status-opt" data-status="cuti" onclick="pilihStatus('cuti')"><span class="status-emoji">🏖️</span><div><div class="status-nama">Cuti</div></div></div>
+            <div class="status-opt" data-status="alpa" onclick="pilihStatus('alpa')"><span class="status-emoji">❌</span><div><div class="status-nama">Alpa</div></div></div>
           </div>
           <input type="hidden" id="fStatus" value="">
         </div>
@@ -379,19 +329,12 @@
         <div id="cutiRangeBox" style="display:none; margin-top:14px; padding:14px; background:rgba(139,92,246,.08); border:2px solid rgba(139,92,246,.4); border-radius:12px;">
           <div style="font-size:12px;font-weight:800;color:#7C3AED;margin-bottom:10px;">🏖️ Periode Cuti</div>
           <div class="form-grid">
-            <div class="form-group">
-              <label>Cuti Dari Tanggal</label>
-              <input type="date" id="fCutiDari" onchange="validasiCuti()">
-            </div>
-            <div class="form-group">
-              <label>Cuti Sampai Tanggal</label>
-              <input type="date" id="fCutiSampai" onchange="validasiCuti()">
-            </div>
+            <div class="form-group"><label>Cuti Dari</label><input type="date" id="fCutiDari" onchange="validasiCuti()"></div>
+            <div class="form-group"><label>Cuti Sampai</label><input type="date" id="fCutiSampai" onchange="validasiCuti()"></div>
           </div>
           <div style="margin-top:10px;font-size:11.5px;font-weight:700;color:#7C3AED;" id="cutiInfo">💡 Pilih rentang tanggal cuti Anda.</div>
         </div>
 
-        <!-- BAGIAN JAM -->
         <div class="jam-row" id="jamSection">
           <div class="jam-box-mini" id="jamMasukBox">
             <div class="jam-lbl">⏰ Jam Masuk</div>
@@ -412,7 +355,7 @@
 
         <div class="form-group full" style="margin-top:14px">
           <label>📖 Catatan (opsional)</label>
-          <textarea id="fCatatan" placeholder="Keterangan tambahan: alasan izin, kondisi, dll..."></textarea>
+          <textarea id="fCatatan" placeholder="Keterangan tambahan..."></textarea>
         </div>
 
         <div class="action-row">
@@ -428,48 +371,20 @@
     <div id="panelList" style="display:none">
       <div class="card" style="padding:16px">
         <div class="filter-bar" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-          <div class="form-group">
-            <label>📅 Dari Tanggal</label>
-            <input type="date" id="fFilterDari" onchange="renderRiwayat()">
-          </div>
-          <div class="form-group">
-            <label>📅 Sampai Tanggal</label>
-            <input type="date" id="fFilterSampai" onchange="renderRiwayat()">
-          </div>
-          <div class="form-group">
-            <label>✅ Status</label>
-            <select id="fFilterStatus" onchange="renderRiwayat()">
-              <option value="">Semua Status</option>
-              <option value="hadir">✅ Hadir</option>
-              <option value="sakit">🤒 Sakit</option>
-              <option value="izin">📝 Izin</option>
-              <option value="cuti">🏖️ Cuti</option>
-              <option value="alpa">❌ Alpa</option>
-            </select>
-          </div>
+          <div class="form-group"><label>📅 Dari</label><input type="date" id="fFilterDari" onchange="renderRiwayat()"></div>
+          <div class="form-group"><label>📅 Sampai</label><input type="date" id="fFilterSampai" onchange="renderRiwayat()"></div>
+          <div class="form-group"><label>✅ Status</label><select id="fFilterStatus" onchange="renderRiwayat()"><option value="">Semua</option><option value="hadir">Hadir</option><option value="sakit">Sakit</option><option value="izin">Izin</option><option value="cuti">Cuti</option><option value="alpa">Alpa</option></select></div>
         </div>
       </div>
-
-      <div class="card" style="padding:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div style="font-size:12px;font-weight:800;color:var(--sub);text-transform:uppercase;">🖨️ Cetak / Export</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-warn btn-sm" onclick="cetakBatch()">🖨️ Cetak Daftar Hadir</button>
-          <button class="btn btn-info btn-sm" onclick="exportSemuaWord()">📤 Export Word</button>
-        </div>
-      </div>
-
       <div class="absen-list" id="absenList"></div>
     </div>
 
-    <!-- TAB 3:
-	
-	    <!-- TAB 3: REKAP BULANAN -->
+    <!-- TAB 3: REKAP BULANAN -->
     <div id="panelRekap" style="display:none">
       <div class="bulan-picker-card">
         <div>
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;opacity:.8;">Pilih Periode</div>
           <div style="font-size:20px;font-weight:900;" id="bpTitleBulan">Memuat...</div>
-          <div style="font-size:12px;font-weight:700;opacity:.9;" id="bpSubBulan">Pilih bulan untuk melihat rekap</div>
         </div>
         <div class="bulan-picker-input">
           <input type="month" id="fRekapBulan" onchange="renderRekap()">
@@ -478,68 +393,18 @@
       <div id="rekapContent"></div>
     </div>
 
-    <!-- TAB 4: BACKUP / RESTORE -->
+    <!-- TAB 4: BACKUP -->
     <div id="panelBackup" style="display:none">
-      <div class="card">
-        <div style="font-size:15px;font-weight:800;margin-bottom:16px;">📊 Statistik Data Absensi</div>
-        <div class="stat-grid">
-          <div class="stat-box">
-            <div class="n" id="statTotal">0</div>
-            <div class="l">Total Absen</div>
-          </div>
-          <div class="stat-box">
-            <div class="n" id="statHari">0</div>
-            <div class="l">Hari Tercatat</div>
-          </div>
-          <div class="stat-box">
-            <div class="n" id="statPersen">0%</div>
-            <div class="l">% Hadir</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div style="font-size:15px;font-weight:800;margin-bottom:16px;">☁️ Backup & Restore</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div style="padding:20px;border:2px dashed var(--role-border);border-radius:14px;text-align:center;">
-            <div style="font-size:40px;margin-bottom:10px;">📥</div>
-            <h4>Backup Data</h4>
-            <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">Unduh seluruh data absensi sebagai file .json</p>
-            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="backupJSON()">📥 Download Backup</button>
-          </div>
-          <div style="padding:20px;border:2px dashed var(--role-border);border-radius:14px;text-align:center;">
-            <div style="font-size:40px;margin-bottom:10px;">📤</div>
-            <h4>Restore Data</h4>
-            <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">Unggah file .json untuk menambahkan data</p>
-            <button class="btn btn-info" style="width:100%;justify-content:center;" onclick="bukaFileRestore()">📤 Pilih File</button>
-            <input type="file" id="fileRestore" style="display:none" accept=".json" onchange="restoreJSON(event)">
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div style="padding:20px;border:2px dashed var(--danger);border-radius:14px;text-align:center;">
-            <div style="font-size:40px;margin-bottom:10px;">⚠️</div>
-            <h4 style="color:var(--danger)">Hapus Semua Data</h4>
-            <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">Hapus permanen semua data absensi Anda</p>
-            <button class="btn btn-danger" style="width:100%;justify-content:center;" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
-          </div>
-          <div style="padding:20px;border:2px dashed var(--warning);border-radius:14px;text-align:center;">
-            <div style="font-size:40px;margin-bottom:10px;">🧹</div>
-            <h4 style="color:var(--warning)">Bersihkan Duplikat</h4>
-            <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">Hapus data dengan tanggal yang sama</p>
-            <button class="btn btn-warn" style="width:100%;justify-content:center;" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
-          </div>
-        </div>
+      <div class="card" style="text-align:center; padding: 40px;">
+        <h3>Fitur Backup & Restore</h3>
+        <p style="color:var(--sub); margin-bottom: 20px;">Gunakan fitur ini untuk mencadangkan data lokal Anda.</p>
+        <button class="btn btn-primary" onclick="backupJSON()">📥 Download Backup</button>
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <div style="text-align:center;padding:20px 12px;color:var(--sub);font-size:12.5px;">
-      ~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~
-    </div>
-
-  </div><!-- /col-menu -->
-
-</div><!-- /wrapper -->
+    <div style="text-align:center;padding:20px 12px;color:var(--sub);font-size:12.5px;">~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~</div>
+  </div>
+</div>
 
 <div class="toast" id="toast">✨</div>
 
@@ -559,24 +424,12 @@ const KEY_KELAS  = 'ra_kelas';
 const KEY_ABSEN  = 'ra_absensi_guru';
 
 /* ============================================================
-   KONVERSI LOGO & KONFIGURASI JAM
+   KONFIGURASI JAM
    ============================================================ */
-let LOGO_BASE64 = '', LOGO_READY = false, LOGO_KONVERSI_PROMISE = null;
-function konversiLogoKeBase64(cb){ if(cb) cb(''); }
-function konversiLogoSinkron(){ return Promise.resolve(''); }
-
 const JAM_MASUK_MULAI = '07:30';
 const JAM_MASUK_BATAS = '12:00';
 const JAM_PULANG_NORMAL = { 1:'12:00', 2:'12:00', 3:'12:00', 4:'12:00', 5:'11:00', 6:'12:00' };
 const JAM_PULANG_JUMAT = '11:00';
-
-const STATUS_LIST = [
-  { kode:'hadir', emoji:'✅', nama:'Hadir',  desc:'Masuk kerja' },
-  { kode:'sakit', emoji:'🤒', nama:'Sakit',  desc:'Ada surat' },
-  { kode:'izin',  emoji:'📝', nama:'Izin',   desc:'Keperluan' },
-  { kode:'cuti',  emoji:'🏖️', nama:'Cuti',   desc:'Disetujui' },
-  { kode:'alpa',  emoji:'❌', nama:'Alpa',   desc:'Tanpa kabar' }
-];
 
 const NAMA_BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const NAMA_HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -607,7 +460,6 @@ function isHariJumat(tgl){ if(!tgl) return false; const d = new Date(tgl + 'T00:
 function hitungMenit(jamA, jamB){ if(!jamA || !jamB) return 0; const [h1, m1] = jamA.split(':').map(Number); const [h2, m2] = jamB.split(':').map(Number); return (h1 * 60 + m1) - (h2 * 60 + m2); }
 
 function downloadFile(filename, content, mime){ const blob = new Blob([content], { type: mime || 'text/plain;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500); }
-function playBeep(type){ }
 function showToast(msg, type){ const t = document.getElementById('toast'); if(!t) return; t.textContent = msg; t.className = 'toast show ' + (type||''); clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 3200); }
 
 /* ============================================================
@@ -650,7 +502,7 @@ function applyRoleColors(){
 function setHeaderTitle(){ const el = document.getElementById('headerTitle'); if(!el) return; const map = { 'guru':'Halaman Guru', 'kepala':'Halaman Kepala Sekolah', 'tendik':'Halaman Tenaga Kependidikan' }; el.textContent = map[user.role] || 'Absensi'; }
 
 /* ============================================================
-   AVATAR & DATA USER (PERBAIKAN PROFIL)
+   AVATAR & DATA USER (PERBAIKAN PROFIL & FOTO)
    ============================================================ */
 function avatarSvg(nama){ return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="42" r="18" fill="#F5F5F5"/><path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="#F5F5F5"/></svg>`; }
 
@@ -689,23 +541,31 @@ function cariDataUser(){
 }
 
 async function muatData(){
-  // Tampilkan dari cache dulu
+  // 1. Ambil dari cache HP dulu (biar profil langsung muncul tanpa nunggu internet)
   dataGuru = load(KEY_GURU, []) || []; 
   dataTendik = load(KEY_TENDIK, []) || []; 
   guruProfil = cariDataUser(); 
   renderPengisiInfo(); 
   renderProfil(); 
 
+  // 2. Jika internet ada, ambil data terbaru dari Supabase dan update profil
   if (typeof sb !== 'undefined') {
     try {
       const { data: t } = await sb.from('tendik').select('*'); 
       if (t && t.length > 0) { dataTendik = t; save(KEY_TENDIK, t); }
       const { data: g } = await sb.from('guru').select('*'); 
       if (g && g.length > 0) { dataGuru = g; save(KEY_GURU, g); }
+      
       guruProfil = cariDataUser(); 
       renderPengisiInfo(); 
       renderProfil(); 
-    } catch(e) {}
+      
+      // Panggil Rombel Otomatis setelah data profil fix
+      isiRombelOtomatis();
+      
+    } catch(e) {
+      console.warn("Gagal update dari Supabase, pakai data cache lokal.");
+    }
   }
 }
 
@@ -747,6 +607,8 @@ function renderProfil(){
   if(guruProfil.nip) ident.push({l:'NIP', v:guruProfil.nip});
   if(guruProfil.npk) ident.push({l:'NPK/PEGID', v:guruProfil.npk});
   if(guruProfil.jk) ident.push({l:'Jenis Kelamin', v: guruProfil.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(guruProfil.tempat_lahir) ident.push({l:'Tempat Lahir', v:guruProfil.tempat_lahir});
+  if(guruProfil.tanggal_lahir) ident.push({l:'Tanggal Lahir', v:formatTanggalPanjang(guruProfil.tanggal_lahir)});
   if(ident.length){ html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">'; ident.forEach(it => { html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`; }); html += '</div>'; }
 
   const peg = [];
@@ -757,6 +619,30 @@ function renderProfil(){
 
   body.innerHTML = html;
   pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), guruProfil.nama, guruProfil.foto_url); 
+}
+
+/* ============================================================
+   PERBAIKAN 2 & 5: ROMBEL OTOMATIS (BACA ID GURU PENDAMPING)
+   ============================================================ */
+async function isiRombelOtomatis() {
+  if (!guruProfil || typeof sb === 'undefined') return;
+  
+  try {
+    const { data: kelas } = await sb.from('kelas').select('*');
+    if(kelas && kelas.length > 0) {
+      // Cari kelas di mana ID guru ini terdaftar sebagai Guru Utama ATAU Guru Pendamping
+      const kelasSaya = kelas.find(k => {
+        const isUtama = String(k.guru_utama_id).trim() === String(guruProfil.id).trim();
+        const isPendamping = String(k.guru_pendamping_id).trim() === String(guruProfil.id).trim(); // <-- ID tanpa 's'
+        return isUtama || isPendamping;
+      });
+      
+      if(kelasSaya) {
+        const namaRombel = kelasSaya.nama || kelasSaya.rombel || kelasSaya.kelompok || '';
+        document.getElementById('fRombel').value = namaRombel;
+      }
+    }
+  } catch(e) { console.error("Gagal load rombel", e); }
 }
 
 /* ============================================================
@@ -771,7 +657,7 @@ function switchTab(tab){
 function tanganiTabClick(e, tab){ if(e.ctrlKey || e.metaKey) return; e.preventDefault(); switchTab(tab); window.scrollTo({top:0, behavior:'smooth'}); }
 
 /* ============================================================
-   ✨ LOGIKA TOMBOL ABSEN MASUK & PULANG
+   LOGIKA TOMBOL ABSEN MASUK & PULANG
    ============================================================ */
 function klikAbsenMasuk(){
   const tgl = document.getElementById('fTanggal').value;
@@ -1003,7 +889,7 @@ async function simpanAbsen(){
 
 function resetForm(){
   document.getElementById('fTanggal').value = getTodayISO();
-  document.getElementById('fRombel').value = '';
+  // document.getElementById('fRombel').value = ''; // Biarkan rombel tetap ada
   document.getElementById('fJamMasuk').value = ''; document.getElementById('fJamPulang').value = '';
   document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
   document.getElementById('fCatatan').value = ''; document.getElementById('fCutiDari').value = ''; document.getElementById('fCutiSampai').value = '';
@@ -1073,18 +959,6 @@ function logout(){ if(confirm('Keluar?')){ localStorage.removeItem('user'); wind
 
 async function init(){
   applyRoleColors(); await muatData(); setHeaderTitle(); resetForm();
-    // Ambil rombel otomatis
-  if (typeof sb !== 'undefined' && guruProfil) {
-    try {
-      const { data: kelas } = await sb.from('kelas').select('*');
-      if(kelas && kelas.length > 0) {
-        const kelasSaya = kelas.find(k => String(k.guru_utama_id) === String(guruProfil.id) || (k.guru_pendamping_ids && k.guru_pendamping_ids.includes(guruProfil.id)));
-        if(kelasSaya) {
-          document.getElementById('fRombel').value = kelasSaya.nama || kelasSaya.rombel || '';
-        }
-      }
-    } catch(e) {}
-  }
   document.getElementById('fRekapBulan').value = getTodayISO().substring(0,7);
   updateCountBadge(); renderRiwayat(); renderStatistikBackup();
   console.log('✅ absensi.html loaded — SIAGRA v.2.s (Supabase Ready)');
