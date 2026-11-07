@@ -118,10 +118,10 @@
     display:grid;grid-template-columns:300px 1fr;gap:24px;
     position:relative;z-index:1;align-items:start;
   }
-  .col-profil{ position:sticky;top:88px; height:calc(100vh - 110px); }
+    .col-profil{ position:sticky;top:88px; }
   .profile-card{
     background:var(--role-card);border-radius:16px; border:2px solid var(--role-primary-dark);
-    height:100%;display:flex;flex-direction:column;overflow:hidden;
+    display:flex;flex-direction:column; /* height:100% dihilangkan */
   }
   .profile-card-header{ padding:20px 18px;text-align:center; border-bottom:1px dashed var(--role-border); }
   .profile-photo{ width:80px;height:80px;border-radius:50%; background:var(--role-card-inner); margin:0 auto 12px; border:3px solid var(--role-primary-dark); overflow:hidden; }
@@ -508,15 +508,22 @@ function avatarSvg(nama){ return `<svg viewBox="0 0 120 120" xmlns="http://www.w
 
 function pakaiFotoAtauAvatar(el, nama, fotoUrl){
   if(!el) return;
+  
+  // 1. Coba ambil dari foto_url Supabase (seperti di guru.html)
   if(fotoUrl && fotoUrl.trim() !== ''){ 
     el.innerHTML = `<img src="${fotoUrl}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; 
     return; 
   }
+  
+  // 2. Coba ambil dari upload lokal (jika admin upload manual)
   const fotoUpload = localStorage.getItem('ra_foto_' + nama);
   if(fotoUpload){ 
     el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; 
     return; 
   }
+  
+  // 3. Coba cari file fisik di folder ../foto/ (cadangan)
+  const baseName = namaKeFile(nama);
   const exts = ['jpg','png','jpeg','JPG','PNG'];
   let idx = 0;
   function coba(){
@@ -524,7 +531,7 @@ function pakaiFotoAtauAvatar(el, nama, fotoUrl){
     const img = new Image();
     img.onload = function(){ el.innerHTML = '<img src="' + img.src + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; };
     img.onerror = function(){ idx++; coba(); };
-    img.src = '../foto/' + namaKeFile(nama) + '.' + exts[idx];
+    img.src = '../foto/' + baseName + '.' + exts[idx];
   }
   coba();
 }
