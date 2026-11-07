@@ -1535,24 +1535,25 @@ let DATA_ORANG = [];
 async function loadDataOrang(){
   if (typeof sb === 'undefined') return;
   
-  const { data: guruList, error: errGuru } = await sb.from('guru').select('*');
-  const { data: tendikList, error: errTendik } = await sb.from('tendik').select('*');
+  const { data: guruList } = await sb.from('guru').select('*');
+  const { data: tendikList } = await sb.from('tendik').select('*');
+  const { data: kelasList } = await sb.from('kelas').select('*'); // Ambil tabel kelas
 
   let gabung = [
-    ...(guruList || []).map(g => ({ ...g, _sumber: 'guru' })),
-    ...(tendikList || []).map(t => ({ ...t, _sumber: 'tendik' }))
+    ...(guruList || []).map(g => {
+      // Cari rombel dari tabel kelas berdasarkan ID guru
+      const kelasGuru = (kelasList || []).find(k => k.guru_utama_id === g.id || k.guru_pendamping_ids?.includes(g.id));
+      return { ...g, _sumber: 'guru', rombel: kelasGuru ? (kelasGuru.nama || kelasGuru.rombel) : (g.rombel || '—') };
+    }),
+    ...(tendikList || []).map(t => ({ ...t, _sumber: 'tendik', rombel: '—' }))
   ];
 
-  // Pastikan Sugianto & PUSPA ERMA SARI selalu ada
   FALLBACK_ORANG.forEach(f => {
     const ada = gabung.some(g => normalisasiNama(g.nama) === normalisasiNama(f.nama));
     if(!ada) gabung.push(f);
   });
 
-  // Urutkan A-Z
-  gabung.sort((a,b) =>
-    (a.nama || '').localeCompare(b.nama || '', 'id', { sensitivity: 'base' })
-  );
+  gabung.sort((a,b) => (a.nama || '').localeCompare(b.nama || '', 'id', { sensitivity: 'base' }));
 
   DATA_ORANG = gabung;
   return DATA_ORANG;
@@ -2678,6 +2679,15 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('../service-worker.js').catch(() => {});
   });
 }
+
+  @media(max-width:768px){
+    .wrapper{grid-template-columns:1fr; padding: 12px;}
+    .col-profil{position:static; height:auto; margin-bottom: 16px;}
+    .profile-card-body{max-height: 300px;} 
+    .tabs{flex-wrap: wrap;} 
+    .tab-btn{min-width: 45%; font-size:11px;}
+    .toolbar{grid-template-columns:1fr 1fr;}
+  }
 </script>
 <script src="../auto-update.js"></script>
 </body>
