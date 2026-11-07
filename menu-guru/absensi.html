@@ -207,14 +207,18 @@
   .toast.show{ transform:translate(-50%, 0);opacity:1; }
   .toast.success{background:#059669} .toast.error{background:#DC2626} .toast.info{background:#3B82F6} .toast.warn{background:#D97706}
 
-  @media (max-width: 900px) {
+    @media (max-width: 900px) {
     .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
     .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
     .profile-card { max-width: 100% !important; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
-    /* BARIS profile-card-body { display: none !important; } SUDAH DIHAPUS */
-    .form-grid, .jam-row{ display: grid !important; grid-template-columns: 1fr !important; }
+    .profile-card-body{ display: none !important; } 
+    .form-grid { display: grid !important; grid-template-columns: 1fr !important; }
+    /* .jam-row TIDAK DIPAKSA DI SINI */
     .tabs{ flex-wrap: wrap !important; justify-content: center; }
     .tab-btn{ flex: 1 1 45% !important; font-size: 12px !important; }
+    
+    /* Tambahkan ini agar saat Alpa, jam hilang total di HP */
+    #jamSection[style*="display: none"] { display: none !important; }
   }
 </style>
 </head>
@@ -728,21 +732,32 @@ function updateUISetelahPilihStatus(kode){
   const jamSection = document.getElementById('jamSection');
   const actionRow = document.querySelector('.action-row');
 
-  warningBox.style.display = 'none'; cutiRangeBox.style.display = 'none';
-  btnMasuk.disabled = true; btnPulang.disabled = true; btnSimpan.disabled = true;
-  btnReset.style.display = 'inline-flex'; actionRow.style.display = 'flex';
-  document.getElementById('fJamMasuk').value = ''; document.getElementById('fJamPulang').value = '';
-  document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
-  btnMasuk.innerHTML = '🖐️ Absen Masuk'; btnPulang.innerHTML = '🏃 Absen Pulang';
-  jamSection.style.display = 'grid';
+  warningBox.style.display = 'none'; 
+  cutiRangeBox.style.display = 'none';
+  btnMasuk.disabled = true; 
+  btnPulang.disabled = true; 
+  btnSimpan.disabled = true;
+  btnReset.style.display = 'inline-flex'; 
+  actionRow.style.display = 'flex';
+  
+  document.getElementById('fJamMasuk').value = ''; 
+  document.getElementById('fJamPulang').value = '';
+  document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); 
+  document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
+  btnMasuk.innerHTML = '🖐️ Absen Masuk'; 
+  btnPulang.innerHTML = '🏃 Absen Pulang';
+  
+  jamSection.style.display = 'grid'; 
   btnSimpan.style.display = 'inline-flex';
 
   if(kode === 'alpa'){
-    jamSection.style.display = 'none';
-    btnSimpan.style.display = 'inline-flex';
-    btnSimpan.disabled = false;
-    btnReset.style.display = 'none';
-    warningBox.style.display = 'flex'; warningBox.className = 'warning-box alpa';
+    jamSection.style.display = 'none'; // Sembunyikan jam
+    btnSimpan.style.display = 'inline-flex'; 
+    btnSimpan.disabled = false; 
+    btnReset.style.display = 'none'; 
+    
+    warningBox.style.display = 'flex'; 
+    warningBox.className = 'warning-box alpa';
     warningBox.innerHTML = `<div class="wb-icon">❌</div><div class="wb-text"><b>Status ALPA</b><small>Anda tidak melakukan absen hingga batas waktu. Silakan klik Simpan.</small></div>`;
     return;
   }
@@ -761,7 +776,8 @@ function updateUISetelahPilihStatus(kode){
 
   if(kode === 'sakit' || kode === 'izin'){
     btnSimpan.disabled = false;
-    warningBox.style.display = 'flex'; warningBox.className = 'warning-box ' + kode;
+    warningBox.style.display = 'flex'; 
+    warningBox.className = 'warning-box ' + kode;
     warningBox.innerHTML = `<div class="wb-icon">${kode==='sakit'?'🤒':'📝'}</div><div class="wb-text"><b>Status ${kode.toUpperCase()}</b><small>Silakan isi catatan (opsional) dan klik Simpan Absensi.</small></div>`;
     return;
   }
