@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="SIAGRA">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ✨ SUPABASE ✨ -->
+<!-- ✨ TAMBAHAN SUPABASE ✨ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 
@@ -105,8 +105,8 @@
     .orn-flower-1,.orn-flower-2,.orn-sparkle-1,.orn-sparkle-2{display:none}
   }
   @media(max-width:480px){.ornament{opacity:.22;font-size:22px!important}}
-
-  .header{
+  
+    .header{
     position:sticky;top:0;z-index:100;
     background:var(--role-header-grad);
     color:#fff;padding:14px 24px;
@@ -355,8 +355,8 @@
     padding-bottom:12px;border-bottom:1px dashed rgba(96,165,250,.25);
   }
   .card-title .emoji{font-size:19px}
-
-  .toolbar{
+  
+    .toolbar{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
     gap:10px;margin-bottom:16px;
@@ -552,33 +552,6 @@
     background:linear-gradient(135deg,#1E40AF,#3B82F6);
     border-radius:100px;transition:width .6s ease;
   }
-
-  .stat-grid{
-    display:grid;grid-template-columns:repeat(5,1fr);
-    gap:10px;margin-bottom:16px;
-  }
-  @media(max-width:768px){.stat-grid{grid-template-columns:1fr 1fr}}
-  .stat-box{
-    padding:14px 12px;border-radius:12px;
-    border:2px solid var(--status-color, var(--border));
-    background:color-mix(in srgb, var(--status-color) 10%, transparent);
-    text-align:center;
-  }
-  .stat-box .emoji{font-size:24px;line-height:1;margin-bottom:4px}
-  .stat-box .n{
-    font-size:22px;font-weight:800;
-    color:var(--status-color, var(--yellow));line-height:1;
-  }
-  .stat-box .l{
-    font-size:10px;font-weight:700;color:#93C5FD;margin-top:4px;
-    text-transform:uppercase;letter-spacing:.04em;
-  }
-  body.light .stat-box .l{color:#1E40AF}
-  .stat-box[data-s="hadir"]{--status-color:var(--absen-hadir)}
-  .stat-box[data-s="sakit"]{--status-color:var(--absen-sakit)}
-  .stat-box[data-s="izin"]{--status-color:var(--absen-izin)}
-  .stat-box[data-s="cuti"]{--status-color:var(--absen-cuti)}
-  .stat-box[data-s="alpa"]{--status-color:var(--absen-alpa)}
 
   .rekap-guru-card{
     background:var(--card);border-radius:14px;
@@ -788,16 +761,6 @@
   .footer strong{color:var(--yellow);font-weight:900;font-size:15px}
   body.light .footer strong{color:#D97706}
 
-  /* FIX: Media queries CSS di luar script */
-  @media(max-width:768px){
-    .wrapper{grid-template-columns:1fr; padding:12px}
-    .col-profil{position:static; height:auto; margin-bottom:16px}
-    .profile-card-body{max-height:300px}
-    .tabs{flex-wrap:wrap}
-    .tab-btn{min-width:45%; font-size:11px}
-    .toolbar{grid-template-columns:1fr 1fr}
-  }
-
   @media(max-width:900px){
     .wrapper{grid-template-columns:1fr;gap:18px}
     .col-profil{position:static;height:auto;max-height:none}
@@ -816,10 +779,18 @@
     .intro-card p{font-size:12.5px}
     .toolbar-actions .btn{flex:1;justify-content:center}
     .tab-btn{font-size:11.5px;padding:10px 8px;min-width:130px}
-    .stat-grid{grid-template-columns:1fr 1fr}
   }
 
-  /* Debug panel */
+  /* ✨ FIX: Media query dipindah dari <script> ke sini ✨ */
+  @media(max-width:768px){
+    .wrapper{grid-template-columns:1fr; padding:12px}
+    .col-profil{position:static; height:auto; margin-bottom:16px}
+    .profile-card-body{max-height:300px}
+    .tabs{flex-wrap:wrap}
+    .tab-btn{min-width:45%; font-size:11px}
+    .toolbar{grid-template-columns:1fr 1fr}
+  }
+
   #debugPanel{
     display:none;position:fixed;bottom:80px;right:16px;z-index:9999;
     background:rgba(0,0,0,.85);color:#4ADE80;font-family:monospace;
@@ -969,8 +940,8 @@
           </a>
         </div>
       </div>
-
-      <!-- KPI CARDS -->
+	  
+	        <!-- KPI CARDS -->
       <div class="kpi-grid">
         <div class="kpi info">
           <div class="kpi-icon">👥</div>
@@ -1019,7 +990,7 @@
               <tr>
                 <th style="width:40px">No</th>
                 <th>Nama Guru</th>
-                <th style="width:70px">Rombel</th>
+                <th style="width:130px">Jabatan</th>
                 <th style="width:120px">Tanggal</th>
                 <th style="width:120px">Status</th>
                 <th style="width:90px">Aksi</th>
@@ -1126,7 +1097,8 @@
 
 <script>
 /* ============================================================
-   SIAGRA — monitoring.html
+   SIAGRA — monitoring.html (Script #1)
+   Version: 2.s (perbaikan logika jabatan dari tabel kelas)
    ============================================================ */
 
 const STORAGE = {
@@ -1509,12 +1481,19 @@ async function renderProfil(){
   pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataKepsek.nama);
 }
 
+/* ============================================================
+   HELPER: CEK TANPA JABATAN
+   ============================================================ */
 function tanpaRombel(jabatan){
   if(!jabatan) return false;
   const j = String(jabatan).toLowerCase();
   return j.includes('kepala') || j.includes('tendik') || j.includes('tenaga kependidikan');
 }
 
+/* ============================================================
+   ✨ LOAD DATA DARI SUPABASE (GURU, TENDIK, KELAS) ✨
+   DIPERBAIKI: Mengambil jabatan Wali Kelas / Pendamping dari tabel kelas
+   ============================================================ */
 let DATA_MONITORING = [];
 let DATA_ORANG = [];
 let LOAD_ERR = null;
@@ -1529,6 +1508,7 @@ async function loadDataOrang(){
 
   let gabung = [];
 
+  // --- GURU ---
   try{
     const { data: guruList, error: eG } = await sb.from('guru').select('*');
     if(eG) dbg('❌ guru error:', eG.message, eG);
@@ -1538,6 +1518,7 @@ async function loadDataOrang(){
     });
   }catch(e){ dbg('❌ exception guru:', e.message); }
 
+  // --- TENDIK ---
   try{
     const { data: tendikList, error: eT } = await sb.from('tendik').select('*');
     if(eT) dbg('❌ tendik error:', eT.message, eT);
@@ -1547,6 +1528,7 @@ async function loadDataOrang(){
     });
   }catch(e){ dbg('❌ exception tendik:', e.message); }
 
+  // --- KELAS (map jabatan) ---
   let kelasList = [];
   try{
     const { data: k, error: eK } = await sb.from('kelas').select('*');
@@ -1554,35 +1536,29 @@ async function loadDataOrang(){
     else { kelasList = k || []; dbg('✅ kelas rows:', kelasList.length); }
   }catch(e){ dbg('❌ exception kelas:', e.message); }
 
-  function cariRombelGuru(guruId){
-    for(const k of kelasList){
-      if(!k) continue;
-      if(k.guru_utama_id && String(k.guru_utama_id) === String(guruId)) {
-        return k.nama || k.rombel || k.nama_kelas || '';
-      }
-      if(Array.isArray(k.guru_pendamping_ids)){
-        if(k.guru_pendamping_ids.map(String).includes(String(guruId))){
-          return k.nama || k.rombel || k.nama_kelas || '';
-        }
-      }
-    }
-    return '';
-  }
-
+  // Pemetaan Jabatan berdasarkan tabel kelas
   gabung.forEach(o => {
-    if(o._sumber === 'guru'){
-      const rombel = cariRombelGuru(o.id);
-      o.rombel = rombel || o.rombel || o.kelas || '';
-    } else {
-      o.rombel = o.rombel || '';
+    let jabatanFinal = o.jabatan || (o._sumber === 'tendik' ? 'Tenaga Kependidikan' : 'Guru');
+
+    if(o._sumber === 'guru' && kelasList){
+      // Cek apakah dia Wali Kelas (Guru Utama)
+      const isWali = kelasList.some(k => String(k.guru_utama_id) === String(o.id));
+      // Cek apakah dia Guru Pendamping
+      const isPendamping = kelasList.some(k => String(k.guru_pendamping_id) === String(o.id));
+
+      if(isWali) jabatanFinal = 'Wali Kelas';
+      else if(isPendamping) jabatanFinal = 'Guru Pendamping';
     }
+    o.jabatanTampil = jabatanFinal;
   });
 
+  // Fallback: pastikan kepsek & tendik muncul
   FALLBACK_ORANG.forEach(f => {
     const ada = gabung.some(g => namaCocok(g.nama, f.nama));
-    if(!ada) gabung.push(f);
+    if(!ada) gabung.push({ ...f, jabatanTampil: f.jabatan });
   });
 
+  // Sort A-Z
   gabung.sort((a,b) => (a.nama || '').localeCompare(b.nama || '', 'id', { sensitivity: 'base' }));
 
   DATA_ORANG = gabung;
@@ -1590,6 +1566,9 @@ async function loadDataOrang(){
   return DATA_ORANG;
 }
 
+/* ============================================================
+   ✨ BUILD MONITORING TANGGAL ✨
+   ============================================================ */
 async function buildMonitoringTanggal(tanggal){
   if(!tanggal) tanggal = getTodayISO();
 
@@ -1610,7 +1589,7 @@ async function buildMonitoringTanggal(tanggal){
       return [];
     }
     absenList = data || [];
-    dbg('✅ absensi tanggal', tanggal, 'rows:', absenList.length);
+    dbg('✅ absensi tanggal', tanggal, 'rows:', absenList.length, absenList);
   }catch(e){
     dbg('❌ exception absensi:', e.message);
     return [];
@@ -1639,20 +1618,10 @@ async function buildMonitoringTanggal(tanggal){
       }
     }
 
-    let rombel = '—';
-    if(!tanpaRombel(o.jabatan)){
-      let raw = '';
-      if(rec && rec.rombel) raw = rec.rombel;
-      else if(o.rombel) raw = o.rombel;
-      else if(o.kelas) raw = o.kelas;
-      rombel = bersihkanRombel(raw);
-    }
-
     return {
       id: 'abs-' + (o.id || i),
       nama: o.nama || '-',
-      jabatan: o.jabatan || '',
-      rombel: rombel,
+      jabatan: o.jabatanTampil || '',
       tanggal: tanggal,
       status: rec ? 'sudah' : 'belum',
       statusAbsen: rec ? (rec.status || rec.keterangan) : '',
@@ -1666,6 +1635,9 @@ async function buildMonitoringTanggal(tanggal){
   });
 }
 
+/* ============================================================
+   ✨ LOAD MONITORING (main) ✨
+   ============================================================ */
 async function loadMonitoring(){
   const tglEl = document.getElementById('fTanggal');
   const tgl = (tglEl && tglEl.value) || getTodayISO();
@@ -1745,7 +1717,7 @@ function renderTabel(data){
       <tr>
         <td>${i+1}</td>
         <td><b>${escapeHtml(d.nama)}</b></td>
-        <td>${escapeHtml(d.rombel)}</td>
+        <td>${escapeHtml(d.jabatan)}</td>
         <td>${escapeHtml(fmtTanggalPendek(d.tanggal))}</td>
         <td><span class="badge ${badgeClass}">${badgeText}</span></td>
         <td>
@@ -1786,6 +1758,9 @@ async function resetFilter(){
   showToast('↻ Filter direset', 'info');
 }
 
+/* ============================================================
+   STATUS INFO
+   ============================================================ */
 const STATUS_INFO = {
   hadir: { emoji: '✅', nama: 'Hadir' },
   sakit: { emoji: '🤒', nama: 'Sakit' },
@@ -1794,7 +1769,12 @@ const STATUS_INFO = {
   alpa:  { emoji: '❌', nama: 'Alpa' },
   belum: { emoji: '⏳', nama: 'Belum Absen' }
 };
+</script>
 
+<script>
+/* ============================================================
+   SUB-TAB — HARIAN ↔ REKAP BULANAN
+   ============================================================ */
 const HASH_KE_TAB = {
   '#harian'        : 'harian',
   '#monitoring'    : 'harian',
@@ -1879,6 +1859,7 @@ async function renderRekapBulanan(){
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
   let html = '';
 
+  /* ---------- MODE DETAIL 1 GURU ---------- */
   if(guruFilter){
     const g = orangTampil[0];
     const absenGuru = dataBulan
@@ -1896,7 +1877,7 @@ async function renderRekapBulanan(){
           <div class="rekap-guru-avatar" id="rkAvatar"></div>
           <div class="rekap-guru-info">
             <h4>${escapeHtml(g.nama)}</h4>
-            <p>${escapeHtml(g.jabatan || 'Guru')} • Rekap ${escapeHtml(namaBulan)}</p>
+            <p>${escapeHtml(g.jabatanTampil || 'Guru')} • Rekap ${escapeHtml(namaBulan)}</p>
           </div>
         </div>
         <div class="rekap-stat-mini">
@@ -1947,6 +1928,7 @@ async function renderRekapBulanan(){
     cont.innerHTML = html;
     const avEl = document.getElementById('rkAvatar');
     if(avEl) loadAvatarKe(avEl, g.nama);
+  /* ---------- MODE SEMUA GURU ---------- */
   } else {
     html += `
       <div class="card">
@@ -1958,6 +1940,7 @@ async function renderRekapBulanan(){
           <table class="rekap-tabel">
             <thead><tr>
               <th>Nama Guru</th>
+              <th>Jabatan</th>
               <th style="width:50px;text-align:center">✅ H</th>
               <th style="width:50px;text-align:center">🤒 S</th>
               <th style="width:50px;text-align:center">📝 I</th>
@@ -1978,6 +1961,7 @@ async function renderRekapBulanan(){
       const namaSafe = String(g.nama).replace(/'/g, "\\'");
       html += `<tr>
         <td style="font-weight:800">${escapeHtml(g.nama)}</td>
+        <td style="font-size:11px">${escapeHtml(g.jabatanTampil || '')}</td>
         <td style="text-align:center;color:#4ADE80;font-weight:800">${c.hadir}</td>
         <td style="text-align:center;color:#FBBF24;font-weight:800">${c.sakit}</td>
         <td style="text-align:center;color:#60A5FA;font-weight:800">${c.izin}</td>
@@ -2020,6 +2004,9 @@ function loadAvatarKe(el, nama){
   coba();
 }
 
+/* ============================================================
+   MODAL DETAIL
+   ============================================================ */
 let currentAktId = null;
 function openModal(id){
   const d = DATA_MONITORING.find(x => x.id === id);
@@ -2039,7 +2026,6 @@ function openModal(id){
     modalBody.innerHTML = `
       <div class="row"><b>Nama</b><span>${escapeHtml(d.nama)}</span></div>
       <div class="row"><b>Jabatan</b><span>${escapeHtml(d.jabatan || '-')}</span></div>
-      <div class="row"><b>Rombel</b><span>${escapeHtml(d.rombel)}</span></div>
       <div class="row"><b>Tanggal</b><span>${escapeHtml(fmtTanggal(d.tanggal))}</span></div>
       <div class="row"><b>Status</b><span><span class="badge ${badgeClass}">${badgeText}</span></span></div>
       ${statusAbsenRow}
@@ -2059,6 +2045,9 @@ function closeModal(){
   currentAktId = null;
 }
 
+/* ============================================================
+   EXPORT MONITORING HARIAN (Word)
+   ============================================================ */
 function exportMonitoring(){
   const data = DATA_MONITORING;
   if(!data || data.length === 0){ showToast('📭 Tidak ada data untuk diexport', 'warn'); return; }
@@ -2073,7 +2062,7 @@ function exportMonitoring(){
     rows += `<tr>
       <td style="text-align:center">${i+1}</td>
       <td>${escapeHtml(d.nama)}</td>
-      <td style="text-align:center">${escapeHtml(d.rombel)}</td>
+      <td style="text-align:center">${escapeHtml(d.jabatan)}</td>
       <td style="text-align:center">${escapeHtml(fmtTanggal(d.tanggal))}</td>
       <td style="text-align:center">${escapeHtml(badge)}</td>
     </tr>`;
@@ -2119,7 +2108,7 @@ function exportMonitoring(){
     <td class="s3"><span class="s-emoji">⏳</span><span class="s-label">Belum Absen</span><span class="s-val">${belum}</span></td>
   </tr></table>
   <table class="data"><thead><tr>
-    <th style="width:30px">No</th><th>Nama Guru</th><th style="width:70px">Rombel</th>
+    <th style="width:30px">No</th><th>Nama Guru</th><th style="width:90px">Jabatan</th>
     <th style="width:110px">Tanggal</th><th style="width:100px">Status</th>
   </tr></thead><tbody>${rows}</tbody></table>
   <table class="ttd"><tr>
@@ -2139,6 +2128,9 @@ function exportMonitoring(){
   showToast('📤 File Word monitoring diunduh', 'success');
 }
 
+/* ============================================================
+   EXPORT REKAP BULANAN (Word)
+   ============================================================ */
 async function exportRekapBulananWord(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
@@ -2170,7 +2162,7 @@ async function exportRekapBulananWord(){
         <td>${ketHtml}</td>
       </tr>`;
     });
-    bodyHTML = `<h4 style="margin:10px 0 8px 0;font-size:12pt">${escapeHtml(g.nama)} <span style="font-weight:normal">(${escapeHtml(g.jabatan || 'Guru')})</span></h4>
+    bodyHTML = `<h4 style="margin:10px 0 8px 0;font-size:12pt">${escapeHtml(g.nama)} <span style="font-weight:normal">(${escapeHtml(g.jabatanTampil || 'Guru')})</span></h4>
       <table class="stat"><tr>
         <td class="s2"><span class="s-emoji">✅</span><span class="s-label">Hadir</span><span class="s-val">${c.hadir}</span></td>
         <td class="s1"><span class="s-emoji">🤒</span><span class="s-label">Sakit</span><span class="s-val">${c.sakit}</span></td>
@@ -2195,6 +2187,7 @@ async function exportRekapBulananWord(){
       total.hadir += c.hadir; total.sakit += c.sakit; total.izin += c.izin; total.cuti += c.cuti; total.alpa += c.alpa;
       rows += `<tr>
         <td>${escapeHtml(g.nama)}</td>
+        <td style="text-align:center">${escapeHtml(g.jabatanTampil || '-')}</td>
         <td style="text-align:center">${c.hadir}</td>
         <td style="text-align:center">${c.sakit}</td>
         <td style="text-align:center">${c.izin}</td>
@@ -2213,7 +2206,7 @@ async function exportRekapBulananWord(){
         <td class="s3"><span class="s-emoji">❌</span><span class="s-label">Alpa</span><span class="s-val">${total.alpa}</span></td>
       </tr></table>
       <table class="data"><thead><tr>
-        <th>Nama Guru</th><th style="width:40px">✅ H</th><th style="width:40px">🤒 S</th>
+        <th>Nama Guru</th><th>Jabatan</th><th style="width:40px">✅ H</th><th style="width:40px">🤒 S</th>
         <th style="width:40px">📝 I</th><th style="width:40px">🏖️ C</th><th style="width:40px">❌ A</th>
         <th style="width:50px">Total</th><th style="width:50px">%</th>
       </tr></thead><tbody>${rows}</tbody></table>`;
@@ -2307,7 +2300,7 @@ async function cetakRekapBulanan(){
         <td>${ketRaw ? keteranganMultiBaris(ketRaw) : '-'}</td>
       </tr>`;
     });
-    bodyHTML = `<h4 style="margin:10px 0 8px 0;font-size:12pt">${escapeHtml(g.nama)} <span style="font-weight:normal">(${escapeHtml(g.jabatan || 'Guru')})</span></h4>
+    bodyHTML = `<h4 style="margin:10px 0 8px 0;font-size:12pt">${escapeHtml(g.nama)} <span style="font-weight:normal">(${escapeHtml(g.jabatanTampil || 'Guru')})</span></h4>
       <table class="stat"><tr>
         <td class="s2"><span class="s-emoji">✅</span><span class="s-label">Hadir</span><span class="s-val">${c.hadir}</span></td>
         <td class="s1"><span class="s-emoji">🤒</span><span class="s-label">Sakit</span><span class="s-val">${c.sakit}</span></td>
@@ -2332,6 +2325,7 @@ async function cetakRekapBulanan(){
       total.hadir += c.hadir; total.sakit += c.sakit; total.izin += c.izin; total.cuti += c.cuti; total.alpa += c.alpa;
       rows += `<tr>
         <td>${escapeHtml(g.nama)}</td>
+        <td style="text-align:center">${escapeHtml(g.jabatanTampil || '-')}</td>
         <td style="text-align:center">${c.hadir}</td>
         <td style="text-align:center">${c.sakit}</td>
         <td style="text-align:center">${c.izin}</td>
@@ -2350,7 +2344,7 @@ async function cetakRekapBulanan(){
         <td class="s3"><span class="s-emoji">❌</span><span class="s-label">Alpa</span><span class="s-val">${total.alpa}</span></td>
       </tr></table>
       <table class="data"><thead><tr>
-        <th>Nama Guru</th><th style="width:40px">✅ H</th><th style="width:40px">🤒 S</th>
+        <th>Nama Guru</th><th>Jabatan</th><th style="width:40px">✅ H</th><th style="width:40px">🤒 S</th>
         <th style="width:40px">📝 I</th><th style="width:40px">🏖️ C</th><th style="width:40px">❌ A</th>
         <th style="width:50px">Total</th><th style="width:50px">%</th>
       </tr></thead><tbody>${rows}</tbody></table>`;
@@ -2411,6 +2405,9 @@ async function cetakRekapBulanan(){
   showToast('🖨️ Mencetak rekap bulanan...', 'info');
 }
 
+/* ============================================================
+   LOGOUT
+   ============================================================ */
 function logout(){
   if(confirm('Yakin ingin keluar?')){
     localStorage.removeItem('user');
@@ -2418,6 +2415,9 @@ function logout(){
   }
 }
 
+/* ============================================================
+   HANDLER KLIK & DEEP-LINK
+   ============================================================ */
 function tanganiAksiClick(e, hash, namaFungsi){
   if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
@@ -2437,6 +2437,9 @@ function bukaDariHash(){
   else if(hash === '#aksi-export-rekap') setTimeout(() => { try{ exportRekapBulananWord(); }catch(e){} }, 100);
 }
 
+/* ============================================================
+   KLIK OVERLAY & ESC
+   ============================================================ */
 const modalOverlay = document.getElementById('modalDetail');
 if(modalOverlay){
   modalOverlay.addEventListener('click', function(e){
@@ -2450,6 +2453,9 @@ document.addEventListener('keydown', function(e){
   }
 });
 
+/* ============================================================
+   SEMBUNYIKAN WELCOME CARD
+   ============================================================ */
 function sembunyikanWelcomeInjection(){
   const selectors = ['.welcome', '.welcome-card', '.welcome-container', '#welcomeCard'];
   selectors.forEach(sel => {
@@ -2467,9 +2473,11 @@ function sembunyikanWelcomeInjection(){
   document.querySelectorAll('body > .welcome, body > .welcome-card').forEach(el => { el.style.display = 'none'; });
 }
 
+/* ============================================================
+   ✨ INIT ✨
+   ============================================================ */
 async function init(){
   dbg('🚀 init() mulai. DEBUG_MODE =', DEBUG_MODE);
-  dbg('🔌 sb =', typeof sb, 'sb.from =', typeof (typeof sb !== 'undefined' ? sb.from : undefined));
 
   const elTgl = document.getElementById('fTanggal');
   if(elTgl && !elTgl.value) elTgl.value = getTodayISO();
@@ -2492,6 +2500,7 @@ async function init(){
   setTimeout(sembunyikanWelcomeInjection, 300);
   setTimeout(sembunyikanWelcomeInjection, 800);
 
+  // ✨ Auto-refresh tiap 30 detik
   setInterval(async () => {
     try{
       const tgl = (document.getElementById('fTanggal') || {}).value || getTodayISO();
@@ -2509,7 +2518,6 @@ async function init(){
   }, 30000);
 
   console.log('✅ monitoring.html loaded — SIAGRA v.2.s (Supabase Ready + Fixed)');
-  dbg('✅ init() selesai. DATA_ORANG:', DATA_ORANG.length, 'DATA_MONITORING:', DATA_MONITORING.length);
 }
 
 window.addEventListener('DOMContentLoaded', () => { init(); });
