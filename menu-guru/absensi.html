@@ -207,17 +207,14 @@
   .toast.show{ transform:translate(-50%, 0);opacity:1; }
   .toast.success{background:#059669} .toast.error{background:#DC2626} .toast.info{background:#3B82F6} .toast.warn{background:#D97706}
 
-    @media (max-width: 900px) {
+  @media (max-width: 900px) {
     .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
     .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
     .profile-card { max-width: 100% !important; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
     .profile-card-body{ display: none !important; } 
     .form-grid { display: grid !important; grid-template-columns: 1fr !important; }
-    /* .jam-row TIDAK DIPAKSA DI SINI */
     .tabs{ flex-wrap: wrap !important; justify-content: center; }
     .tab-btn{ flex: 1 1 45% !important; font-size: 12px !important; }
-    
-    /* Tambahkan ini agar saat Alpa, jam hilang total di HP */
     #jamSection[style*="display: none"] { display: none !important; }
   }
 </style>
@@ -297,27 +294,26 @@
     <!-- TAB 1: FORM ABSEN -->
     <div id="panelForm">
       <div class="card">
-        <div class="form-grid">
-          <div class="form-group full">
-            <label>👤 Pengisi Absensi</label>
-            <div class="pengisi-info">
-              <div class="p-avatar" id="pengisiAvatar">?</div>
-              <div class="p-text">
-                <div class="p-nama" id="pengisiNama">Memuat...</div>
-                <div class="p-jabatan" id="pengisiJabatan">-</div>
-              </div>
+        <div class="form-group full">
+          <label>👤 Pengisi Absensi</label>
+          <div class="pengisi-info">
+            <div class="p-avatar" id="pengisiAvatar">?</div>
+            <div class="p-text">
+              <div class="p-nama" id="pengisiNama">Memuat...</div>
+              <div class="p-jabatan" id="pengisiJabatan">-</div>
             </div>
-            <small>💡 Absensi ini untuk <b>akun yang sedang login</b>. Tidak bisa diubah.</small>
           </div>
-          <div class="form-group">
-            <label>📅 Tanggal <span class="req">*</span></label>
-            <input type="date" id="fTanggal" onchange="saatTanggalBerubah()">
-          </div>
-          <div class="form-group">
-            <label>🏫 Rombel / Kelas</label>
-            <input type="text" id="fRombel" placeholder="cth: A, B1, B2">
-          </div>
+          <small>💡 Absensi ini untuk <b>akun yang sedang login</b>. Tidak bisa diubah.</small>
         </div>
+
+        <!-- Tanggal Sejajar Penuh -->
+        <div class="form-group full" style="margin-top:14px">
+          <label>📅 Tanggal <span class="req">*</span></label>
+          <input type="date" id="fTanggal" onchange="saatTanggalBerubah()">
+        </div>
+
+        <!-- Rombel Dihilangkan dari Formulir, disimpan di hidden agar sistem tetap jalan -->
+        <input type="hidden" id="fRombel" value="">
 
         <div class="form-group full" style="margin-top:14px">
           <label>✅ Status Kehadiran <span class="req">*</span></label>
@@ -452,10 +448,8 @@ function escapeHtml(s){ if(s == null) return ''; return String(s).replace(/&/g,'
 function normalisasiNama(nama){ if(!nama) return ''; let s = String(nama).trim().toLowerCase(); s = s.split(',')[0].trim(); s = s.replace(/[.,']/g,' ').replace(/\s+/g,' ').trim(); return s; }
 function namaPanggilan(nama){ if(!nama) return ''; return String(nama).split(',')[0].trim().split(/\s+/)[0] || nama; }
 
-/* === PERBAIKAN: Buang singkatan titik (P.S., S.Pd.) agar cocok dengan nama file === */
 function namaKeFile(nama){
   let b = String(nama||'').split(',')[0].trim();
-  // Hapus pola huruf titik seperti P.S. atau S.Pd. di akhir nama
   b = b.replace(/\s+[A-Z]\.(\s*[A-Z]\.)*\s*$/gi, ''); 
   b = b.replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
   b = b.replace(/[^a-zA-Z0-9\-]/g,'');
@@ -517,28 +511,21 @@ function applyRoleColors(){
 function setHeaderTitle(){ const el = document.getElementById('headerTitle'); if(!el) return; const map = { 'guru':'Halaman Guru', 'kepala':'Halaman Kepala Sekolah', 'tendik':'Halaman Tenaga Kependidikan' }; el.textContent = map[user.role] || 'Absensi'; }
 
 /* ============================================================
-   AVATAR & DATA USER (PERBAIKAN PROFIL & FOTO)
+   AVATAR & DATA USER
    ============================================================ */
 function avatarSvg(nama){ return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="42" r="18" fill="#F5F5F5"/><path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="#F5F5F5"/></svg>`; }
 
 function pakaiFotoAtauAvatar(el, nama, fotoUrl){
   if(!el) return;
-  
-  // 1. Cek link dari Supabase (jika ada)
   if(fotoUrl && fotoUrl.trim() !== ''){ 
     el.innerHTML = `<img src="${fotoUrl}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; 
     return; 
   }
-  
-  // 2. Cek dari upload lokal
   const fotoUpload = localStorage.getItem('ra_foto_' + nama);
   if(fotoUpload){ 
     el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; 
     return; 
   }
-  
-  // 3. Cari di folder foto/ dengan nama file yang sudah dibersihkan
-  const baseName = namaKeFile(nama);
   const exts = ['jpg','png','jpeg','JPG','PNG'];
   let idx = 0;
   function coba(){
@@ -546,7 +533,7 @@ function pakaiFotoAtauAvatar(el, nama, fotoUrl){
     const img = new Image();
     img.onload = function(){ el.innerHTML = '<img src="' + img.src + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'; };
     img.onerror = function(){ idx++; coba(); };
-    img.src = '../foto/' + baseName + '.' + exts[idx];
+    img.src = '../foto/' + namaKeFile(nama) + '.' + exts[idx];
   }
   coba();
 }
@@ -563,14 +550,12 @@ function cariDataUser(){
 }
 
 async function muatData(){
-  // 1. Ambil dari cache HP dulu
   dataGuru = load(KEY_GURU, []) || []; 
   dataTendik = load(KEY_TENDIK, []) || []; 
   guruProfil = cariDataUser(); 
   renderPengisiInfo(); 
   renderProfil(); 
 
-  // 2. Ambil data terbaru dari Supabase
   if (typeof sb !== 'undefined') {
     try {
       const { data: t } = await sb.from('tendik').select('*'); 
@@ -582,7 +567,6 @@ async function muatData(){
       renderPengisiInfo(); 
       renderProfil(); 
       
-      // Panggil Rombel Otomatis
       isiRombelOtomatis();
       
     } catch(e) {
@@ -644,7 +628,7 @@ function renderProfil(){
 }
 
 /* ============================================================
-   ROMBEL OTOMATIS
+   ROMBEL OTOMATIS (Disembunyikan di Form, tetap disimpan)
    ============================================================ */
 async function isiRombelOtomatis() {
   if (!guruProfil || typeof sb === 'undefined') return;
@@ -751,7 +735,7 @@ function updateUISetelahPilihStatus(kode){
   btnSimpan.style.display = 'inline-flex';
 
   if(kode === 'alpa'){
-    jamSection.style.display = 'none'; // Sembunyikan jam
+    jamSection.style.display = 'none'; 
     btnSimpan.style.display = 'inline-flex'; 
     btnSimpan.disabled = false; 
     btnReset.style.display = 'none'; 
