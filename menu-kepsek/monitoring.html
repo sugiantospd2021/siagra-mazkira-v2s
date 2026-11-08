@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="icon" type="image/png" href="logo-siagra.png">
+<link rel="icon" type="image/png" href="../logo-siagra.png">
 <title>SIAGRA - Monitor Absensi</title>
 <meta name="description" content="Monitoring Absensi Guru — SIAGRA">
 <meta name="theme-color" content="#1E3A8A">
@@ -1838,7 +1838,20 @@ async function renderRekapBulanan(){
     return;
   }
 
-  const { data: absenBulan, error } = await sb.from('absensi').select('*').like('tanggal', `${bulan}%`);
+    // Ambil awal dan akhir bulan (contoh: 2026-11-01 s/d 2026-11-31)
+  const awalBulan = bulan + '-01';
+  const akhirBulan = new Date(bulan + '-01');
+  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+  akhirBulan.setDate(0); // Mundur ke tanggal terakhir bulan
+  const tglAkhir = akhirBulan.getFullYear() + '-' + 
+    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+    String(akhirBulan.getDate()).padStart(2,'0');
+
+  const { data: absenBulan, error } = await sb
+    .from('absensi')
+    .select('*')
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
   if(error){
     dbg('renderRekapBulanan error:', error.message);
     cont.innerHTML = `<div class="rekap-empty">❌ Gagal mengambil data rekap: ${escapeHtml(error.message)}</div>`;
@@ -2135,7 +2148,19 @@ function exportMonitoring(){
 async function exportRekapBulananWord(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
-  const { data: absenBulan } = await sb.from('absensi').select('*').like('tanggal', `${bulan}%`);
+  const awalBulan = bulan + '-01';
+const akhirBulan = new Date(bulan + '-01');
+akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+akhirBulan.setDate(0);
+const tglAkhir = akhirBulan.getFullYear() + '-' + 
+  String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+  String(akhirBulan.getDate()).padStart(2,'0');
+
+const { data: absenBulan } = await sb
+  .from('absensi')
+  .select('*')
+  .gte('tanggal', awalBulan)
+  .lte('tanggal', tglAkhir);
   let dataBulan = absenBulan || [];
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
