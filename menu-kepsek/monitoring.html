@@ -1729,14 +1729,14 @@ function renderTabel(data){
 }
 
 async function applyFilter(){
-  const fR = document.getElementById('fRombel').value;
+  const fJ = document.getElementById('fJabatan').value; // Ubah dari fRombel ke fJabatan
   const fT = document.getElementById('fTanggal').value;
   const fS = document.getElementById('fStatus').value;
 
   const tgl = fT || getTodayISO();
   let filtered = await buildMonitoringTanggal(tgl);
 
-  if(fR) filtered = filtered.filter(d => d.rombel === fR);
+  if(fJ) filtered = filtered.filter(d => d.jabatan === fJ); // Filter berdasarkan Jabatan
   if(fS) filtered = filtered.filter(d => d.status === fS);
 
   DATA_MONITORING = filtered;
@@ -1745,14 +1745,14 @@ async function applyFilter(){
   renderTabel(filtered);
   updateProgress(filtered);
 
-  if(filtered.length === 0 && (fR || fS)) showToast('📭 Tidak ada data yang cocok dengan filter', 'warn');
+  if(filtered.length === 0 && (fJ || fS)) showToast('📭 Tidak ada data yang cocok dengan filter', 'warn');
   else showToast('✅ Filter diterapkan: ' + filtered.length + ' baris', 'info');
 }
 async function resetFilter(){
-  const elR = document.getElementById('fRombel');
+  const elJ = document.getElementById('fJabatan'); // Ubah ke fJabatan
   const elT = document.getElementById('fTanggal');
   const elS = document.getElementById('fStatus');
-  if(elR) elR.value = '';
+  if(elJ) elJ.value = '';
   if(elT) elT.value = getTodayISO();
   if(elS) elS.value = '';
   await loadMonitoring();
