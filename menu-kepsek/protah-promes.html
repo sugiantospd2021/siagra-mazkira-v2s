@@ -148,6 +148,49 @@
   /* KOLOM KANAN */
   .col-menu{min-width:0}
 
+  /* ============================================================
+     HERO / INTRO CARD — TAMBAHAN BARU
+     ============================================================ */
+  .intro-card{
+    background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 55%,#3B82F6 100%);
+    color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px;
+    border:2px solid rgba(191,219,254,.5);
+    box-shadow:0 10px 30px rgba(59,130,246,.45);
+    position:relative;overflow:hidden;
+    transition:background .3s,box-shadow .3s,border-color .3s;
+  }
+  .intro-card::before{
+    content:'';position:absolute;top:-60px;right:-60px;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);
+    pointer-events:none;
+  }
+  .intro-card h2{
+    font-size:20px;font-weight:800;margin-bottom:6px;
+    position:relative;z-index:1;
+    text-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  .intro-card p{
+    font-size:13px;font-weight:600;line-height:1.5;
+    opacity:.95;position:relative;z-index:1;
+    text-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  body.light .intro-card{
+    background:linear-gradient(135deg,#1E40AF 0%,#2563EB 55%,#3B82F6 100%);
+    border-color:rgba(96,165,250,.5);
+  }
+  .intro-card .kbc-chips{
+    display:flex;flex-wrap:wrap;gap:8px;
+    margin-top:12px;position:relative;z-index:1;
+  }
+  .kbc-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:5px 12px;border-radius:100px;
+    background:rgba(255,255,255,.2);
+    border:1px solid rgba(255,255,255,.35);
+    font-size:11.5px;font-weight:700;backdrop-filter:blur(8px);
+  }
+
   /* FORM HEADER INLINE */
   .form-header-inline{
     display:flex;align-items:center;justify-content:space-between;
@@ -184,9 +227,7 @@
   /* Tombol Protah Biru */
   .btn-action.primary{background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;border-color:#3B82F6}
   
-  /* ============================================================
-     TOMBOL PROMES (HIJAU TERANG)
-     ============================================================ */
+  /* TOMBOL PROMES (HIJAU TERANG) */
   .btn-action.success{
     background:linear-gradient(135deg,#10B981,#059669);
     color:#fff;border-color:#10B981;
@@ -212,24 +253,23 @@
      TABEL PROMES (HIJAU TERANG FULL)
      ============================================================ */
   .table-card.promes {
-    /* Background hijau gelap transparan agar teks tetap terbaca */
     background:rgba(16, 185, 129, 0.08); 
     border-radius:16px;
-    border:2px solid #10B981; /* Border Hijau Terang */
-    box-shadow:0 0 25px rgba(16,185,129,.25); /* Glow Hijau */
+    border:2px solid #10B981; 
+    box-shadow:0 0 25px rgba(16,185,129,.25); 
     overflow:hidden;margin-bottom:24px;
   }
   .table-card.promes .table-card-header {
     padding:16px 20px;
     border-bottom:2px solid rgba(16,185,129,.3);
     display:flex;justify-content:space-between;align-items:center;
-    background:rgba(16,185,129,.15); /* Background Header Hijau */
+    background:rgba(16,185,129,.15); 
   }
   body.light .table-card.promes .table-card-header{background:rgba(16,185,129,.1)}
   
   /* Header teks */
   .table-card-header h3{font-size:15px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
-  .table-card.promes .table-card-header h3{color:#4ADE80;} /* Teks judul Promes hijau terang */
+  .table-card.promes .table-card-header h3{color:#4ADE80;} 
   
   /* Badge Count Protah (Biru) */
   .table-card.prota .badge-count{
@@ -246,20 +286,16 @@
   body.light .table-card.promes .badge-count{background:rgba(16,185,129,.1);color:#047857;border-color:rgba(16,185,129,.3)}
 
   /* Styling Tabel dalam Card Promes */
-  .table-card.promes thead {
-    background:rgba(16,185,129,0.05);
-  }
+  .table-card.promes thead { background:rgba(16,185,129,0.05); }
   .table-card.promes th {
     border-bottom:1px solid rgba(16,185,129,.2);
-    color:#A7F3D0; /* Warna teks header agak kehijauan */
+    color:#A7F3D0; 
   }
   .table-card.promes td {
     border-bottom:1px solid rgba(16,185,129,.15);
     background:transparent;
   }
-  .table-card.promes tr:hover td {
-    background:rgba(16,185,129,0.05);
-  }
+  .table-card.promes tr:hover td { background:rgba(16,185,129,0.05); }
 
   /* STYLING UMUM TABEL */
   .table-scroll{overflow-x:auto}
@@ -414,6 +450,20 @@
 
   <!-- KOLOM KANAN: KONTEN -->
   <div class="col-menu">
+    
+    <!-- ============================================================
+         HERO / INTRO CARD — TAMBAHAN BARU
+         ============================================================ -->
+    <div class="intro-card">
+      <h2>📚 Protah &amp; Promes</h2>
+      <p>Kelola dan pantau dokumen perencanaan pembelajaran Anda — Program Tahunan (Protah) dan Program Semester (Promes) dalam satu tempat.</p>
+      <div class="kbc-chips">
+        <span class="kbc-chip">📆 Program Tahunan</span>
+        <span class="kbc-chip">🗓️ Program Semester</span>
+        <span class="kbc-chip">✅ Status Selesai</span>
+      </div>
+    </div>
+
     <!-- HEADER INLINE -->
     <div class="form-header-inline">
       <div class="form-title-text"><span class="emoji">📚</span><span>Kelola Protah & Promes</span></div>
