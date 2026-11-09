@@ -145,11 +145,11 @@
   .tab-btn{ flex:1;min-width:130px;padding:11px;border-radius:10px;border:none; background:transparent;color:var(--sub);font-weight:700;cursor:pointer;text-decoration:none;text-align:center; }
   .tab-btn.active{ background:var(--role-primary);color:#fff; }
   
-  .card{ background:var(--role-card);border-radius:16px; border:2px solid var(--role-primary-dark); padding:22px;margin-bottom:18px; }
+    .card{ background:var(--role-card);border-radius:16px; border:2px solid var(--role-primary-dark); padding:22px;margin-bottom:18px; }
   
   .form-group{display:flex;flex-direction:column;gap:6px}
   .form-group.full{grid-column:1 / -1}
-  .form-group label{ font-size:10.5px;font-weight:800;color:#DC2626; text-transform:uppercase; }
+  .form-group label{ font-size:10.5px;font-weight:800;color:var(--role-primary); text-transform:uppercase; }
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .form-group input, .form-group select, .form-group textarea{ width:100%;padding:11px; background:var(--role-card-inner);color:var(--text); border:1.5px solid var(--role-border);border-radius:10px; outline:none; }
   
@@ -311,14 +311,14 @@
   <!-- KOLOM KANAN: KONTEN -->
   <div class="col-menu">
 
-    <div class="intro-card">
-      <h2>📅 Absensi Harian</h2>
-      <p>Catat kehadiran Anda setiap hari — data absensi pribadi, riwayat lengkap, dan rekap otomatis.</p>
+    <div class="intro-card" id="introCard">
+      <h2 style="color:#fff;">📅 Absensi Harian</h2>
+      <p id="introSub">Catat kehadiran Anda setiap hari — data absensi pribadi, riwayat lengkap, dan rekap otomatis.</p>
     </div>
 
     <div class="form-header-inline">
-      <div class="form-title-text"><span>📝</span><span>Formulir Absensi</span></div>
-      <a class="btn-back-inline" href="../guru.html">← Kembali ke Menu</a>
+      <div class="form-title-text" style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:16px; color:var(--role-header-text);"><span>📝</span><span>Formulir Absensi</span></div>
+      <a class="btn-back-inline" id="btnKembali" href="../guru.html">← Kembali ke Menu</a>
     </div>
 
     <div class="tabs">
@@ -600,17 +600,66 @@ else if(!['guru','kepala','tendik'].includes(user.role)){ alert('Akses ditolak!'
 
 function applyRoleColors(){
   const role = (user && user.role) || 'guru';
-  const colors = { 'kepala': { primary:'#3B82F6', primaryDark:'#1E40AF', accent:'#60A5FA' }, 'tendik': { primary:'#D97706', primaryDark:'#B45309', accent:'#FCD34D' }, 'guru': { primary:'#34D399', primaryDark:'#10B981', accent:'#6EE7B7' } };
+  const colors = {
+    'kepala': {
+      primary:'#3B82F6', primaryDark:'#1E40AF', accent:'#60A5FA',
+      headerGrad:'linear-gradient(135deg,#1E3A8A,#0F1A3A)', headerBorder:'#3B82F6', headerText:'#FCD34D',
+      introGrad:'linear-gradient(135deg,#1E3A8A,#2563EB 60%,#60A5FA)',
+      bgRadial:'radial-gradient(circle at 10% 10%, rgba(30,58,138,.25) 0%, transparent 40%), radial-gradient(circle at 90% 20%, rgba(59,130,246,.15) 0%, transparent 40%)',
+      card:'#0F1A3A', cardInner:'#0A0F26', border:'#1E3A8A', backHref:'../kepsek.html'
+    },
+    'tendik': {
+      primary:'#D97706', primaryDark:'#B45309', accent:'#FCD34D',
+      headerGrad:'linear-gradient(135deg,#1A0F08,#0A0503)', headerBorder:'#B45309', headerText:'#FCD34D',
+      introGrad:'linear-gradient(135deg,#78350F,#B45309 60%,#D97706)',
+      bgRadial:'radial-gradient(circle at 10% 10%, rgba(180,83,9,.06) 0%, transparent 40%), radial-gradient(circle at 90% 20%, rgba(217,119,6,.04) 0%, transparent 40%)',
+      card:'#0F0A05', cardInner:'#1A1208', border:'#2A1F14', backHref:'../tendik.html'
+    },
+    'guru': {
+      primary:'#34D399', primaryDark:'#10B981', accent:'#6EE7B7',
+      headerGrad:'linear-gradient(135deg,#064E3B,#0A1F17)', headerBorder:'#10B981', headerText:'#A7F3D0',
+      introGrad:'linear-gradient(135deg,#065F46,#10B981 60%,#34D399)',
+      bgRadial:'radial-gradient(circle at 10% 10%, rgba(52,211,153,.06) 0%, transparent 40%), radial-gradient(circle at 90% 20%, rgba(110,231,183,.04) 0%, transparent 40%)',
+      card:'#0A1F17', cardInner:'#0F2A20', border:'#1F4A36', backHref:'../guru.html'
+    }
+  };
   const c = colors[role] || colors.guru;
   const root = document.documentElement;
-  root.style.setProperty('--role-primary', c.primary); root.style.setProperty('--role-primary-dark', c.primaryDark); root.style.setProperty('--role-accent', c.accent);
+  root.style.setProperty('--role-primary', c.primary);
+  root.style.setProperty('--role-primary-dark', c.primaryDark);
+  root.style.setProperty('--role-accent', c.accent);
+  root.style.setProperty('--role-header-grad', c.headerGrad);
+  root.style.setProperty('--role-header-border', c.headerBorder);
+  root.style.setProperty('--role-header-text', c.headerText);
+  root.style.setProperty('--role-intro-grad', c.introGrad);
+  root.style.setProperty('--role-bg-radial', c.bgRadial);
+  root.style.setProperty('--role-card', c.card);
+  root.style.setProperty('--role-card-inner', c.cardInner);
+  root.style.setProperty('--role-border', c.border);
+
+  // Set tombol kembali secara dinamis
+  const btnBack = document.getElementById('btnKembali');
+  if(btnBack) btnBack.href = c.backHref;
+
+  // Set Intro Card agar teks kuning/putih sesuai tema
+  const introCard = document.getElementById('introCard');
+  if(introCard) introCard.style.color = (role === 'tendik') ? '#FCD34D' : '#fff';
 }
-function setHeaderTitle(){ const el = document.getElementById('headerTitle'); if(!el) return; const map = { 'guru':'Halaman Guru', 'kepala':'Halaman Kepala Sekolah', 'tendik':'Halaman Tenaga Kependidikan' }; el.textContent = map[user.role] || 'Absensi'; }
+
+function setHeaderTitle(){ 
+  const el = document.getElementById('headerTitle'); 
+  if(!el) return; 
+  const map = { 'guru':'Halaman Guru', 'kepala':'Halaman Kepala Sekolah', 'tendik':'Halaman Tenaga Kependidikan' }; 
+  el.textContent = map[user.role] || 'Absensi'; 
+}
 
 /* ============================================================
    AVATAR & DATA USER
    ============================================================ */
-function avatarSvg(nama){ return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="42" r="18" fill="#F5F5F5"/><path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="#F5F5F5"/></svg>`; }
+function avatarSvg(nama){
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#F5F5F5"/><stop offset="100%" stop-color="#A0A0A0"/></linearGradient></defs><rect width="120" height="120" fill="var(--role-primary-dark)"/><circle cx="60" cy="42" r="18" fill="url(#g${id})"/><path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/></svg>`;
+}
 
 function pakaiFotoAtauAvatar(el, nama, fotoUrl){
   if(!el) return;
@@ -725,7 +774,7 @@ function renderProfil(){
 }
 
 /* ============================================================
-   ROMBEL OTOMATIS (Disembunyikan di Form, tetap disimpan)
+   ROMBEL OTOMATIS
    ============================================================ */
 async function isiRombelOtomatis() {
   if (!guruProfil || typeof sb === 'undefined') return;
@@ -1058,7 +1107,7 @@ function renderRiwayat(){
 function updateCountBadge(){ const badge = document.getElementById('countBadge'); if(!badge) return; const data = load(KEY_ABSEN, []) || []; badge.textContent = '(' + data.filter(d => normalisasiNama(d.guru) === normalisasiNama(user.nama)).length + ')'; }
 
 /* ============================================================
-   REKAP BULANAN (PERBAIKAN: Mengambil dari Supabase)
+   REKAP BULANAN
    ============================================================ */
 async function renderRekap(){
   const bulan = document.getElementById('fRekapBulan').value || getTodayISO().substring(0,7);
@@ -1164,7 +1213,7 @@ async function renderRekap(){
 }
 
 /* ============================================================
-   BACKUP & RESTORE (SUPABASE)
+   BACKUP & RESTORE
    ============================================================ */
 async function renderStatistikBackup(){
   if(typeof sb === 'undefined') return;
