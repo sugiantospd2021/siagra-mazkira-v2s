@@ -255,9 +255,9 @@
   }
   .filter-bulan input:focus { border-color: var(--card-border); }
 
-  .table-scroll { overflow-x: auto; }
+  .table-scroll { overflow-x: auto; max-height: 500px; }
   table { width: 100%; border-collapse: collapse; min-width: 700px; }
-  thead { background: rgba(0,0,0,.3); }
+  thead { background: rgba(0,0,0,.3); position: sticky; top: 0; z-index: 10; }
   body:not(.dark) thead { background: #F0F4FB; }
   th {
     text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 800;
@@ -265,7 +265,7 @@
     white-space: nowrap;
   }
   td {
-    padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border);
+    padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border);
     color: var(--text); font-weight: 500;
   }
   tbody tr:hover td { background: rgba(255,255,255,.03); }
@@ -276,7 +276,7 @@
     width: 32px; height: 32px; border-radius: 50%;
     background: var(--card-inner); border: 1.5px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 800; color: var(--text); font-size: 12px;
+    font-weight: 800; color: var(--text); font-size: 12px; flex-shrink: 0;
   }
   
   .badge {
@@ -284,20 +284,20 @@
     padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 800;
     min-width: 40px;
   }
-  .badge.anekdot { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
-  .badge.observasi { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
-  .badge.penilaian { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
-  .badge.zero { opacity: .4; filter: grayscale(1); }
+  .badge.guru { background: rgba(96,165,250,.15); color: #3B82F6; border: 1px solid rgba(96,165,250,.3); }
 
   .btn-cek {
     padding: 6px 12px; border-radius: 6px; font-family: inherit; font-size: 11px;
     font-weight: 700; cursor: pointer; border: 1.5px solid transparent;
-    display: inline-flex; align-items: center; gap: 4px; transition: all .2s;
+    display: inline-flex; align-items: center; gap: 4px; transition: all .2s; white-space: nowrap;
   }
   .btn-cek.belum { background: rgba(239,68,68,.15); color: #EF4444; border-color: rgba(239,68,68,.4); }
   .btn-cek.belum:hover { background: rgba(239,68,68,.3); }
   .btn-cek.sudah { background: rgba(16,185,129,.15); color: #10B981; border-color: rgba(16,185,129,.4); }
   .btn-cek.sudah:hover { background: rgba(16,185,129,.3); }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--sub); }
+  .empty-state .icon { font-size: 40px; opacity: .5; margin-bottom: 10px; }
 
   /* TOAST */
   .toast{
@@ -668,72 +668,6 @@ function loadData(key) {
   } catch(e) { return []; }
 }
 
-function getDaftarGuru() {
-  const guruSet = new Set();
-  const masterGuru = loadData('ra_guru');
-  masterGuru.forEach(g => { if(g.nama) guruSet.add(g.nama); });
-
-  const anekdot = loadData('ra_anekdot');
-  anekdot.forEach(d => { if(d.guru) guruSet.add(d.guru); });
-
-  const observasi = loadData('ra_observasi_kbc');
-  observasi.forEach(d => { if(d.guru) guruSet.add(d.guru); });
-
-  for(let i=0; i<localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if(k && k.startsWith('ra_penilaian_kbc_')) {
-      try {
-        const d = JSON.parse(localStorage.getItem(k));
-        if(d && d.guruNama) guruSet.add(d.guruNama);
-      } catch(e){}
-    }
-  }
-
-  const namaDikecualikan = ['anto', 'puspa', 'sugianto'];
-
-  return Array.from(guruSet)
-    .filter(nama => {
-      const namaBersih = normalisasiNama(nama).toLowerCase();
-      return !namaDikecualikan.some(dikecualikan => namaBersih.includes(dikecualikan));
-    })
-    .sort();
-}
-
-/* ============================================================
-   HITUNG DATA PER JENIS (TERPISAH)
-   ============================================================ */
-function hitungAnekdot(namaGuru, periodeFilter) {
-  const anekdot = loadData('ra_anekdot');
-  return anekdot.filter(d => 
-    normalisasiNama(d.guru) === normalisasiNama(namaGuru) && 
-    (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
-  ).length;
-}
-
-function hitungObservasi(namaGuru, periodeFilter) {
-  const observasi = loadData('ra_observasi_kbc');
-  return observasi.filter(d => 
-    normalisasiNama(d.guru) === normalisasiNama(namaGuru) && 
-    (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
-  ).length;
-}
-
-function hitungPenilaian(namaGuru, periodeFilter) {
-  let count = 0;
-  for(let i=0; i<localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if(k && k.startsWith('ra_penilaian_kbc_')) {
-      try {
-        const d = JSON.parse(localStorage.getItem(k));
-        if(d && normalisasiNama(d.guruNama) === normalisasiNama(namaGuru) && (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)) {
-          count++;
-        }
-      } catch(e){}
-    }
-  }
-  return count;
-}
-
 /* ============================================================
    RENDER CARD & TABEL DINAMIS
    ============================================================ */
@@ -756,6 +690,7 @@ function pilihCard(jenis) {
 function renderDetailTabel() {
   const wadah = document.getElementById('wadahTabel');
   
+  // Ambil nilai filter bulan dari hidden input
   const periodeAnekdot = document.getElementById('periodeAnekdot').value;
   const periodeObservasi = document.getElementById('periodeObservasi').value;
   const periodePenilaian = document.getElementById('periodePenilaian').value;
@@ -765,13 +700,41 @@ function renderDetailTabel() {
   else if(jenisAktif === 'observasi') periodeAktif = periodeObservasi;
   else periodeAktif = periodePenilaian;
 
-  const daftarGuru = getDaftarGuru();
+  // Kumpulkan semua data laporan berdasarkan jenis
+  let listData = [];
+  
+  if(jenisAktif === 'anekdot') {
+    listData = loadData('ra_anekdot');
+  } else if(jenisAktif === 'observasi') {
+    listData = loadData('ra_observasi_kbc');
+  } else {
+    for(let i=0; i<localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if(k && k.startsWith('ra_penilaian_kbc_')) {
+        try {
+          const d = JSON.parse(localStorage.getItem(k));
+          if(d) listData.push(d);
+        } catch(e){}
+      }
+    }
+  }
 
-  let guruTampil = daftarGuru;
+  // Filter berdasarkan bulan
+  if(periodeAktif) {
+    listData = listData.filter(d => (d.tanggal||'').substring(0,7) === periodeAktif);
+  }
+
+  // Filter berdasarkan role (jika guru, hanya lihat datanya sendiri)
   if(user.role === 'guru') {
     const namaSaya = normalisasiNama(user.nama);
-    guruTampil = daftarGuru.filter(g => normalisasiNama(g).includes(namaSaya));
+    listData = listData.filter(d => {
+      const namaGuru = jenisAktif === 'penilaian' ? d.guruNama : d.guru;
+      return normalisasiNama(namaGuru).includes(namaSaya);
+    });
   }
+
+  // Urutkan berdasarkan tanggal terbaru
+  listData.sort((a,b) => (b.tanggal||'').localeCompare(a.tanggal||''));
 
   let judul = '';
   let classWarna = '';
@@ -807,48 +770,39 @@ function renderDetailTabel() {
           <thead>
             <tr>
               <th style="width: 50px;">No</th>
-              <th>Nama Guru</th>
-              <th style="text-align: center;">Tanggal Laporan</th>
-              <th style="text-align: center;">Jumlah Laporan</th>
+              <th>Tanggal</th>
+              <th>Nama Anak</th>
+              <th>Guru</th>
               <th style="text-align: center;">Status</th>
             </tr>
           </thead>
           <tbody>
   `;
 
-  if(guruTampil.length === 0) {
-    html += `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--sub);">📭 Tidak ada data guru yang cocok.</td></tr>`;
+  if(listData.length === 0) {
+    html += `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div>Belum ada data laporan pada periode ini.</div></td></tr>`;
   } else {
-    guruTampil.forEach((nama, index) => {
-      let dataList = [];
-      if(jenisAktif === 'anekdot') {
-        dataList = loadData('ra_anekdot').filter(d => normalisasiNama(d.guru) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif));
-      } else if(jenisAktif === 'observasi') {
-        dataList = loadData('ra_observasi_kbc').filter(d => normalisasiNama(d.guru) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif));
-      } else {
-        for(let i=0; i<localStorage.length; i++) {
-          const k = localStorage.key(i);
-          if(k && k.startsWith('ra_penilaian_kbc_')) {
-            try {
-              const d = JSON.parse(localStorage.getItem(k));
-              if(d && normalisasiNama(d.guruNama) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif)) {
-                dataList.push(d);
-              }
-            } catch(e){}
-          }
-        }
-      }
-
-      const jml = dataList.length;
-      const inisial = nama.charAt(0).toUpperCase();
+    listData.forEach((item, index) => {
+      // Ambil nama anak dan guru berdasarkan jenis
+      let namaAnak = '-';
+      let namaGuru = '-';
       
-      let tglTerakhir = '-';
-      if(jml > 0) {
-        dataList.sort((a,b) => (b.tanggal||'').localeCompare(a.tanggal||''));
-        tglTerakhir = formatTanggalPanjang(dataList[0].tanggal);
+      if(jenisAktif === 'anekdot') {
+        namaAnak = item.anak || '-';
+        namaGuru = item.guru || '-';
+      } else if(jenisAktif === 'observasi') {
+        namaAnak = item.anak || '-';
+        namaGuru = item.guru || '-';
+      } else {
+        namaAnak = item.namaAnak || '-';
+        namaGuru = item.guruNama || '-';
       }
 
-      const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + nama.replace(/\s+/g, '_') + '_' + periodeAktif;
+      const inisial = namaAnak.charAt(0).toUpperCase();
+      const tgl = formatTanggalPanjang(item.tanggal);
+      
+      // Key unik untuk verifikasi per laporan
+      const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + (item.id || item.tanggal + '_' + namaAnak);
       const statusVerifikasi = localStorage.getItem(keyVerifikasi) || 'belum';
       
       const classBtn = statusVerifikasi === 'sudah' ? 'sudah' : 'belum';
@@ -857,16 +811,16 @@ function renderDetailTabel() {
       html += `
         <tr>
           <td>${index + 1}</td>
+          <td style="font-size: 12px; white-space: nowrap;">${tgl}</td>
           <td>
             <div class="cell-nama">
               <div class="avatar-mini">${inisial}</div>
-              <span>${nama}</span>
+              <span>${escapeHtml(namaAnak)}</span>
             </div>
           </td>
-          <td style="text-align: center; font-size: 11.5px;">${tglTerakhir}</td>
-          <td style="text-align: center;"><span class="badge ${classWarna} ${jml === 0 ? 'zero' : ''}">${jml}</span></td>
+          <td style="font-size: 12px; color: var(--sub);">${escapeHtml(namaGuru)}</td>
           <td style="text-align: center;">
-            <button class="btn-cek ${classBtn}" onclick="toggleVerifikasi('${jenisAktif}', '${escapeHtml(nama).replace(/'/g,"\\'")}', '${periodeAktif}')">
+            <button class="btn-cek ${classBtn}" onclick="toggleVerifikasi('${keyVerifikasi}')">
               ${labelBtn}
             </button>
           </td>
@@ -878,15 +832,44 @@ function renderDetailTabel() {
   html += `</tbody></table></div></div>`;
   wadah.innerHTML = html;
 
+  // Update angka statistik di card
   let totalAnekdot = 0;
   let totalObservasi = 0;
   let totalPenilaian = 0;
 
-  daftarGuru.forEach(nama => {
-    totalAnekdot += hitungAnekdot(nama, periodeAnekdot);
-    totalObservasi += hitungObservasi(nama, periodeObservasi);
-    totalPenilaian += hitungPenilaian(nama, periodePenilaian);
-  });
+  if(periodeAnekdot) {
+    totalAnekdot = loadData('ra_anekdot').filter(d => (d.tanggal||'').substring(0,7) === periodeAnekdot).length;
+  } else {
+    totalAnekdot = loadData('ra_anekdot').length;
+  }
+
+  if(periodeObservasi) {
+    totalObservasi = loadData('ra_observasi_kbc').filter(d => (d.tanggal||'').substring(0,7) === periodeObservasi).length;
+  } else {
+    totalObservasi = loadData('ra_observasi_kbc').length;
+  }
+
+  if(periodePenilaian) {
+    for(let i=0; i<localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if(k && k.startsWith('ra_penilaian_kbc_')) {
+        try {
+          const d = JSON.parse(localStorage.getItem(k));
+          if(d && (d.tanggal||'').substring(0,7) === periodePenilaian) totalPenilaian++;
+        } catch(e){}
+      }
+    }
+  } else {
+    for(let i=0; i<localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if(k && k.startsWith('ra_penilaian_kbc_')) {
+        try {
+          const d = JSON.parse(localStorage.getItem(k));
+          if(d) totalPenilaian++;
+        } catch(e){}
+      }
+    }
+  }
 
   document.getElementById('totalAnekdot').textContent = totalAnekdot;
   document.getElementById('totalObservasi').textContent = totalObservasi;
@@ -901,11 +884,10 @@ function ubahFilterBulanTabel(val) {
   renderDetailTabel();
 }
 
-function toggleVerifikasi(jenis, namaGuru, periode) {
-  const key = 'verifikasi_' + jenis + '_' + namaGuru.replace(/\s+/g, '_') + '_' + periode;
-  const current = localStorage.getItem(key) || 'belum';
+function toggleVerifikasi(keyVerifikasi) {
+  const current = localStorage.getItem(keyVerifikasi) || 'belum';
   const newStatus = current === 'sudah' ? 'belum' : 'sudah';
-  localStorage.setItem(key, newStatus);
+  localStorage.setItem(keyVerifikasi, newStatus);
   
   showToast(newStatus === 'sudah' ? '✅ Ditandai Sudah Dicek' : '⏳ Ditandai Belum Dicek', 'info');
   renderDetailTabel();
@@ -943,7 +925,7 @@ document.body.appendChild(dummyInput3);
 
 pilihCard('anekdot');
 
-console.log('✅ monitoring-adm-guru.html loaded (Filter Bulan di Tabel, Verifikasi Manual)');
+console.log('✅ monitoring-adm-guru.html loaded (Rincian per Laporan)');
 </script>
 
 <script src="../auto-update.js"></script>
