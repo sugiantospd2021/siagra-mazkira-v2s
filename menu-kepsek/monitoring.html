@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="SIAGRA">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ✨ TAMBAHAN SUPABASE ✨ -->
+<!-- ✨ SUPABASE ✨ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 
@@ -356,7 +356,7 @@
   }
   .card-title .emoji{font-size:19px}
   
-    .toolbar{
+  .toolbar{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
     gap:10px;margin-bottom:16px;
@@ -799,6 +799,48 @@
     max-height:300px;overflow:auto;
   }
   #debugPanel.show{display:block}
+
+  /* ✨ CSS TAMBAHAN UNTUK TAB BACKUP ✨ */
+  .backup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 600px) {
+    .backup-grid { grid-template-columns: 1fr; }
+  }
+  .backup-card {
+    background: var(--card-inner);
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+  .backup-card .icon { font-size: 40px; margin-bottom: 10px; }
+  .backup-card h4 { margin-bottom: 8px; font-size: 15px; }
+  .backup-card p { font-size: 12px; color: var(--sub); margin-bottom: 14px; line-height: 1.5; }
+  .backup-card .btn { width: 100%; justify-content: center; }
+  .backup-card.danger { border-color: var(--danger); }
+  .backup-card.danger h4 { color: var(--danger); }
+  .backup-card.warn { border-color: var(--warning); }
+  .backup-card.warn h4 { color: var(--warning); }
+  
+  .stat-grid-backup {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-box-backup {
+    background: var(--card-inner);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-box-backup .n { font-size: 22px; font-weight: 900; color: var(--primary); }
+  .stat-box-backup .l { font-size: 10px; font-weight: 700; color: var(--sub); margin-top: 4px; text-transform: uppercase; }
 </style>
 </head>
 
@@ -878,7 +920,7 @@
       </a>
     </div>
 
-    <!-- SUB-TAB: HARIAN / REKAP BULANAN -->
+    <!-- SUB-TAB: HARIAN / REKAP BULANAN / BACKUP -->
     <div class="tabs">
       <a class="tab-btn active" id="tabHarian" href="#harian"
          onclick="tanganiTabClick(event,'harian')">
@@ -887,6 +929,10 @@
       <a class="tab-btn" id="tabRekap" href="#rekap-bulanan"
          onclick="tanganiTabClick(event,'rekap')">
         📊 Rekap Bulanan
+      </a>
+      <a class="tab-btn" id="tabBackup" href="#backup"
+         onclick="tanganiTabClick(event,'backup')">
+        ☁️ Backup & Restore
       </a>
     </div>
 
@@ -1057,6 +1103,80 @@
 
     </div><!-- /panelRekap -->
 
+    <!-- ============================================================
+         PANEL BACKUP & RESTORE (BARU)
+         ============================================================ -->
+    <div id="panelBackup" style="display:none">
+      
+      <!-- STATISTIK DATA -->
+      <div class="card">
+        <div class="card-title">
+          <span class="emoji">📊</span>
+          <span>Statistik Data Absensi</span>
+        </div>
+        <div class="stat-grid-backup">
+          <div class="stat-box-backup">
+            <div class="n" id="statTotal">0</div>
+            <div class="l">Total Absen</div>
+          </div>
+          <div class="stat-box-backup">
+            <div class="n" id="statHari">0</div>
+            <div class="l">Hari Tercatat</div>
+          </div>
+          <div class="stat-box-backup">
+            <div class="n" id="statPersen">0%</div>
+            <div class="l">% Hadir</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU BACKUP -->
+      <div class="card">
+        <div class="card-title">
+          <span class="emoji">☁️</span>
+          <span>Backup & Restore</span>
+        </div>
+        
+        <div class="backup-grid">
+          <!-- BACKUP -->
+          <div class="backup-card">
+            <div class="icon">📥</div>
+            <h4>Backup Data</h4>
+            <p>Unduh seluruh data absensi sebagai file .json untuk disimpan di komputer/flashdisk.</p>
+            <button class="btn btn-primary" onclick="backupJSON()">📥 Download Backup</button>
+          </div>
+          
+          <!-- RESTORE -->
+          <div class="backup-card">
+            <div class="icon">📤</div>
+            <h4>Restore Data</h4>
+            <p>Unggah file .json hasil backup sebelumnya untuk mengembalikan data.</p>
+            <button class="btn btn-info" onclick="bukaFileRestore()">📤 Pilih File</button>
+            <input type="file" id="fileRestore" style="display:none" accept=".json" onchange="restoreJSON(event)">
+          </div>
+        </div>
+
+        <div class="backup-grid">
+          <!-- HAPUS SEMUA -->
+          <div class="backup-card danger">
+            <div class="icon">⚠️</div>
+            <h4>Hapus Semua Data</h4>
+            <p>Hapus permanen semua data absensi dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
+            <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
+          </div>
+          
+          <!-- BERSIHKAN DUPLIKAT -->
+          <div class="backup-card warn">
+            <div class="icon">🧹</div>
+            <h4>Bersihkan Duplikat</h4>
+            <p>Hapus data absensi dengan tanggal yang sama untuk mencegah penumpukan data.</p>
+            <button class="btn btn-warn" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panelBackup -->
+
     <!-- FOOTER -->
     <div class="footer">
       ~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~
@@ -1099,7 +1219,7 @@
 <script>
 /* ============================================================
    SIAGRA — monitoring.html (Script #1)
-   Version: 2.s (perbaikan logika jabatan dari tabel kelas)
+   Version: 2.s (Perbaikan Logika Jabatan & Tab Backup)
    ============================================================ */
 
 const STORAGE = {
@@ -1493,7 +1613,6 @@ function tanpaRombel(jabatan){
 
 /* ============================================================
    ✨ LOAD DATA DARI SUPABASE (GURU, TENDIK, KELAS) ✨
-   DIPERBAIKI: Mengambil jabatan Wali Kelas / Pendamping dari tabel kelas
    ============================================================ */
 let DATA_MONITORING = [];
 let DATA_ORANG = [];
@@ -1774,42 +1893,64 @@ const STATUS_INFO = {
 
 <script>
 /* ============================================================
-   SUB-TAB — HARIAN ↔ REKAP BULANAN
+   SUB-TAB — HARIAN ↔ REKAP BULANAN ↔ BACKUP
    ============================================================ */
 const HASH_KE_TAB = {
   '#harian'        : 'harian',
   '#monitoring'    : 'harian',
   '#rekap-bulanan' : 'rekap',
-  '#rekap'         : 'rekap'
+  '#rekap'         : 'rekap',
+  '#backup'        : 'backup'
 };
 
 function switchTab(tab){
   const panelHarian = document.getElementById('panelHarian');
   const panelRekap  = document.getElementById('panelRekap');
+  const panelBackup = document.getElementById('panelBackup');
+  
   const tabHarian   = document.getElementById('tabHarian');
   const tabRekap    = document.getElementById('tabRekap');
+  const tabBackup   = document.getElementById('tabBackup');
 
   if(tab === 'rekap'){
     if(panelHarian) panelHarian.style.display = 'none';
     if(panelRekap)  panelRekap.style.display  = '';
+    if(panelBackup) panelBackup.style.display = 'none';
+    
     if(tabHarian)   tabHarian.classList.remove('active');
     if(tabRekap)    tabRekap.classList.add('active');
+    if(tabBackup)   tabBackup.classList.remove('active');
+    
     isiDropdownGuruRekap();
     const rkBulan = document.getElementById('rkBulan');
     if(rkBulan && !rkBulan.value) rkBulan.value = getTodayISO().substring(0,7);
     renderRekapBulanan();
+  } else if(tab === 'backup'){
+    if(panelHarian) panelHarian.style.display = 'none';
+    if(panelRekap)  panelRekap.style.display  = 'none';
+    if(panelBackup) panelBackup.style.display = '';
+    
+    if(tabHarian)   tabHarian.classList.remove('active');
+    if(tabRekap)    tabRekap.classList.remove('active');
+    if(tabBackup)   tabBackup.classList.add('active');
+    
+    renderStatistikBackup();
   } else {
     if(panelHarian) panelHarian.style.display = '';
     if(panelRekap)  panelRekap.style.display  = 'none';
+    if(panelBackup) panelBackup.style.display = 'none';
+    
     if(tabHarian)   tabHarian.classList.add('active');
     if(tabRekap)    tabRekap.classList.remove('active');
+    if(tabBackup)   tabBackup.classList.remove('active');
   }
 }
+
 function tanganiTabClick(e, tab){
   if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
   switchTab(tab);
-  if(history.replaceState) history.replaceState(null, '', '#' + (tab === 'rekap' ? 'rekap-bulanan' : 'harian'));
+  if(history.replaceState) history.replaceState(null, '', '#' + (tab === 'rekap' ? 'rekap-bulanan' : tab));
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -1838,7 +1979,7 @@ async function renderRekapBulanan(){
     return;
   }
 
-    // Ambil awal dan akhir bulan (contoh: 2026-11-01 s/d 2026-11-31)
+  // Ambil awal dan akhir bulan (contoh: 2026-11-01 s/d 2026-11-31)
   const awalBulan = bulan + '-01';
   const akhirBulan = new Date(bulan + '-01');
   akhirBulan.setMonth(akhirBulan.getMonth() + 1);
@@ -1852,6 +1993,7 @@ async function renderRekapBulanan(){
     .select('*')
     .gte('tanggal', awalBulan)
     .lte('tanggal', tglAkhir);
+
   if(error){
     dbg('renderRekapBulanan error:', error.message);
     cont.innerHTML = `<div class="rekap-empty">❌ Gagal mengambil data rekap: ${escapeHtml(error.message)}</div>`;
@@ -2149,18 +2291,19 @@ async function exportRekapBulananWord(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
   const awalBulan = bulan + '-01';
-const akhirBulan = new Date(bulan + '-01');
-akhirBulan.setMonth(akhirBulan.getMonth() + 1);
-akhirBulan.setDate(0);
-const tglAkhir = akhirBulan.getFullYear() + '-' + 
-  String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
-  String(akhirBulan.getDate()).padStart(2,'0');
+  const akhirBulan = new Date(bulan + '-01');
+  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+  akhirBulan.setDate(0);
+  const tglAkhir = akhirBulan.getFullYear() + '-' + 
+    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+    String(akhirBulan.getDate()).padStart(2,'0');
 
-const { data: absenBulan } = await sb
-  .from('absensi')
-  .select('*')
-  .gte('tanggal', awalBulan)
-  .lte('tanggal', tglAkhir);
+  const { data: absenBulan } = await sb
+    .from('absensi')
+    .select('*')
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
+
   let dataBulan = absenBulan || [];
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
@@ -2299,7 +2442,21 @@ const { data: absenBulan } = await sb
 async function cetakRekapBulanan(){
   const bulan  = (document.getElementById('rkBulan').value) || getTodayISO().substring(0,7);
   const guruFilter = document.getElementById('rkGuru').value;
-  const { data: absenBulan } = await sb.from('absensi').select('*').like('tanggal', `${bulan}%`);
+  
+  const awalBulan = bulan + '-01';
+  const akhirBulan = new Date(bulan + '-01');
+  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+  akhirBulan.setDate(0);
+  const tglAkhir = akhirBulan.getFullYear() + '-' + 
+    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+    String(akhirBulan.getDate()).padStart(2,'0');
+
+  const { data: absenBulan } = await sb
+    .from('absensi')
+    .select('*')
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
+
   let dataBulan = absenBulan || [];
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
@@ -2429,6 +2586,129 @@ async function cetakRekapBulanan(){
   win.document.close();
   win.onload = () => { win.focus(); win.print(); };
   showToast('🖨️ Mencetak rekap bulanan...', 'info');
+}
+
+/* ============================================================
+   ✨ LOGIKA BACKUP & RESTORE ✨
+   ============================================================ */
+async function renderStatistikBackup(){
+  if(typeof sb === 'undefined') return;
+  const { data: absenAll } = await sb.from('absensi').select('*');
+  if(!absenAll) return;
+  
+  const total = absenAll.length;
+  const hari = new Set(absenAll.map(d => d.tanggal)).size;
+  const hadir = absenAll.filter(d => d.status === 'hadir').length;
+  const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
+
+  const elTotal = document.getElementById('statTotal');
+  const elHari  = document.getElementById('statHari');
+  const elPersen = document.getElementById('statPersen');
+  
+  if(elTotal) elTotal.textContent = total;
+  if(elHari) elHari.textContent = hari;
+  if(elPersen) elPersen.textContent = persen + '%';
+}
+
+async function backupJSON(){
+  if(typeof sb === 'undefined') return showToast('Koneksi terputus', 'error');
+  showToast('⏳ Mengambil data...', 'info');
+  const { data, error } = await sb.from('absensi').select('*');
+  if(error) return showToast('❌ Gagal backup: ' + error.message, 'error');
+  
+  const d = new Date();
+  const tglFile = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  downloadFile('Backup_Absensi_' + tglFile + '.json', JSON.stringify(data, null, 2), 'application/json');
+  showToast('✅ Backup berhasil diunduh', 'success');
+}
+
+function bukaFileRestore(){
+  document.getElementById('fileRestore').click();
+}
+
+function restoreJSON(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!Array.isArray(data)) throw new Error("Format tidak valid (harus berupa Array)");
+      if(!confirm(`⚠️ KONFIRMASI RESTORE\n\nAnda akan menambahkan/menimpa ${data.length} data absensi ke Supabase.\n\nLanjutkan?`)) return;
+      
+      showToast('⏳ Memproses restore...', 'info');
+      
+      // Ubah format data jika perlu, lalu insert/upsert ke Supabase
+      const payload = data.map(d => {
+        delete d.id; // Hapus ID lama agar di-generate baru oleh database
+        return d;
+      });
+
+      const { error } = await sb.from('absensi').upsert(payload, { onConflict: 'nama_guru, tanggal' });
+      
+      if(error) {
+        console.warn("Upsert gagal, mencoba insert biasa...", error);
+        const { error: errIns } = await sb.from('absensi').insert(payload);
+        if(errIns) throw new Error(errIns.message);
+      }
+      
+      showToast('✅ Restore berhasil!', 'success');
+      renderStatistikBackup();
+    }catch(err){
+      showToast('❌ Gagal restore: ' + err.message, 'error');
+    }finally{
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function hapusSemuaAbsen(){
+  if(typeof sb === 'undefined') return;
+  if(!confirm('⚠️ HATI-HATI!\n\nAnda akan MENGHAPUS SEMUA data absensi dari database Supabase.\nTindakan ini tidak dapat dibatalkan.\n\nLanjutkan?')) return;
+  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
+  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
+  
+  showToast('⏳ Menghapus...', 'info');
+  const { error } = await sb.from('absensi').delete().neq('id', 0);
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
+  
+  showToast('🗑️ Semua data absensi berhasil dihapus', 'success');
+  renderStatistikBackup();
+  loadMonitoring();
+}
+
+async function bersihkanDuplikat(){
+  if(typeof sb === 'undefined') return;
+  if(!confirm('🧹 Fitur ini akan menghapus data ganda (berdasarkan Nama dan Tanggal yang sama).\n\nLanjutkan?')) return;
+  
+  showToast('⏳ Memeriksa duplikat...', 'info');
+  const { data, error } = await sb.from('absensi').select('*').order('created_at', { ascending: true });
+  if(error) return showToast('❌ Gagal', 'error');
+  
+  const map = {};
+  const idsToDelete = [];
+  
+  data.forEach(d => {
+    const key = normalisasiNama(d.nama_guru) + '_' + d.tanggal;
+    if(map[key]){
+      idsToDelete.push(d.id);
+    } else {
+      map[key] = true;
+    }
+  });
+  
+  if(idsToDelete.length === 0){
+    return showToast('✅ Tidak ada data duplikat', 'info');
+  }
+  
+  showToast(`⏳ Menghapus ${idsToDelete.length} data duplikat...`, 'info');
+  const { error: errDel } = await sb.from('absensi').delete().in('id', idsToDelete);
+  
+  if(errDel) return showToast('❌ Gagal: ' + errDel.message, 'error');
+  showToast(`✅ ${idsToDelete.length} data duplikat dibersihkan`, 'success');
+  renderStatistikBackup();
+  loadMonitoring();
 }
 
 /* ============================================================
