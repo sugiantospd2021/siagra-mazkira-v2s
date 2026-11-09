@@ -94,7 +94,7 @@
     position:relative;z-index:1;align-items:start;
   }
 
-  /* PROFIL (Sama seperti kepsek.html) */
+  /* PROFIL */
   .col-profil{position:sticky;top:88px;height:calc(100vh - 110px);max-height:calc(100vh - 110px)}
   .profile-card{
     background:var(--card);border-radius:16px;border:2px solid var(--border);
@@ -229,6 +229,21 @@
 
   .empty-state{text-align:center;padding:40px 20px;color:var(--sub);font-style:italic}
   .empty-state .e-icon{font-size:40px;opacity:.4;margin-bottom:10px}
+
+  /* ACTION BUTTONS */
+  .action-btns { display: flex; gap: 6px; }
+  .btn-mini {
+    padding: 5px 10px; border-radius: 6px; font-family: inherit;
+    font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn-mini-edit { background: rgba(96,165,250,.2); color: #93C5FD; border-color: rgba(96,165,250,.4); }
+  .btn-mini-edit:hover { background: rgba(96,165,250,.4); }
+  body.light .btn-mini-edit { color: #1E40AF; }
+  
+  .btn-mini-del { background: rgba(220,38,38,.2); color: #F87171; border-color: rgba(220,38,38,.4); }
+  .btn-mini-del:hover { background: rgba(220,38,38,.4); }
+  body.light .btn-mini-del { color: #B91C1C; }
 
   /* MODAL */
   .modal-overlay{
@@ -433,6 +448,11 @@
         <label>Tahun Pelajaran <span style="color:#F87171">*</span></label>
         <input type="text" id="inputTahun" placeholder="Contoh: 2024/2025">
       </div>
+
+      <div class="form-field">
+        <label>Tanggal Input <span style="color:#F87171">*</span></label>
+        <input type="date" id="inputTanggal">
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="tutupModal()">Batal</button>
@@ -491,6 +511,16 @@ function formatTanggal(iso){
   return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
 }
 
+// Fungsi untuk mengubah format YYYY-MM-DD ke format input date
+function formatDateForInput(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 /* ============================================================
    THEME & CLOCK
    ============================================================ */
@@ -522,36 +552,59 @@ updateClock();
 setInterval(updateClock, 1000);
 
 /* ============================================================
-   RENDER PROFIL (Sederhana - Mengambil dari localStorage ra_guru)
+   RENDER PROFIL (DIPERBAIKI)
    ============================================================ */
 function renderProfil(){
   const nama = user.nama;
   document.getElementById('profileNama').textContent = nama;
   document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
   
-  // Coba ambil data guru dari localStorage (jika ada)
-  const guruList = JSON.parse(localStorage.getItem('ra_guru') || '[]');
-  const dataGuru = guruList.find(g => g.nama.toLowerCase().includes(nama.toLowerCase().split(',')[0]));
+  // 1. Ambil data guru dari localStorage
+  let guruList = [];
+  try {
+    const rawGuru = localStorage.getItem('ra_guru') || '[]';
+    guruList = JSON.parse(rawGuru);
+  } catch(e) { console.error("Gagal parse ra_guru", e); }
+
+  // 2. Cari data yang cocok (berdasarkan nama depan agar lebih akurat)
+  const namaDepan = nama.split(',')[0].trim().toLowerCase();
+  const dataGuru = guruList.find(g => 
+    g.nama.toLowerCase().includes(namaDepan) || 
+    namaDepan.includes(g.nama.split(',')[0].trim().toLowerCase())
+  );
   
   const body = document.getElementById('profileBody');
   if(dataGuru){
-    document.getElementById('profileLama').textContent = dataGuru.tmt ? '⏱️ ' + hitungLama(dataGuru.tmt) : '';
+    // Hitung Lama Mengajar
+    if(dataGuru.tmt) {
+      document.getElementById('profileLama').textContent = '⏱️ ' + hitungLama(dataGuru.tmt);
+    }
+
+    // Susun HTML Info
     let html = '';
     if(dataGuru.nip) html += `<div class="info-item"><span class="lbl">NIP</span><span class="val">${dataGuru.nip}</span></div>`;
     if(dataGuru.npk) html += `<div class="info-item"><span class="lbl">NPK</span><span class="val">${dataGuru.npk}</span></div>`;
+    if(dataGuru.jk) html += `<div class="info-item"><span class="lbl">Jenis Kelamin</span><span class="val">${dataGuru.jk === 'L' ? 'Laki-laki' : 'Perempuan'}</span></div>`;
     if(dataGuru.jabatan) html += `<div class="info-item"><span class="lbl">Jabatan</span><span class="val">${dataGuru.jabatan}</span></div>`;
+    
     body.innerHTML = '<div class="info-section-title">📇 Identitas</div><div class="info-list">' + html + '</div>';
   } else {
+    // Jika data guru tidak ketemu di localStorage
     document.getElementById('profileLama').textContent = '';
-    body.innerHTML = '<div style="text-align:center;padding:20px;color:var(--sub);font-size:12px;">Data profil belum lengkap.</div>';
+    body.innerHTML = `
+      <div class="info-item"><span class="lbl">NIP</span><span class="val">-</span></div>
+      <div class="info-item"><span class="lbl">NPK</span><span class="val">-</span></div>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--sub);">Data detail tidak ditemukan.</div>
+    `;
   }
   
-  // Foto
+  // 3. Render Foto (Cek localStorage 'ra_foto_nama')
   const foto = localStorage.getItem('ra_foto_' + nama);
   const elPhoto = document.getElementById('profilePhoto');
   if(foto){
     elPhoto.innerHTML = `<img src="${foto}">`;
   } else {
+    // Fallback ke inisial nama
     elPhoto.textContent = nama.charAt(0).toUpperCase();
   }
 }
@@ -565,7 +618,8 @@ function hitungLama(tmt){
   if(bulan < 0){ tahun--; bulan += 12; }
   return tahun + ' thn ' + bulan + ' bln';
 }
-renderProfil();
+// Panggil render profil setelah script dimuat
+setTimeout(renderProfil, 100);
 
 /* ============================================================
    LOGIKA TABEL & MODAL
@@ -588,7 +642,10 @@ function renderTabel(){
         <td><span class="status-pill selesai">Selesai</span></td>
         <td>${formatTanggal(item.createdAt)}</td>
         <td>
-          <button class="btn-mini btn-mini-del" onclick="hapusData('prota', '${item.id}')" style="padding:5px 10px;border-radius:6px;background:rgba(220,38,38,.2);color:#F87171;border:1px solid rgba(220,38,38,.4);cursor:pointer;font-size:11px;">🗑️ Hapus</button>
+          <div class="action-btns">
+            <button class="btn-mini btn-mini-edit" onclick="bukaModal('prota', '${item.id}')">✏️ Edit</button>
+            <button class="btn-mini btn-mini-del" onclick="hapusData('prota', '${item.id}')">🗑️ Hapus</button>
+          </div>
         </td>
       </tr>
     `).join('');
@@ -612,22 +669,48 @@ function renderTabel(){
         <td><span class="status-pill selesai">Selesai</span></td>
         <td>${formatTanggal(item.createdAt)}</td>
         <td>
-          <button class="btn-mini btn-mini-del" onclick="hapusData('promes', '${item.id}')" style="padding:5px 10px;border-radius:6px;background:rgba(220,38,38,.2);color:#F87171;border:1px solid rgba(220,38,38,.4);cursor:pointer;font-size:11px;">🗑️ Hapus</button>
+          <div class="action-btns">
+            <button class="btn-mini btn-mini-edit" onclick="bukaModal('promes', '${item.id}')">✏️ Edit</button>
+            <button class="btn-mini btn-mini-del" onclick="hapusData('promes', '${item.id}')">🗑️ Hapus</button>
+          </div>
         </td>
       </tr>
     `).join('');
   }
 }
 
-function bukaModal(jenis){
-  document.getElementById('modalTitle').textContent = jenis === 'prota' ? '➕ Tambah Protah' : '➕ Tambah Promes';
+function bukaModal(jenis, editId = null){
   document.getElementById('jenisDokumen').value = jenis;
-  document.getElementById('editId').value = '';
+  document.getElementById('editId').value = editId || '';
   document.getElementById('inputTahun').value = '';
   document.getElementById('inputSemester').value = 'Ganjil';
   
+  // Set Tanggal Default ke hari ini
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('inputTanggal').value = `${yyyy}-${mm}-${dd}`;
+
   // Tampilkan/Sembunyikan field semester
   document.getElementById('fieldSemester').style.display = jenis === 'promes' ? 'block' : 'none';
+  
+  if(editId) {
+    // Mode Edit: Isi form dengan data lama
+    document.getElementById('modalTitle').textContent = jenis === 'prota' ? '✏️ Edit Protah' : '✏️ Edit Promes';
+    const list = loadData(jenis);
+    const data = list.find(x => x.id === editId);
+    if(data) {
+      document.getElementById('inputTahun').value = data.tahun;
+      if(jenis === 'promes') document.getElementById('inputSemester').value = data.semester;
+      if(data.createdAt) {
+        document.getElementById('inputTanggal').value = formatDateForInput(data.createdAt);
+      }
+    }
+  } else {
+    // Mode Tambah
+    document.getElementById('modalTitle').textContent = jenis === 'prota' ? '➕ Tambah Protah' : '➕ Tambah Promes';
+  }
   
   document.getElementById('modalForm').classList.add('active');
   setTimeout(() => document.getElementById('inputTahun').focus(), 100);
@@ -641,25 +724,35 @@ function simpanData(){
   const jenis = document.getElementById('jenisDokumen').value;
   const tahun = document.getElementById('inputTahun').value.trim();
   const semester = document.getElementById('inputSemester').value;
+  const tanggalInput = document.getElementById('inputTanggal').value;
   const editId = document.getElementById('editId').value;
 
   if(!tahun){
     showToast('❌ Tahun Pelajaran wajib diisi!', 'error');
     return;
   }
+  if(!tanggalInput){
+    showToast('❌ Tanggal Input wajib diisi!', 'error');
+    return;
+  }
 
   let list = loadData(jenis);
 
   if(editId){
-    // Mode Edit (Opsional, jika diperlukan nanti)
-    list = list.map(item => item.id === editId ? { ...item, tahun, semester } : item);
-    showToast('✅ Data diperbarui', 'success');
+    // Mode Edit
+    list = list.map(item => item.id === editId ? { 
+      ...item, 
+      tahun: tahun, 
+      semester: jenis === 'promes' ? semester : item.semester,
+      createdAt: new Date(tanggalInput).toISOString()
+    } : item);
+    showToast('✅ Data berhasil diperbarui', 'success');
   } else {
     // Mode Tambah
     const newData = {
       id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
       tahun: tahun,
-      createdAt: new Date().toISOString()
+      createdAt: new Date(tanggalInput).toISOString()
     };
     if(jenis === 'promes') newData.semester = semester;
     
