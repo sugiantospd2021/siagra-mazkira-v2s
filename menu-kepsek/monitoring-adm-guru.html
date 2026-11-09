@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="../logo-siagra.png">
+<title>SIAGRA - Monitoring Administrasi Guru</title>
+<meta name="theme-color" content="#1E3A8A">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#F0F4FB;--card:#FFFFFF;--card-inner:#F5F8FD;
+    --text:#0F1E3A;--sub:#5A6B85;--border:#D1DEF5;
+    --primary:#3B82F6;--primary-dark:#1E40AF;--primary-light:#DBEAFE;
+    --accent:#60A5FA;--success:#10B981;--warning:#F59E0B;--danger:#EF4444;
+    --yellow:#FCD34D;--card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.35);
+  }
+  body.dark{
+    --bg:#000000;--card:#0F1A3A;--card-inner:#0A0F26;
+    --text:#DBEAFE;--sub:#7EA0CF;--border:#1E3A8A;
+    --primary:#60A5FA;--primary-dark:#3B82F6;--primary-light:#1E3A8A;
+    --accent:#93C5FD;--success:#4ADE80;--warning:#FBBF24;--danger:#F87171;
+    --yellow:#FCD34D;--card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.55);
+  }
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);
+    transition:background .3s,color .3s;
+    min-height:100vh;font-size:15px;line-height:1.5;
+    background-image:radial-gradient(circle at 10% 10%, rgba(30,58,138,.15) 0%, transparent 40%),radial-gradient(circle at 90% 20%, rgba(59,130,246,.08) 0%, transparent 40%);
+    background-attachment:fixed;
+  }
+
+  /* HEADER */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:linear-gradient(135deg,#1E3A8A,#0F1A3A);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);border-bottom:2px solid #3B82F6;gap:12px;
+  }
+  .header-left{flex:0 1 auto;min-width:0}
+  .header-left h1{font-size:17px;color:#FCD34D;font-weight:800;text-shadow:0 0 12px rgba(252,211,77,.4)}
+  .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
+  .jam-box{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);border:1.5px solid rgba(59,130,246,.5);
+    color:#fff;padding:8px 18px;border-radius:100px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;backdrop-filter:blur(10px);
+  }
+  .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
+  .theme-toggle{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+    color:#fff;width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer;
+    transition:all .2s;display:flex;align-items:center;justify-content:center;
+  }
+  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);background:rgba(255,255,255,.2)}
+  .header-right button.logout{
+    background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;border:2px solid transparent;
+    padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;
+    font-weight:700;transition:all .3s ease;font-size:13px;box-shadow:0 2px 8px rgba(239,68,68,.4);
+  }
+  .header-right button.logout:hover{
+    background:linear-gradient(135deg,#F87171,#DC2626);transform:translateY(-2px) scale(1.05);
+    box-shadow:0 0 15px rgba(239,68,68,.6);border-color:#FCA5A5;
+  }
+
+  /* WRAPPER */
+  .wrapper{
+    max-width:1200px;margin:0 auto;padding:24px 16px;
+    position:relative;z-index:1;
+  }
+
+  /* HEADER INLINE */
+  .form-header-inline{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:20px;flex-wrap:wrap;
+  }
+  .form-header-inline .form-title-text{
+    display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;
+    color:var(--yellow);margin:0;text-shadow:0 0 12px rgba(252,211,77,.4);
+  }
+  body.dark .form-header-inline .form-title-text { color: var(--yellow); }
+  .btn-back-inline{
+    background:var(--card);color:var(--text);border:2px solid var(--card-border);
+    padding:10px 20px;border-radius:10px;font-family:inherit;font-size:13px;
+    font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    transition:all .25s;text-decoration:none;box-shadow:0 0 15px var(--card-border-glow);
+  }
+  .btn-back-inline:hover{
+    background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;
+    border-color:#3B82F6;transform:translateY(-2px);
+    box-shadow:0 0 20px rgba(59,130,246,.55);
+  }
+
+  /* DASHBOARD CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    border: 2px solid var(--card-border);
+    box-shadow: 0 0 15px var(--card-border-glow);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform .2s;
+  }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-icon {
+    width: 54px; height: 54px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .stat-icon.anekdot { background: rgba(16,185,129,.15); color: #10B981; border: 1px solid rgba(16,185,129,.3); }
+  .stat-icon.observasi { background: rgba(59,130,246,.15); color: #3B82F6; border: 1px solid rgba(59,130,246,.3); }
+  .stat-icon.penilaian { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  
+  .stat-info h3 { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+  .stat-info p { font-size: 12px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: .05em; }
+
+  /* FILTER BAR */
+  .filter-card {
+    background: var(--card); border-radius: 14px; border: 2px solid var(--card-border);
+    box-shadow: 0 0 0 1px var(--card-border-glow), 0 0 12px var(--card-border-glow);
+    padding: 18px; margin-bottom: 24px;
+  }
+  .filter-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .filter-field { display: flex; flex-direction: column; gap: 6px; }
+  .filter-field label { font-size: 11px; font-weight: 800; color: var(--sub); text-transform: uppercase; }
+  .filter-field select, .filter-field input {
+    padding: 10px 14px; background: var(--card-inner); border: 1.5px solid var(--border);
+    border-radius: 9px; font-family: inherit; font-size: 13px; color: var(--text);
+    outline: none; transition: border-color .2s;
+  }
+  .filter-field select:focus, .filter-field input:focus {
+    border-color: var(--card-border); box-shadow: 0 0 0 3px var(--card-border-glow);
+  }
+
+  /* TABLE DATA GURU */
+  .table-wrap {
+    background: var(--card); border-radius: 16px; border: 2px solid var(--card-border);
+    box-shadow: 0 0 15px var(--card-border-glow); overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 800px; }
+  thead { background: rgba(0,0,0,.3); }
+  body:not(.dark) thead { background: #F0F4FB; }
+  th {
+    text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 800;
+    color: var(--sub); text-transform: uppercase; border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border);
+    color: var(--text); font-weight: 500;
+  }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+  body:not(.dark) tbody tr:hover td { background: rgba(0,0,0,.03); }
+
+  .cell-nama { display: flex; align-items: center; gap: 10px; }
+  .avatar-mini {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--card-inner); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: var(--text); font-size: 12px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 800;
+    min-width: 40px;
+  }
+  .badge.anekdot { background: rgba(16,185,129,.15); color: #10B981; border: 1px solid rgba(16,185,129,.3); }
+  .badge.observasi { background: rgba(59,130,246,.15); color: #3B82F6; border: 1px solid rgba(59,130,246,.3); }
+  .badge.penilaian { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  .badge.zero { opacity: .4; filter: grayscale(1); }
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:#0F1A3A;color:#fff;padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;box-shadow:0 20px 40px rgba(0,0,0,.5);
+    border:2px solid var(--card-border);opacity:0;transition:all .3s;z-index:99999;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.success{background:linear-gradient(135deg,#059669,#047857);border-color:#10B981}
+  .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
+  .toast.info{background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-color:#60A5FA}
+
+  @media(max-width: 640px) {
+    .header { flex-wrap: wrap; padding: 12px 16px; }
+    .header-left, .header-center, .header-right { flex: 1 1 100%; justify-content: center; text-align: center; }
+    .form-header-inline { flex-direction: column; align-items: stretch; }
+    .btn-back-inline { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left"><h1>Monitoring Administrasi</h1></div>
+  <div class="header-center">
+    <div class="jam-box"><span id="liveClock">Memuat...</span></div>
+  </div>
+  <div class="header-right">
+    <button class="logout" onclick="logout()">Keluar</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<!-- MAIN WRAPPER -->
+<div class="wrapper">
+  
+  <!-- HEADER INLINE -->
+  <div class="form-header-inline">
+    <div class="form-title-text"><span class="emoji">📊</span><span>Dashboard Administrasi Guru</span></div>
+    <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
+  </div>
+
+  <!-- KARTU STATISTIK TOTAL -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon anekdot">📔</div>
+      <div class="stat-info">
+        <h3 id="totalAnekdot">0</h3>
+        <p>Catatan Anekdot</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon observasi">👀</div>
+      <div class="stat-info">
+        <h3 id="totalObservasi">0</h3>
+        <p>Observasi Harian</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon penilaian">⭐</div>
+      <div class="stat-info">
+        <h3 id="totalPenilaian">0</h3>
+        <p>Penilaian KBC</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-card">
+    <div class="filter-row">
+      <div class="filter-field">
+        <label>Periode (Bulan)</label>
+        <input type="month" id="filterPeriode" onchange="renderTabel()">
+      </div>
+      <div class="filter-field">
+        <label>Cari Nama Guru</label>
+        <input type="text" id="filterCari" placeholder="Ketik nama guru..." oninput="renderTabel()">
+      </div>
+    </div>
+  </div>
+
+  <!-- TABEL MONITORING -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50px;">No</th>
+            <th>Nama Guru</th>
+            <th style="text-align: center;">Anekdot</th>
+            <th style="text-align: center;">Observasi</th>
+            <th style="text-align: center;">Penilaian KBC</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyMonitoring">
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 40px; color: var(--sub);">
+              ⏳ Memuat data...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">✨</div>
+
+<script>
+/* ============================================================
+   KONFIGURASI & UTIL
+   ============================================================ */
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+if(!user){
+  alert('Anda harus login terlebih dahulu!');
+  window.location.href = '../index.html';
+}
+
+// Sesuaikan tombol kembali berdasarkan role
+if(user.role === 'guru'){
+  document.getElementById('btnKembali').href = '../guru.html';
+  document.getElementById('btnKembali').innerHTML = '← Kembali ke Menu Guru';
+} else if(user.role === 'kepala'){
+  document.getElementById('btnKembali').href = '../kepsek.html';
+} else {
+  document.getElementById('btnKembali').href = '../index.html';
+}
+
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function getWITA(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  return new Date(utc + (8 * 3600000));
+}
+function getTodayISO(){
+  const w = getWITA();
+  return w.getFullYear() + '-' + String(w.getMonth()+1).padStart(2,'0') + '-' + String(w.getDate()).padStart(2,'0');
+}
+
+/* ============================================================
+   THEME & CLOCK
+   ============================================================ */
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('dark', theme === 'dark');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme(){
+  const current = localStorage.getItem('theme') || 'dark';
+  localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
+  applyTheme();
+}
+applyTheme();
+
+function updateClock(){
+  const wita = getWITA();
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const h = String(wita.getHours()).padStart(2,'0');
+  const m = String(wita.getMinutes()).padStart(2,'0');
+  const el = document.getElementById('liveClock');
+  if(el) el.textContent = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   PROSES DATA
+   ============================================================ */
+function loadData(key) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : [];
+  } catch(e) { return []; }
+}
+
+// Ambil semua nama guru unik dari berbagai sumber
+function getDaftarGuru() {
+  const guruSet = new Set();
+  
+  // 1. Dari data master guru (jika ada)
+  const masterGuru = loadData('ra_guru');
+  masterGuru.forEach(g => { if(g.nama) guruSet.add(g.nama); });
+
+  // 2. Dari data Anekdot (field `guru`)
+  const anekdot = loadData('ra_anekdot');
+  anekdot.forEach(d => { if(d.guru) guruSet.add(d.guru); });
+
+  // 3. Dari data Observasi (field `guru`)
+  const observasi = loadData('ra_observasi_kbc');
+  observasi.forEach(d => { if(d.guru) guruSet.add(d.guru); });
+
+  // 4. Dari data Penilaian (field `guruNama`)
+  for(let i=0; i<localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if(k && k.startsWith('ra_penilaian_kbc_')) {
+      try {
+        const d = JSON.parse(localStorage.getItem(k));
+        if(d && d.guruNama) guruSet.add(d.guruNama);
+      } catch(e){}
+    }
+  }
+
+  return Array.from(guruSet).sort();
+}
+
+function hitungDataGuru(namaGuru, periodeFilter) {
+  let countAnekdot = 0;
+  let countObservasi = 0;
+  let countPenilaian = 0;
+
+  // 1. Hitung Anekdot
+  const anekdot = loadData('ra_anekdot');
+  countAnekdot = anekdot.filter(d => 
+    d.guru === namaGuru && 
+    (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
+  ).length;
+
+  // 2. Hitung Observasi
+  const observasi = loadData('ra_observasi_kbc');
+  countObservasi = observasi.filter(d => 
+    d.guru === namaGuru && 
+    (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
+  ).length;
+
+  // 3. Hitung Penilaian
+  for(let i=0; i<localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if(k && k.startsWith('ra_penilaian_kbc_')) {
+      try {
+        const d = JSON.parse(localStorage.getItem(k));
+        if(d && d.guruNama === namaGuru && (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)) {
+          countPenilaian++;
+        }
+      } catch(e){}
+    }
+  }
+
+  return { anekdot: countAnekdot, observasi: countObservasi, penilaian: countPenilaian };
+}
+
+/* ============================================================
+   RENDER TABEL
+   ============================================================ */
+function renderTabel() {
+  const tbody = document.getElementById('tbodyMonitoring');
+  const filterPeriode = document.getElementById('filterPeriode').value;
+  const filterCari = document.getElementById('filterCari').value.toLowerCase();
+  
+  // Set default periode ke bulan ini jika kosong
+  if(!document.getElementById('filterPeriode').value) {
+    document.getElementById('filterPeriode').value = getTodayISO().substring(0,7);
+  }
+
+  const daftarGuru = getDaftarGuru().filter(nama => 
+    nama.toLowerCase().includes(filterCari)
+  );
+
+  // Jika yang login adalah GURU, filter hanya dirinya sendiri
+  let guruTampil = daftarGuru;
+  if(user.role === 'guru') {
+    const namaSaya = user.nama.split(',')[0].trim().toLowerCase();
+    guruTampil = daftarGuru.filter(g => g.toLowerCase().includes(namaSaya));
+  }
+
+  let totalAnekdot = 0;
+  let totalObservasi = 0;
+  let totalPenilaian = 0;
+  let html = '';
+
+  if(guruTampil.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--sub);">📭 Tidak ada data guru yang cocok.</td></tr>`;
+    updateStatistik(0, 0, 0);
+    return;
+  }
+
+  guruTampil.forEach((nama, index) => {
+    const data = hitungDataGuru(nama, filterPeriode);
+    
+    totalAnekdot += data.anekdot;
+    totalObservasi += data.observasi;
+    totalPenilaian += data.penilaian;
+
+    const inisial = nama.charAt(0).toUpperCase();
+
+    // Kelas badge untuk efek visual jika 0
+    const classAnekdot = data.anekdot > 0 ? 'badge anekdot' : 'badge anekdot zero';
+    const classObservasi = data.observasi > 0 ? 'badge observasi' : 'badge observasi zero';
+    const classPenilaian = data.penilaian > 0 ? 'badge penilaian' : 'badge penilaian zero';
+
+    html += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>
+          <div class="cell-nama">
+            <div class="avatar-mini">${inisial}</div>
+            <span>${nama}</span>
+          </div>
+        </td>
+        <td style="text-align: center;"><span class="${classAnekdot}">${data.anekdot}</span></td>
+        <td style="text-align: center;"><span class="${classObservasi}">${data.observasi}</span></td>
+        <td style="text-align: center;"><span class="${classPenilaian}">${data.penilaian}</span></td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html;
+  updateStatistik(totalAnekdot, totalObservasi, totalPenilaian);
+}
+
+function updateStatistik(anekdot, observasi, penilaian) {
+  document.getElementById('totalAnekdot').textContent = anekdot;
+  document.getElementById('totalObservasi').textContent = observasi;
+  document.getElementById('totalPenilaian').textContent = penilaian;
+}
+
+function logout(){
+  if(confirm('Yakin ingin keluar?')){
+    localStorage.removeItem('user');
+    window.location.href = '../index.html';
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById('filterPeriode').value = getTodayISO().substring(0,7);
+renderTabel();
+
+console.log('✅ monitoring-administrasi.html loaded');
+</script>
+
+<script src="../auto-update.js"></script>
+</body>
+</html>
