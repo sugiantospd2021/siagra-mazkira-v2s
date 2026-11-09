@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<!-- Tambahkan Supabase agar profil bisa memuat data dari database -->
+<!-- Supabase untuk Profil -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 
@@ -190,8 +190,8 @@
     border: 2px solid var(--card-border);
     box-shadow: 0 0 15px var(--card-border-glow);
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    gap: 16px;
     transition: all .25s cubic-bezier(.34,1.56,.64,1);
     cursor: pointer;
     position: relative;
@@ -211,52 +211,24 @@
     text-transform: uppercase;
   }
 
-  .stat-card-main {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  
   .stat-icon {
     width: 54px; height: 54px; border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     font-size: 26px; flex-shrink: 0;
   }
-  .stat-icon.anekdot { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
-  .stat-icon.observasi { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
-  .stat-icon.penilaian { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
   
+  /* Warna Card disesuaikan dengan guru.html */
+  .stat-card.c-anekdot { border-color: #8B5CF6; }
+  .stat-card.c-anekdot .stat-icon { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  
+  .stat-card.c-observasi { border-color: #F97316; }
+  .stat-card.c-observasi .stat-icon { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
+  
+  .stat-card.c-penilaian { border-color: #06B6D4; }
+  .stat-card.c-penilaian .stat-icon { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
+
   .stat-info h3 { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
   .stat-info p { font-size: 12px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: .05em; }
-
-  /* Filter Bulan di Dalam Card */
-  .card-filter {
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px dashed var(--border);
-  }
-  .card-filter label {
-    display: block;
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--sub);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .card-filter input {
-    width: 100%;
-    padding: 8px 12px;
-    background: var(--card-inner);
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 12px;
-    color: var(--text);
-    outline: none;
-  }
-  .card-filter input:focus {
-    border-color: var(--card-border);
-  }
 
   /* TABLE CONTAINER */
   .table-wrap {
@@ -266,16 +238,31 @@
   }
   @keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
   
-  .table-header-title {
-    padding: 16px 20px; font-size: 15px; font-weight: 800; 
-    border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px;
+  /* Table Toolbar */
+  .table-toolbar {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 2px solid var(--border);
   }
-  .table-header-title.anekdot { color: #8B5CF6; background: rgba(139,92,246,.08); border-bottom-color: rgba(139,92,246,.3); }
-  .table-header-title.observasi { color: #F97316; background: rgba(249,115,22,.08); border-bottom-color: rgba(249,115,22,.3); }
-  .table-header-title.penilaian { color: #06B6D4; background: rgba(6,182,212,.08); border-bottom-color: rgba(6,182,212,.3); }
-  
+  .table-title {
+    font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;
+  }
+  .filter-bulan {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-bulan label { font-size: 11px; font-weight: 800; color: var(--sub); text-transform: uppercase; }
+  .filter-bulan input {
+    padding: 8px 12px; background: var(--card-inner); border: 1.5px solid var(--border);
+    border-radius: 8px; font-family: inherit; font-size: 12px; color: var(--text); outline: none;
+  }
+  .filter-bulan input:focus { border-color: var(--card-border); }
+
   .table-scroll { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
   thead { background: rgba(0,0,0,.3); }
   body:not(.dark) thead { background: #F0F4FB; }
   th {
@@ -308,6 +295,16 @@
   .badge.penilaian { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
   .badge.zero { opacity: .4; filter: grayscale(1); }
 
+  .btn-cek {
+    padding: 6px 12px; border-radius: 6px; font-family: inherit; font-size: 11px;
+    font-weight: 700; cursor: pointer; border: 1.5px solid transparent;
+    display: inline-flex; align-items: center; gap: 4px; transition: all .2s;
+  }
+  .btn-cek.belum { background: rgba(239,68,68,.15); color: #EF4444; border-color: rgba(239,68,68,.4); }
+  .btn-cek.belum:hover { background: rgba(239,68,68,.3); }
+  .btn-cek.sudah { background: rgba(16,185,129,.15); color: #10B981; border-color: rgba(16,185,129,.4); }
+  .btn-cek.sudah:hover { background: rgba(16,185,129,.3); }
+
   /* TOAST */
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
@@ -332,6 +329,7 @@
     .wrapper{padding:16px 12px}
     .form-header-inline{flex-direction:column;align-items:stretch}
     .btn-back-inline{justify-content:center}
+    .table-toolbar { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -371,7 +369,7 @@
     <!-- HERO / INTRO CARD -->
     <div class="intro-card">
       <h2>📊 Monitoring Administrasi Guru</h2>
-      <p>Klik salah satu kartu di bawah untuk melihat detail laporan administrasi. Filter bulan ada di dalam masing-masing kartu.</p>
+      <p>Klik salah satu kartu di bawah untuk melihat detail laporan administrasi. Filter bulan ada di dalam tabel.</p>
     </div>
 
     <!-- HEADER INLINE -->
@@ -380,55 +378,32 @@
       <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
     </div>
 
-    <!-- TANGGAL CETAK -->
-    <div style="text-align:right; font-size:11.5px; color:var(--sub); margin-bottom:10px; font-weight:600;">
-      Laporan dibuat: <span id="tanggalCetak" style="font-weight:800; color:var(--text);"></span>
-    </div>
-
     <!-- KARTU STATISTIK (KLIK UNTUK DETAIL) -->
     <div class="stats-grid">
       <!-- Card Anekdot -->
-      <div class="stat-card active" id="cardAnekdot" onclick="pilihCard('anekdot')">
-        <div class="stat-card-main">
-          <div class="stat-icon anekdot">📔</div>
-          <div class="stat-info">
-            <h3 id="totalAnekdot">0</h3>
-            <p>Catatan Anekdot</p>
-          </div>
-        </div>
-        <div class="card-filter" onclick="event.stopPropagation()">
-          <label>Periode (Bulan)</label>
-          <input type="month" id="periodeAnekdot" onchange="renderDetailTabel()">
+      <div class="stat-card c-anekdot active" id="cardAnekdot" onclick="pilihCard('anekdot')">
+        <div class="stat-icon">📔</div>
+        <div class="stat-info">
+          <h3 id="totalAnekdot">0</h3>
+          <p>Catatan Anekdot</p>
         </div>
       </div>
       
       <!-- Card Observasi -->
-      <div class="stat-card" id="cardObservasi" onclick="pilihCard('observasi')">
-        <div class="stat-card-main">
-          <div class="stat-icon observasi">👀</div>
-          <div class="stat-info">
-            <h3 id="totalObservasi">0</h3>
-            <p>Observasi Harian</p>
-          </div>
-        </div>
-        <div class="card-filter" onclick="event.stopPropagation()">
-          <label>Periode (Bulan)</label>
-          <input type="month" id="periodeObservasi" onchange="renderDetailTabel()">
+      <div class="stat-card c-observasi" id="cardObservasi" onclick="pilihCard('observasi')">
+        <div class="stat-icon">👀</div>
+        <div class="stat-info">
+          <h3 id="totalObservasi">0</h3>
+          <p>Observasi Harian</p>
         </div>
       </div>
       
       <!-- Card Penilaian -->
-      <div class="stat-card" id="cardPenilaian" onclick="pilihCard('penilaian')">
-        <div class="stat-card-main">
-          <div class="stat-icon penilaian">⭐</div>
-          <div class="stat-info">
-            <h3 id="totalPenilaian">0</h3>
-            <p>Penilaian KBC</p>
-          </div>
-        </div>
-        <div class="card-filter" onclick="event.stopPropagation()">
-          <label>Periode (Bulan)</label>
-          <input type="month" id="periodePenilaian" onchange="renderDetailTabel()">
+      <div class="stat-card c-penilaian" id="cardPenilaian" onclick="pilihCard('penilaian')">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-info">
+          <h3 id="totalPenilaian">0</h3>
+          <p>Penilaian KBC</p>
         </div>
       </div>
     </div>
@@ -441,9 +416,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast">✨</div>
-
-<script>
+<div class="toast" id="toast">✨</div><script>
 /* ============================================================
    KONFIGURASI & UTIL
    ============================================================ */
@@ -507,10 +480,6 @@ function updateClock(){
   const m = String(wita.getMinutes()).padStart(2,'0');
   const el = document.getElementById('liveClock');
   if(el) el.textContent = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
-  
-  // Set Tanggal Cetak
-  const elCetak = document.getElementById('tanggalCetak');
-  if(elCetak) elCetak.textContent = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear();
 }
 updateClock();
 setInterval(updateClock, 1000);
@@ -735,6 +704,9 @@ function getDaftarGuru() {
     .sort();
 }
 
+/* ============================================================
+   HITUNG DATA PER JENIS (TERPISAH)
+   ============================================================ */
 function hitungAnekdot(namaGuru, periodeFilter) {
   const anekdot = loadData('ra_anekdot');
   return anekdot.filter(d => 
@@ -828,8 +800,14 @@ function renderDetailTabel() {
 
   let html = `
     <div class="table-wrap">
-      <div class="table-header-title ${classWarna}">
-        <span>${icon}</span> <span>${judul}</span>
+      <div class="table-toolbar">
+        <div class="table-title" style="color:var(--card-border)">
+          <span>${icon}</span> <span>${judul}</span>
+        </div>
+        <div class="filter-bulan">
+          <label>Periode:</label>
+          <input type="month" id="filterBulanTabel" value="${periodeAktif}" onchange="ubahFilterBulanTabel(this.value)">
+        </div>
       </div>
       <div class="table-scroll">
         <table>
@@ -837,22 +815,53 @@ function renderDetailTabel() {
             <tr>
               <th style="width: 50px;">No</th>
               <th>Nama Guru</th>
-              <th style="text-align: center;">Jumlah Data</th>
+              <th style="text-align: center;">Tanggal Laporan</th>
+              <th style="text-align: center;">Jumlah Laporan</th>
+              <th style="text-align: center;">Status</th>
             </tr>
           </thead>
           <tbody>
   `;
 
   if(guruTampil.length === 0) {
-    html += `<tr><td colspan="3" style="text-align: center; padding: 30px; color: var(--sub);">📭 Tidak ada data guru yang cocok.</td></tr>`;
+    html += `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--sub);">📭 Tidak ada data guru yang cocok.</td></tr>`;
   } else {
     guruTampil.forEach((nama, index) => {
-      let jml = 0;
-      if(jenisAktif === 'anekdot') jml = hitungAnekdot(nama, periodeAktif);
-      else if(jenisAktif === 'observasi') jml = hitungObservasi(nama, periodeAktif);
-      else jml = hitungPenilaian(nama, periodeAktif);
+      let dataList = [];
+      if(jenisAktif === 'anekdot') {
+        dataList = loadData('ra_anekdot').filter(d => normalisasiNama(d.guru) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif));
+      } else if(jenisAktif === 'observasi') {
+        dataList = loadData('ra_observasi_kbc').filter(d => normalisasiNama(d.guru) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif));
+      } else {
+        for(let i=0; i<localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if(k && k.startsWith('ra_penilaian_kbc_')) {
+            try {
+              const d = JSON.parse(localStorage.getItem(k));
+              if(d && normalisasiNama(d.guruNama) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif)) {
+                dataList.push(d);
+              }
+            } catch(e){}
+          }
+        }
+      }
 
+      const jml = dataList.length;
       const inisial = nama.charAt(0).toUpperCase();
+      
+      // Cari tanggal terakhir laporan
+      let tglTerakhir = '-';
+      if(jml > 0) {
+        dataList.sort((a,b) => (b.tanggal||'').localeCompare(a.tanggal||''));
+        tglTerakhir = formatTanggalPanjang(dataList[0].tanggal);
+      }
+
+      // Cek status verifikasi (menggunakan localStorage)
+      const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + nama.replace(/\s+/g, '_') + '_' + periodeAktif;
+      const statusVerifikasi = localStorage.getItem(keyVerifikasi) || 'belum';
+      
+      const classBtn = statusVerifikasi === 'sudah' ? 'sudah' : 'belum';
+      const labelBtn = statusVerifikasi === 'sudah' ? '✅ Sudah Dicek' : '⏳ Belum Dicek';
       
       html += `
         <tr>
@@ -863,8 +872,12 @@ function renderDetailTabel() {
               <span>${nama}</span>
             </div>
           </td>
+          <td style="text-align: center; font-size: 11.5px;">${tglTerakhir}</td>
+          <td style="text-align: center;"><span class="badge ${classWarna} ${jml === 0 ? 'zero' : ''}">${jml}</span></td>
           <td style="text-align: center;">
-            <span class="badge ${classWarna} ${jml === 0 ? 'zero' : ''}">${jml}</span>
+            <button class="btn-cek ${classBtn}" onclick="toggleVerifikasi('${jenisAktif}', '${escapeHtml(nama).replace(/'/g,"\\'")}', '${periodeAktif}')">
+              ${labelBtn}
+            </button>
           </td>
         </tr>
       `;
@@ -890,6 +903,24 @@ function renderDetailTabel() {
   document.getElementById('totalPenilaian').textContent = totalPenilaian;
 }
 
+function ubahFilterBulanTabel(val) {
+  if(jenisAktif === 'anekdot') document.getElementById('periodeAnekdot').value = val;
+  else if(jenisAktif === 'observasi') document.getElementById('periodeObservasi').value = val;
+  else document.getElementById('periodePenilaian').value = val;
+  
+  renderDetailTabel();
+}
+
+function toggleVerifikasi(jenis, namaGuru, periode) {
+  const key = 'verifikasi_' + jenis + '_' + namaGuru.replace(/\s+/g, '_') + '_' + periode;
+  const current = localStorage.getItem(key) || 'belum';
+  const newStatus = current === 'sudah' ? 'belum' : 'sudah';
+  localStorage.setItem(key, newStatus);
+  
+  showToast(newStatus === 'sudah' ? '✅ Ditandai Sudah Dicek' : '⏳ Ditandai Belum Dicek', 'info');
+  renderDetailTabel();
+}
+
 function logout(){
   if(confirm('Yakin ingin keluar?')){
     localStorage.removeItem('user');
@@ -901,13 +932,985 @@ function logout(){
    INIT
    ============================================================ */
 const todayMonth = getTodayISO().substring(0,7);
-document.getElementById('periodeAnekdot').value = todayMonth;
-document.getElementById('periodeObservasi').value = todayMonth;
-document.getElementById('periodePenilaian').value = todayMonth;
+// Set nilai default pada input hidden (untuk logika filter)
+const dummyInput = document.createElement('input');
+dummyInput.type = 'hidden';
+dummyInput.id = 'periodeAnekdot';
+dummyInput.value = todayMonth;
+document.body.appendChild(dummyInput);
+const dummyInput2 = document.createElement('input');
+dummyInput2.type = 'hidden';
+dummyInput2.id = 'periodeObservasi';
+dummyInput2.value = todayMonth;
+document.body.appendChild(dummyInput2);
+const dummyInput3 = document.createElement('input');
+dummyInput3.type = 'hidden';
+dummyInput3.id = 'periodePenilaian';
+dummyInput3.value = todayMonth;
+document.body.appendChild(dummyInput3);
 
 pilihCard('anekdot');
 
-console.log('✅ monitoring-adm-guru.html loaded (Filter Bulan per Card)');
+console.log('✅ monitoring-adm-guru.html loaded (Filter Bulan di Tabel, Verifikasi Manual)');
+</script>
+
+<script src="../auto-update.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<!-- Supabase untuk Profil -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="../logo-siagra.png">
+<title>SIAGRA - Monitoring Administrasi Guru</title>
+<meta name="theme-color" content="#1E3A8A">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#F0F4FB;--card:#FFFFFF;--card-inner:#F5F8FD;
+    --text:#0F1E3A;--sub:#5A6B85;--border:#D1DEF5;
+    --primary:#3B82F6;--primary-dark:#1E40AF;--primary-light:#DBEAFE;
+    --accent:#60A5FA;--success:#10B981;--warning:#F59E0B;--danger:#EF4444;
+    --yellow:#FCD34D;--card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.35);
+  }
+  body.dark{
+    --bg:#000000;--card:#0F1A3A;--card-inner:#0A0F26;
+    --text:#DBEAFE;--sub:#7EA0CF;--border:#1E3A8A;
+    --primary:#60A5FA;--primary-dark:#3B82F6;--primary-light:#1E3A8A;
+    --accent:#93C5FD;--success:#4ADE80;--warning:#FBBF24;--danger:#F87171;
+    --yellow:#FCD34D;--card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.55);
+  }
+  body{
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);
+    transition:background .3s,color .3s;
+    min-height:100vh;font-size:15px;line-height:1.5;
+    background-image:radial-gradient(circle at 10% 10%, rgba(30,58,138,.15) 0%, transparent 40%),radial-gradient(circle at 90% 20%, rgba(59,130,246,.08) 0%, transparent 40%);
+    background-attachment:fixed;
+  }
+
+  /* HEADER */
+  .header{
+    position:sticky;top:0;z-index:100;
+    background:linear-gradient(135deg,#1E3A8A,#0F1A3A);
+    color:#fff;padding:14px 24px;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);border-bottom:2px solid #3B82F6;gap:12px;
+  }
+  .header-left{flex:0 1 auto;min-width:0}
+  .header-left h1{font-size:17px;color:#FCD34D;font-weight:800;text-shadow:0 0 12px rgba(252,211,77,.4)}
+  .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
+  .jam-box{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);border:1.5px solid rgba(59,130,246,.5);
+    color:#fff;padding:8px 18px;border-radius:100px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;backdrop-filter:blur(10px);
+  }
+  .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
+  .theme-toggle{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+    color:#fff;width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer;
+    transition:all .2s;display:flex;align-items:center;justify-content:center;
+  }
+  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);background:rgba(255,255,255,.2)}
+  .header-right button.logout{
+    background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;border:2px solid transparent;
+    padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;
+    font-weight:700;transition:all .3s ease;font-size:13px;box-shadow:0 2px 8px rgba(239,68,68,.4);
+  }
+  .header-right button.logout:hover{
+    background:linear-gradient(135deg,#F87171,#DC2626);transform:translateY(-2px) scale(1.05);
+    box-shadow:0 0 15px rgba(239,68,68,.6);border-color:#FCA5A5;
+  }
+
+  /* WRAPPER */
+  .wrapper{
+    max-width:1200px;margin:0 auto;padding:24px 16px;
+    display:grid;grid-template-columns:300px 1fr;gap:24px;
+    position:relative;z-index:1;align-items:start;
+  }
+
+  /* PROFIL */
+  .col-profil{position:sticky;top:88px;height:calc(100vh - 110px);max-height:calc(100vh - 110px)}
+  .profile-card{
+    background:var(--card);border-radius:16px;border:2px solid var(--card-border);
+    box-shadow:0 0 25px var(--card-border-glow),0 8px 24px rgba(0,0,0,.6);
+    height:100%;max-height:100%;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .profile-card-header{
+    padding:20px 18px 16px;text-align:center;border-bottom:1px dashed var(--border);flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(15,26,58,.6));
+  }
+  body.light .profile-card-header{background:linear-gradient(135deg,rgba(240,244,251,.6),rgba(220,235,255,.8))}
+  .profile-photo{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#0F1A3A,#1E3A8A);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:800;color:#DBEAFE;
+    overflow:hidden;border:3px solid var(--card-border);margin:0 auto 12px;
+  }
+  .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
+  .profile-card-header h2{font-size:14.5px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.35}
+  .profile-card-header .jabatan-badge{
+    display:inline-block;padding:4px 12px;border-radius:100px;font-size:10.5px;font-weight:700;
+    background:rgba(0,0,0,.4);color:#FCD34D;border:1px solid rgba(59,130,246,.5);
+    text-transform:uppercase;margin-bottom:6px;
+  }
+  body.light .profile-card-header .jabatan-badge{background:rgba(59,130,246,.15);color:#1E40AF}
+  .profile-card-header .lama-text{display:block;font-size:11.5px;font-weight:700;color:#FCD34D;margin-top:4px}
+  body.light .profile-card-header .lama-text{color:var(--primary-dark)}
+  .profile-card-body{flex:1;overflow-y:auto;padding:14px 18px 18px;scrollbar-width:thin;scrollbar-color:var(--card-border) transparent}
+  .profile-card-body::-webkit-scrollbar{width:6px}
+  .profile-card-body::-webkit-scrollbar-thumb{background:rgba(59,130,246,.4);border-radius:10px}
+  .info-section-title{
+    font-size:10px;font-weight:800;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.06em;margin-bottom:8px;margin-top:6px;display:flex;align-items:center;gap:6px;
+  }
+  .info-section-title::before{content:'';width:3px;height:12px;background:var(--card-border);border-radius:2px}
+  .info-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .info-item{
+    display:flex;justify-content:space-between;gap:8px;padding:7px 10px;
+    background:var(--card-inner);border:1px solid var(--border);border-radius:8px;font-size:11.5px;
+  }
+  .info-item .lbl{color:var(--sub);font-weight:600;flex-shrink:0}
+  .info-item .val{color:var(--text);font-weight:700;text-align:right;word-break:break-word;min-width:0}
+
+  /* KOLOM KANAN */
+  .col-menu{min-width:0}
+
+  /* ============================================================
+     HERO / INTRO CARD
+     ============================================================ */
+  .intro-card{
+    background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 55%,#3B82F6 100%);
+    color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px;
+    border:2px solid rgba(191,219,254,.5);
+    box-shadow:0 10px 30px rgba(59,130,246,.45);
+    position:relative;overflow:hidden;
+  }
+  .intro-card::before{
+    content:'';position:absolute;top:-60px;right:-60px;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);
+    pointer-events:none;
+  }
+  .intro-card h2{
+    font-size:20px;font-weight:800;margin-bottom:6px;
+    position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  .intro-card p{
+    font-size:13px;font-weight:600;line-height:1.5;
+    opacity:.95;position:relative;z-index:1;text-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  body.light .intro-card{
+    background:linear-gradient(135deg,#1E40AF 0%,#2563EB 55%,#3B82F6 100%);
+    border-color:rgba(96,165,250,.5);
+  }
+
+  /* HEADER INLINE */
+  .form-header-inline{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:20px;flex-wrap:wrap;
+  }
+  .form-header-inline .form-title-text{
+    display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;
+    color:var(--yellow);margin:0;text-shadow:0 0 12px rgba(252,211,77,.4);
+  }
+  .btn-back-inline{
+    background:var(--card);color:var(--text);border:2px solid var(--card-border);
+    padding:10px 20px;border-radius:10px;font-family:inherit;font-size:13px;
+    font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    transition:all .25s;text-decoration:none;box-shadow:0 0 15px var(--card-border-glow);
+  }
+  .btn-back-inline:hover{
+    background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;
+    border-color:#3B82F6;transform:translateY(-2px);
+    box-shadow:0 0 20px rgba(59,130,246,.55);
+  }
+
+  /* DASHBOARD CARDS (Clickable) */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    border: 2px solid var(--card-border);
+    box-shadow: 0 0 15px var(--card-border-glow);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all .25s cubic-bezier(.34,1.56,.64,1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover { transform: translateY(-4px) scale(1.02); }
+  
+  /* Efek saat card aktif */
+  .stat-card.active {
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 3px var(--card-border), 0 0 25px var(--card-border-glow);
+  }
+  .stat-card.active::after {
+    content: '✓ Terpilih';
+    position: absolute; top: 12px; right: 16px;
+    font-size: 10px; font-weight: 800; color: var(--card-border);
+    text-transform: uppercase;
+  }
+
+  .stat-icon {
+    width: 54px; height: 54px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  
+  /* Warna Card disesuaikan dengan guru.html */
+  .stat-card.c-anekdot { border-color: #8B5CF6; }
+  .stat-card.c-anekdot .stat-icon { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  
+  .stat-card.c-observasi { border-color: #F97316; }
+  .stat-card.c-observasi .stat-icon { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
+  
+  .stat-card.c-penilaian { border-color: #06B6D4; }
+  .stat-card.c-penilaian .stat-icon { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
+
+  .stat-info h3 { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+  .stat-info p { font-size: 12px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: .05em; }
+
+  /* TABLE CONTAINER */
+  .table-wrap {
+    background: var(--card); border-radius: 16px; border: 2px solid var(--card-border);
+    box-shadow: 0 0 15px var(--card-border-glow); overflow: hidden; margin-bottom: 24px;
+    animation: fadeIn .3s ease;
+  }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+  
+  /* Table Toolbar */
+  .table-toolbar {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .table-title {
+    font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;
+  }
+  .filter-bulan {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-bulan label { font-size: 11px; font-weight: 800; color: var(--sub); text-transform: uppercase; }
+  .filter-bulan input {
+    padding: 8px 12px; background: var(--card-inner); border: 1.5px solid var(--border);
+    border-radius: 8px; font-family: inherit; font-size: 12px; color: var(--text); outline: none;
+  }
+  .filter-bulan input:focus { border-color: var(--card-border); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  thead { background: rgba(0,0,0,.3); }
+  body:not(.dark) thead { background: #F0F4FB; }
+  th {
+    text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 800;
+    color: var(--sub); text-transform: uppercase; border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border);
+    color: var(--text); font-weight: 500;
+  }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+  body:not(.dark) tbody tr:hover td { background: rgba(0,0,0,.03); }
+
+  .cell-nama { display: flex; align-items: center; gap: 10px; }
+  .avatar-mini {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--card-inner); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: var(--text); font-size: 12px;
+  }
+  
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 800;
+    min-width: 40px;
+  }
+  .badge.anekdot { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  .badge.observasi { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
+  .badge.penilaian { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
+  .badge.zero { opacity: .4; filter: grayscale(1); }
+
+  .btn-cek {
+    padding: 6px 12px; border-radius: 6px; font-family: inherit; font-size: 11px;
+    font-weight: 700; cursor: pointer; border: 1.5px solid transparent;
+    display: inline-flex; align-items: center; gap: 4px; transition: all .2s;
+  }
+  .btn-cek.belum { background: rgba(239,68,68,.15); color: #EF4444; border-color: rgba(239,68,68,.4); }
+  .btn-cek.belum:hover { background: rgba(239,68,68,.3); }
+  .btn-cek.sudah { background: rgba(16,185,129,.15); color: #10B981; border-color: rgba(16,185,129,.4); }
+  .btn-cek.sudah:hover { background: rgba(16,185,129,.3); }
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:#0F1A3A;color:#fff;padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;box-shadow:0 20px 40px rgba(0,0,0,.5);
+    border:2px solid var(--card-border);opacity:0;transition:all .3s;z-index:99999;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.success{background:linear-gradient(135deg,#059669,#047857);border-color:#10B981}
+  .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
+  .toast.info{background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-color:#60A5FA}
+
+  @media(max-width:900px){
+    .wrapper{grid-template-columns:1fr;gap:18px}
+    .col-profil{position:static;height:auto;max-height:none}
+    .profile-card{max-height:none;height:auto}
+    .profile-card-body{overflow-y:visible;max-height:none}
+  }
+  @media(max-width:640px){
+    .header{flex-wrap:wrap;padding:12px 16px;position:relative}
+    .header-left,.header-center,.header-right{flex:1 1 100%;justify-content:center;text-align:center}
+    .wrapper{padding:16px 12px}
+    .form-header-inline{flex-direction:column;align-items:stretch}
+    .btn-back-inline{justify-content:center}
+    .table-toolbar { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left"><h1>Monitoring Administrasi</h1></div>
+  <div class="header-center">
+    <div class="jam-box"><span id="liveClock">Memuat...</span></div>
+  </div>
+  <div class="header-right">
+    <button class="logout" onclick="logout()">Keluar</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<!-- MAIN WRAPPER -->
+<div class="wrapper">
+  
+  <!-- KOLOM KIRI: PROFIL -->
+  <div class="col-profil">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+        <span class="lama-text" id="profileLama">-</span>
+      </div>
+      <div class="profile-card-body" id="profileBody"></div>
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: KONTEN -->
+  <div class="col-menu">
+    
+    <!-- HERO / INTRO CARD -->
+    <div class="intro-card">
+      <h2>📊 Monitoring Administrasi Guru</h2>
+      <p>Klik salah satu kartu di bawah untuk melihat detail laporan administrasi. Filter bulan ada di dalam tabel.</p>
+    </div>
+
+    <!-- HEADER INLINE -->
+    <div class="form-header-inline">
+      <div class="form-title-text"><span class="emoji">📊</span><span>Dashboard Administrasi Guru</span></div>
+      <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
+    </div>
+
+    <!-- KARTU STATISTIK (KLIK UNTUK DETAIL) -->
+    <div class="stats-grid">
+      <!-- Card Anekdot -->
+      <div class="stat-card c-anekdot active" id="cardAnekdot" onclick="pilihCard('anekdot')">
+        <div class="stat-icon">📔</div>
+        <div class="stat-info">
+          <h3 id="totalAnekdot">0</h3>
+          <p>Catatan Anekdot</p>
+        </div>
+      </div>
+      
+      <!-- Card Observasi -->
+      <div class="stat-card c-observasi" id="cardObservasi" onclick="pilihCard('observasi')">
+        <div class="stat-icon">👀</div>
+        <div class="stat-info">
+          <h3 id="totalObservasi">0</h3>
+          <p>Observasi Harian</p>
+        </div>
+      </div>
+      
+      <!-- Card Penilaian -->
+      <div class="stat-card c-penilaian" id="cardPenilaian" onclick="pilihCard('penilaian')">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-info">
+          <h3 id="totalPenilaian">0</h3>
+          <p>Penilaian KBC</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WADAH TABEL DINAMIS -->
+    <div id="wadahTabel">
+      <!-- Tabel akan dirender di sini oleh JavaScript -->
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">✨</div><script>
+/* ============================================================
+   KONFIGURASI & UTIL
+   ============================================================ */
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+if(!user){
+  alert('Anda harus login terlebih dahulu!');
+  window.location.href = '../index.html';
+}
+
+// Sesuaikan tombol kembali berdasarkan role
+if(user.role === 'guru'){
+  document.getElementById('btnKembali').href = '../guru.html';
+  document.getElementById('btnKembali').innerHTML = '← Kembali ke Menu Guru';
+} else if(user.role === 'kepala'){
+  document.getElementById('btnKembali').href = '../kepsek.html';
+} else {
+  document.getElementById('btnKembali').href = '../index.html';
+}
+
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function getWITA(){
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  return new Date(utc + (8 * 3600000));
+}
+function getTodayISO(){
+  const w = getWITA();
+  return w.getFullYear() + '-' + String(w.getMonth()+1).padStart(2,'0') + '-' + String(w.getDate()).padStart(2,'0');
+}
+
+/* ============================================================
+   THEME & CLOCK
+   ============================================================ */
+function applyTheme(){
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('dark', theme === 'dark');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme(){
+  const current = localStorage.getItem('theme') || 'dark';
+  localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
+  applyTheme();
+}
+applyTheme();
+
+function updateClock(){
+  const wita = getWITA();
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const h = String(wita.getHours()).padStart(2,'0');
+  const m = String(wita.getMinutes()).padStart(2,'0');
+  const el = document.getElementById('liveClock');
+  if(el) el.textContent = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ============================================================
+   UTIL PROFIL & AVATAR
+   ============================================================ */
+function namaKeFile(nama){
+  let bersih = String(nama||'').split(',')[0].trim();
+  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ').replace(/\bS\.?\s*Pd\.?/gi, ' ').replace(/\bM\.?\s*Pd\.?/gi, ' ')
+    .replace(/\bS\.?\s*Ag\.?/gi, ' ').replace(/\bS\.?\s*Si\.?/gi, ' ').replace(/\bS\.?\s*Kom\.?/gi, ' ')
+    .replace(/\bM\.?\s*Si\.?/gi, ' ').replace(/\bGr\.?/gi, ' ').replace(/\bDrs\.?/gi, ' ').replace(/\bDra\.?/gi, ' ')
+    .replace(/\bDr\.?/gi, ' ').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').replace(/[^a-zA-Z0-9\-]/g, '');
+  return bersih;
+}
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function normalisasiNama(nama){
+  if(!nama) return '';
+  let s = String(nama).trim().toLowerCase();
+  s = s.split(',')[0].trim();
+  s = s.replace(/[.,']/g, ' ').replace(/\s+/g, ' ').trim();
+  return s;
+}
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+function formatTanggalPanjang(tgl){
+  if(!tgl) return '-';
+  const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function avatarSvg(nama){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+  const palettes = [
+    { bg1:'#0F1A3A', bg2:'#1E3A8A', fg:'#F5F5F5' },
+    { bg1:'#0A1F17', bg2:'#1E3A8A', fg:'#F5F5F5' },
+    { bg1:'#1F1A14', bg2:'#3D2A1A', fg:'#F5F5F5' },
+    { bg1:'#1A141F', bg2:'#2A1A3D', fg:'#F5F5F5' }
+  ];
+  const p = palettes[variant];
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/><stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/></linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${p.bg1}"/><stop offset="100%" stop-color="${p.bg2}"/></linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    <circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+    <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>
+  </svg>`;
+}
+function pakaiFotoAtauAvatar(el, nama){
+  if(!el) return;
+  const userEmail = user && user.email ? user.email : nama;
+  const fotoUpload = localStorage.getItem('ra_foto_' + userEmail);
+  
+  if(fotoUpload){ 
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">'; 
+    return; 
+  }
+  
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
+  let idx = 0;
+  
+  function cobaLoad(){
+    if(idx >= exts.length){ 
+      el.innerHTML = avatarSvg(nama); 
+      return; 
+    }
+    const img = new Image();
+    img.onload = function(){ 
+      el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; 
+    };
+    img.onerror = function(){ 
+      idx++; 
+      cobaLoad(); 
+    };
+    img.src = '../foto/' + baseName + '.' + exts[idx];
+  }
+  cobaLoad();
+}
+
+/* ============================================================
+   CARI DATA KEPSEK — SUPABASE (Profil)
+   ============================================================ */
+async function cariDataKepsekSupabase(){
+  if (typeof sb === 'undefined') return null;
+  const namaLogin = normalisasiNama(user.nama);
+  let { data, error } = await sb.from('guru').select('*').ilike('nama', `%${namaLogin}%`).limit(1).maybeSingle();
+  if(error || data) return data;
+  
+  const namaDepan = namaLogin.split(' ')[0];
+  if(namaDepan.length > 2){
+    let { data: data2 } = await sb.from('guru').select('*').ilike('nama', `%${namaDepan}%`).limit(1).maybeSingle();
+    if(data2) return data2;
+  }
+  return null;
+}
+
+async function renderProfil(){
+  const nama = user.nama;
+  const body = document.getElementById('profileBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data...</div>';
+
+  const dataKepsek = await cariDataKepsekSupabase();
+
+  if(!dataKepsek){
+    document.getElementById('profileNama').textContent = nama;
+    document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
+    document.getElementById('profileLama').textContent = '';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0"><div style="font-size:36px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Data Belum Lengkap</div><div style="font-size:11.5px;color:#93C5FD;line-height:1.5">Profil Anda belum terdaftar di Data GTK.<br>Silakan hubungi Admin.</div></div>';
+    pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), nama);
+    return;
+  }
+
+  document.getElementById('profileNama').textContent = dataKepsek.nama;
+  document.getElementById('profileJabatan').textContent = dataKepsek.jabatan || 'Kepala Sekolah';
+  const lama = hitungLamaMengajar(dataKepsek.tmt);
+  document.getElementById('profileLama').textContent = dataKepsek.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+  const identitas = [];
+  if(dataKepsek.nik) identitas.push({ l: 'NIK', v: dataKepsek.nik });
+  if(dataKepsek.npk) identitas.push({ l: 'NPK/PEGID', v: dataKepsek.npk });
+  if(dataKepsek.jk) identitas.push({ l: 'Jenis Kelamin', v: dataKepsek.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(dataKepsek.tempat_lahir) identitas.push({ l: 'Tempat Lahir', v: dataKepsek.tempat_lahir });
+  if(dataKepsek.tanggal_lahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataKepsek.tanggal_lahir) });
+  if(identitas.length > 0){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    identitas.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const pegawai = [];
+  if(dataKepsek.pendidikan) pegawai.push({ l: 'Pendidikan', v: dataKepsek.pendidikan });
+  if(dataKepsek.tmt) pegawai.push({ l: 'TMT', v: formatTanggalPanjang(dataKepsek.tmt) });
+  if(dataKepsek.tmt) pegawai.push({ l: 'Lama Mengajar', v: lama.teks });
+  if(dataKepsek.jabatan) pegawai.push({ l: 'Jabatan', v: dataKepsek.jabatan });
+  if(pegawai.length > 0){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    pegawai.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const kontak = [];
+  if(dataKepsek.hp) kontak.push({ l: 'HP/WA', v: dataKepsek.hp });
+  if(dataKepsek.email) kontak.push({ l: 'Email', v: dataKepsek.email });
+  if(dataKepsek.alamat) kontak.push({ l: 'Alamat', v: dataKepsek.alamat });
+  if(kontak.length > 0){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  body.innerHTML = html;
+  pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataKepsek.nama);
+}
+setTimeout(renderProfil, 100);
+
+/* ============================================================
+   PROSES DATA MONITORING
+   ============================================================ */
+function loadData(key) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : [];
+  } catch(e) { return []; }
+}
+
+function getDaftarGuru() {
+  const guruSet = new Set();
+  const masterGuru = loadData('ra_guru');
+  masterGuru.forEach(g => { if(g.nama) guruSet.add(g.nama); });
+
+  const anekdot = loadData('ra_anekdot');
+  anekdot.forEach(d => { if(d.guru) guruSet.add(d.guru); });
+
+  const observasi = loadData('ra_observasi_kbc');
+  observasi.forEach(d => { if(d.guru) guruSet.add(d.guru); });
+
+  for(let i=0; i<localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if(k && k.startsWith('ra_penilaian_kbc_')) {
+      try {
+        const d = JSON.parse(localStorage.getItem(k));
+        if(d && d.guruNama) guruSet.add(d.guruNama);
+      } catch(e){}
+    }
+  }
+
+  const namaDikecualikan = ['anto', 'puspa', 'sugianto'];
+
+  return Array.from(guruSet)
+    .filter(nama => {
+      const namaBersih = normalisasiNama(nama).toLowerCase();
+      return !namaDikecualikan.some(dikecualikan => namaBersih.includes(dikecualikan));
+    })
+    .sort();
+}
+
+/* ============================================================
+   HITUNG DATA PER JENIS (TERPISAH)
+   ============================================================ */
+function hitungAnekdot(namaGuru, periodeFilter) {
+  const anekdot = loadData('ra_anekdot');
+  return anekdot.filter(d => 
+    normalisasiNama(d.guru) === normalisasiNama(namaGuru) && 
+    (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
+  ).length;
+}
+
+function hitungObservasi(namaGuru, periodeFilter) {
+  const observasi = loadData('ra_observasi_kbc');
+  return observasi.filter(d => 
+    normalisasiNama(d.guru) === normalisasiNama(namaGuru) && 
+    (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
+  ).length;
+}
+
+function hitungPenilaian(namaGuru, periodeFilter) {
+  let count = 0;
+  for(let i=0; i<localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if(k && k.startsWith('ra_penilaian_kbc_')) {
+      try {
+        const d = JSON.parse(localStorage.getItem(k));
+        if(d && normalisasiNama(d.guruNama) === normalisasiNama(namaGuru) && (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)) {
+          count++;
+        }
+      } catch(e){}
+    }
+  }
+  return count;
+}
+
+/* ============================================================
+   RENDER CARD & TABEL DINAMIS
+   ============================================================ */
+let jenisAktif = 'anekdot';
+
+function pilihCard(jenis) {
+  jenisAktif = jenis;
+  
+  document.getElementById('cardAnekdot').classList.remove('active');
+  document.getElementById('cardObservasi').classList.remove('active');
+  document.getElementById('cardPenilaian').classList.remove('active');
+  
+  if(jenis === 'anekdot') document.getElementById('cardAnekdot').classList.add('active');
+  if(jenis === 'observasi') document.getElementById('cardObservasi').classList.add('active');
+  if(jenis === 'penilaian') document.getElementById('cardPenilaian').classList.add('active');
+
+  renderDetailTabel();
+}
+
+function renderDetailTabel() {
+  const wadah = document.getElementById('wadahTabel');
+  
+  // Ambil nilai filter bulan dari masing-masing card
+  const periodeAnekdot = document.getElementById('periodeAnekdot').value;
+  const periodeObservasi = document.getElementById('periodeObservasi').value;
+  const periodePenilaian = document.getElementById('periodePenilaian').value;
+
+  // Tentukan periode mana yang dipakai berdasarkan card aktif
+  let periodeAktif = '';
+  if(jenisAktif === 'anekdot') periodeAktif = periodeAnekdot;
+  else if(jenisAktif === 'observasi') periodeAktif = periodeObservasi;
+  else periodeAktif = periodePenilaian;
+
+  const daftarGuru = getDaftarGuru();
+
+  let guruTampil = daftarGuru;
+  if(user.role === 'guru') {
+    const namaSaya = normalisasiNama(user.nama);
+    guruTampil = daftarGuru.filter(g => normalisasiNama(g).includes(namaSaya));
+  }
+
+  let judul = '';
+  let classWarna = '';
+  let icon = '';
+  
+  if(jenisAktif === 'anekdot') {
+    judul = 'Tabel Catatan Anekdot';
+    classWarna = 'anekdot';
+    icon = '📔';
+  } else if(jenisAktif === 'observasi') {
+    judul = 'Tabel Observasi Harian';
+    classWarna = 'observasi';
+    icon = '👀';
+  } else {
+    judul = 'Tabel Penilaian KBC';
+    classWarna = 'penilaian';
+    icon = '⭐';
+  }
+
+  let html = `
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div class="table-title" style="color:var(--card-border)">
+          <span>${icon}</span> <span>${judul}</span>
+        </div>
+        <div class="filter-bulan">
+          <label>Periode:</label>
+          <input type="month" id="filterBulanTabel" value="${periodeAktif}" onchange="ubahFilterBulanTabel(this.value)">
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px;">No</th>
+              <th>Nama Guru</th>
+              <th style="text-align: center;">Tanggal Laporan</th>
+              <th style="text-align: center;">Jumlah Laporan</th>
+              <th style="text-align: center;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+
+  if(guruTampil.length === 0) {
+    html += `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--sub);">📭 Tidak ada data guru yang cocok.</td></tr>`;
+  } else {
+    guruTampil.forEach((nama, index) => {
+      let dataList = [];
+      if(jenisAktif === 'anekdot') {
+        dataList = loadData('ra_anekdot').filter(d => normalisasiNama(d.guru) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif));
+      } else if(jenisAktif === 'observasi') {
+        dataList = loadData('ra_observasi_kbc').filter(d => normalisasiNama(d.guru) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif));
+      } else {
+        for(let i=0; i<localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if(k && k.startsWith('ra_penilaian_kbc_')) {
+            try {
+              const d = JSON.parse(localStorage.getItem(k));
+              if(d && normalisasiNama(d.guruNama) === normalisasiNama(nama) && (!periodeAktif || (d.tanggal||'').substring(0,7) === periodeAktif)) {
+                dataList.push(d);
+              }
+            } catch(e){}
+          }
+        }
+      }
+
+      const jml = dataList.length;
+      const inisial = nama.charAt(0).toUpperCase();
+      
+      // Cari tanggal terakhir laporan
+      let tglTerakhir = '-';
+      if(jml > 0) {
+        dataList.sort((a,b) => (b.tanggal||'').localeCompare(a.tanggal||''));
+        tglTerakhir = formatTanggalPanjang(dataList[0].tanggal);
+      }
+
+      // Cek status verifikasi (menggunakan localStorage)
+      const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + nama.replace(/\s+/g, '_') + '_' + periodeAktif;
+      const statusVerifikasi = localStorage.getItem(keyVerifikasi) || 'belum';
+      
+      const classBtn = statusVerifikasi === 'sudah' ? 'sudah' : 'belum';
+      const labelBtn = statusVerifikasi === 'sudah' ? '✅ Sudah Dicek' : '⏳ Belum Dicek';
+      
+      html += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>
+            <div class="cell-nama">
+              <div class="avatar-mini">${inisial}</div>
+              <span>${nama}</span>
+            </div>
+          </td>
+          <td style="text-align: center; font-size: 11.5px;">${tglTerakhir}</td>
+          <td style="text-align: center;"><span class="badge ${classWarna} ${jml === 0 ? 'zero' : ''}">${jml}</span></td>
+          <td style="text-align: center;">
+            <button class="btn-cek ${classBtn}" onclick="toggleVerifikasi('${jenisAktif}', '${escapeHtml(nama).replace(/'/g,"\\'")}', '${periodeAktif}')">
+              ${labelBtn}
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  html += `</tbody></table></div></div>`;
+  wadah.innerHTML = html;
+
+  // Update angka statistik di card (total keseluruhan) berdasarkan filter bulan masing-masing
+  let totalAnekdot = 0;
+  let totalObservasi = 0;
+  let totalPenilaian = 0;
+
+  daftarGuru.forEach(nama => {
+    totalAnekdot += hitungAnekdot(nama, periodeAnekdot);
+    totalObservasi += hitungObservasi(nama, periodeObservasi);
+    totalPenilaian += hitungPenilaian(nama, periodePenilaian);
+  });
+
+  document.getElementById('totalAnekdot').textContent = totalAnekdot;
+  document.getElementById('totalObservasi').textContent = totalObservasi;
+  document.getElementById('totalPenilaian').textContent = totalPenilaian;
+}
+
+function ubahFilterBulanTabel(val) {
+  if(jenisAktif === 'anekdot') document.getElementById('periodeAnekdot').value = val;
+  else if(jenisAktif === 'observasi') document.getElementById('periodeObservasi').value = val;
+  else document.getElementById('periodePenilaian').value = val;
+  
+  renderDetailTabel();
+}
+
+function toggleVerifikasi(jenis, namaGuru, periode) {
+  const key = 'verifikasi_' + jenis + '_' + namaGuru.replace(/\s+/g, '_') + '_' + periode;
+  const current = localStorage.getItem(key) || 'belum';
+  const newStatus = current === 'sudah' ? 'belum' : 'sudah';
+  localStorage.setItem(key, newStatus);
+  
+  showToast(newStatus === 'sudah' ? '✅ Ditandai Sudah Dicek' : '⏳ Ditandai Belum Dicek', 'info');
+  renderDetailTabel();
+}
+
+function logout(){
+  if(confirm('Yakin ingin keluar?')){
+    localStorage.removeItem('user');
+    window.location.href = '../index.html';
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+const todayMonth = getTodayISO().substring(0,7);
+// Set nilai default pada input hidden (untuk logika filter)
+const dummyInput = document.createElement('input');
+dummyInput.type = 'hidden';
+dummyInput.id = 'periodeAnekdot';
+dummyInput.value = todayMonth;
+document.body.appendChild(dummyInput);
+const dummyInput2 = document.createElement('input');
+dummyInput2.type = 'hidden';
+dummyInput2.id = 'periodeObservasi';
+dummyInput2.value = todayMonth;
+document.body.appendChild(dummyInput2);
+const dummyInput3 = document.createElement('input');
+dummyInput3.type = 'hidden';
+dummyInput3.id = 'periodePenilaian';
+dummyInput3.value = todayMonth;
+document.body.appendChild(dummyInput3);
+
+pilihCard('anekdot');
+
+console.log('✅ monitoring-adm-guru.html loaded (Filter Bulan di Tabel, Verifikasi Manual)');
 </script>
 
 <script src="../auto-update.js"></script>
