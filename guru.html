@@ -873,32 +873,40 @@ async function cariDataGuruSupabase(){
     return null;
   }
 
-  // 1. Ambil SEMUA data guru dari Supabase
-  let { data: semuaGuru, error } = await sb.from('guru').select('*');
-  if(error){ console.error('Error ambil data guru:', error); return null; }
-  if(!semuaGuru || semuaGuru.length === 0) return null;
-
   const namaLogin = normalisasiNama(user.nama);
 
-  // 2. Cari yang persis sama (setelah dinormalisasi)
-  let found = semuaGuru.find(g => normalisasiNama(g.nama) === namaLogin);
+  // 1. Ambil data dari tabel GURU
+  let { data: dataGuru } = await sb.from('guru').select('*');
+  let listGuru = dataGuru || [];
+
+  // 2. Ambil data dari tabel TENDIK (Penting untuk Ibu Puspa)
+  let { data: dataTendik } = await sb.from('tendik').select('*');
+  let listTendik = dataTendik || [];
+
+  // Gabungkan semua data orang
+  let semuaOrang = [...listGuru, ...listTendik];
+
+  if(semuaOrang.length === 0) return null;
+
+  // 3. Cari yang persis sama
+  let found = semuaOrang.find(g => normalisasiNama(g.nama) === namaLogin);
   if(found) return found;
 
-  // 3. Jika tidak ketemu, cari yang namanya mengandung nama login (atau sebaliknya)
-  found = semuaGuru.find(g => {
+  // 4. Jika tidak ketemu, cari yang namanya mengandung nama login (atau sebaliknya)
+  found = semuaOrang.find(g => {
     const n = normalisasiNama(g.nama);
     return n.includes(namaLogin) || namaLogin.includes(n);
   });
   if(found) return found;
 
-  // 4. Jika masih tidak ketemu, cocokkan berdasarkan nama depan (minimal 3 huruf)
+  // 5. Jika masih tidak ketemu, cocokkan berdasarkan nama depan
   const namaDepan = namaLogin.split(' ')[0];
   if(namaDepan.length > 2){
-    found = semuaGuru.find(g => normalisasiNama(g.nama).startsWith(namaDepan));
+    found = semuaOrang.find(g => normalisasiNama(g.nama).startsWith(namaDepan));
     if(found) return found;
   }
 
-  return null; // Jika tetap tidak ketemu
+  return null;
 }
 
 /* ============================================================
