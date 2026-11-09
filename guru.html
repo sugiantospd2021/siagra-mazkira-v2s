@@ -868,29 +868,37 @@ function pakaiFotoAtauAvatar(el, nama){
    CARI DATA GURU — SUPABASE
    ============================================================ */
 async function cariDataGuruSupabase(){
-  const namaLogin = normalisasiNama(user.nama);
-  
-  // Pengecekan pengaman jika variabel sb belum siap
   if (typeof sb === 'undefined') {
     console.error("Supabase client (sb) belum terdefinisi.");
     return null;
   }
 
-  let { data, error } = await sb
-    .from('guru').select('*')
-    .ilike('nama', `%${namaLogin}%`)
-    .limit(1).maybeSingle();
-  if(error){ console.error('Error cari guru:', error); return null; }
-  if(data) return data;
+  // 1. Ambil SEMUA data guru dari Supabase
+  let { data: semuaGuru, error } = await sb.from('guru').select('*');
+  if(error){ console.error('Error ambil data guru:', error); return null; }
+  if(!semuaGuru || semuaGuru.length === 0) return null;
+
+  const namaLogin = normalisasiNama(user.nama);
+
+  // 2. Cari yang persis sama (setelah dinormalisasi)
+  let found = semuaGuru.find(g => normalisasiNama(g.nama) === namaLogin);
+  if(found) return found;
+
+  // 3. Jika tidak ketemu, cari yang namanya mengandung nama login (atau sebaliknya)
+  found = semuaGuru.find(g => {
+    const n = normalisasiNama(g.nama);
+    return n.includes(namaLogin) || namaLogin.includes(n);
+  });
+  if(found) return found;
+
+  // 4. Jika masih tidak ketemu, cocokkan berdasarkan nama depan (minimal 3 huruf)
   const namaDepan = namaLogin.split(' ')[0];
   if(namaDepan.length > 2){
-    let { data: data2 } = await sb
-      .from('guru').select('*')
-      .ilike('nama', `%${namaDepan}%`)
-      .limit(1).maybeSingle();
-    if(data2) return data2;
+    found = semuaGuru.find(g => normalisasiNama(g.nama).startsWith(namaDepan));
+    if(found) return found;
   }
-  return null;
+
+  return null; // Jika tetap tidak ketemu
 }
 
 /* ============================================================
