@@ -187,23 +187,45 @@
   .btn-action.danger{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;border-color:#DC2626}
   .btn-action.danger:hover{box-shadow:0 0 20px rgba(220,38,38,.5)}
 
-  /* TABEL */
-  .table-card{
+  /* TABEL PROTAH (Biru) */
+  .table-card.prota {
     background:var(--card);border-radius:16px;border:2px solid var(--border);
     box-shadow:0 0 15px var(--card-border-glow);overflow:hidden;margin-bottom:24px;
   }
-  .table-card-header{
+  .table-card.prota .table-card-header {
     padding:16px 20px;border-bottom:2px solid var(--border);
     display:flex;justify-content:space-between;align-items:center;
     background:rgba(30,58,138,.2);
   }
-  body.light .table-card-header{background:rgba(191,219,254,.3)}
+  body.light .table-card.prota .table-card-header{background:rgba(191,219,254,.3)}
+  
+  /* TABEL PROMES (Hijau) */
+  .table-card.promes {
+    background:var(--card);border-radius:16px;border:2px solid rgba(16,185,129,.4);
+    box-shadow:0 0 15px rgba(16,185,129,.25);overflow:hidden;margin-bottom:24px;
+  }
+  .table-card.promes .table-card-header {
+    padding:16px 20px;border-bottom:2px solid rgba(16,185,129,.3);
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(16,185,129,.15);
+  }
+  body.light .table-card.promes .table-card-header{background:rgba(16,185,129,.1)}
+
   .table-card-header h3{font-size:15px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
-  .table-card-header .badge-count{
+  
+  /* Badge Count Protah (Biru) */
+  .table-card.prota .badge-count{
     background:rgba(96,165,250,.2);color:#93C5FD;padding:4px 12px;
     border-radius:100px;font-size:12px;font-weight:800;border:1px solid rgba(96,165,250,.4);
   }
-  body.light .table-card-header .badge-count{background:rgba(37,99,235,.1);color:#1E40AF;border-color:rgba(37,99,235,.3)}
+  body.light .table-card.prota .badge-count{background:rgba(37,99,235,.1);color:#1E40AF;border-color:rgba(37,99,235,.3)}
+
+  /* Badge Count Promes (Hijau) */
+  .table-card.promes .badge-count{
+    background:rgba(16,185,129,.2);color:#4ADE80;padding:4px 12px;
+    border-radius:100px;font-size:12px;font-weight:800;border:1px solid rgba(16,185,129,.4);
+  }
+  body.light .table-card.promes .badge-count{background:rgba(16,185,129,.1);color:#047857;border-color:rgba(16,185,129,.3)}
 
   .table-scroll{overflow-x:auto}
   table{width:100%;border-collapse:separate;border-spacing:0;min-width:600px}
@@ -223,9 +245,7 @@
     font-size:11px;font-weight:800;text-transform:uppercase;
   }
   .status-pill.selesai{background:rgba(16,185,129,.15);color:#10B981;border:1px solid rgba(16,185,129,.3)}
-  .status-pill.belum{background:rgba(239,68,68,.15);color:#EF4444;border:1px solid rgba(239,68,68,.3)}
   body.light .status-pill.selesai{color:#047857}
-  body.light .status-pill.belum{color:#B91C1C}
 
   .empty-state{text-align:center;padding:40px 20px;color:var(--sub);font-style:italic}
   .empty-state .e-icon{font-size:40px;opacity:.4;margin-bottom:10px}
@@ -373,8 +393,8 @@
       <button class="btn-action success" onclick="bukaModal('promes')">➕ Tambah Promes</button>
     </div>
 
-    <!-- TABEL PROTAH -->
-    <div class="table-card">
+    <!-- TABEL PROTAH (BIRU) -->
+    <div class="table-card prota">
       <div class="table-card-header">
         <h3>📆 Sudah Mengerjakan Protah</h3>
         <span class="badge-count" id="countProta">0 Data</span>
@@ -397,8 +417,8 @@
       </div>
     </div>
 
-    <!-- TABEL PROMES -->
-    <div class="table-card">
+    <!-- TABEL PROMES (HIJAU) -->
+    <div class="table-card promes">
       <div class="table-card-header">
         <h3>🗓️ Sudah Mengerjakan Promes</h3>
         <span class="badge-count" id="countPromes">0 Data</span>
@@ -552,7 +572,7 @@ updateClock();
 setInterval(updateClock, 1000);
 
 /* ============================================================
-   RENDER PROFIL (DIPERBAIKI)
+   RENDER PROFIL (DIPERBAIKI TOTAL)
    ============================================================ */
 function renderProfil(){
   const nama = user.nama;
@@ -580,11 +600,13 @@ function renderProfil(){
       document.getElementById('profileLama').textContent = '⏱️ ' + hitungLama(dataGuru.tmt);
     }
 
-    // Susun HTML Info
+    // Susun HTML Info Lengkap
     let html = '';
     if(dataGuru.nip) html += `<div class="info-item"><span class="lbl">NIP</span><span class="val">${dataGuru.nip}</span></div>`;
     if(dataGuru.npk) html += `<div class="info-item"><span class="lbl">NPK</span><span class="val">${dataGuru.npk}</span></div>`;
     if(dataGuru.jk) html += `<div class="info-item"><span class="lbl">Jenis Kelamin</span><span class="val">${dataGuru.jk === 'L' ? 'Laki-laki' : 'Perempuan'}</span></div>`;
+    if(dataGuru.tempatLahir) html += `<div class="info-item"><span class="lbl">Tempat Lahir</span><span class="val">${dataGuru.tempatLahir}</span></div>`;
+    if(dataGuru.tglLahir) html += `<div class="info-item"><span class="lbl">Tanggal Lahir</span><span class="val">${formatTanggal(dataGuru.tglLahir)}</span></div>`;
     if(dataGuru.jabatan) html += `<div class="info-item"><span class="lbl">Jabatan</span><span class="val">${dataGuru.jabatan}</span></div>`;
     
     body.innerHTML = '<div class="info-section-title">📇 Identitas</div><div class="info-list">' + html + '</div>';
@@ -598,13 +620,13 @@ function renderProfil(){
     `;
   }
   
-  // 3. Render Foto (Cek localStorage 'ra_foto_nama')
+  // 3. Render Foto (Perbaikan Path & Fallback)
   const foto = localStorage.getItem('ra_foto_' + nama);
   const elPhoto = document.getElementById('profilePhoto');
   if(foto){
     elPhoto.innerHTML = `<img src="${foto}">`;
   } else {
-    // Fallback ke inisial nama
+    // Fallback ke inisial nama jika foto tidak ada
     elPhoto.textContent = nama.charAt(0).toUpperCase();
   }
 }
@@ -618,7 +640,7 @@ function hitungLama(tmt){
   if(bulan < 0){ tahun--; bulan += 12; }
   return tahun + ' thn ' + bulan + ' bln';
 }
-// Panggil render profil setelah script dimuat
+// Panggil render profil
 setTimeout(renderProfil, 100);
 
 /* ============================================================
