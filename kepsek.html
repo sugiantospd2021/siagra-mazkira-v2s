@@ -108,7 +108,7 @@
   }
   .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
 
-  /* ===== TOMBOL LOGOUT: HOVER + GLOW (persis admin.html) ===== */
+  /* ===== TOMBOL LOGOUT: HOVER + GLOW ===== */
   .header-right button.logout{
     background:linear-gradient(135deg,#EF4444,#B91C1C);
     color:#fff;border:2px solid transparent;
@@ -352,7 +352,6 @@
   /* ============================================================
      WARNA MENU CARD — biru default + variasi warna
      ============================================================ */
-  /* Default biru (Kepsek) */
   .menu-card.c-absensi{
   --menu-glow:#EF4444;
     --menu-glow-soft:rgba(239,68,68,.45);     
@@ -638,7 +637,7 @@
           </div>
         </a>
 
-        <!-- Monitoring -->
+        <!-- Monitoring Absensi -->
         <a class="menu-card c-monitoring" href="menu-kepsek/monitoring.html">
           <div class="icon">👁️</div>
           <div class="card-text">
@@ -676,14 +675,23 @@
           </a>
         </div>
 
-       <!-- Protah & Promes — Langsung Link -->
-<a class="menu-card c-protah" href="menu-kepsek/protah-promes.html">
-  <div class="icon">📚</div>
-  <div class="card-text">
-    <h3>Protah &amp; Promes</h3>
-    <p>Program tahunan &amp; semester</p>
-  </div>
-</a>
+        <!-- Protah & Promes — Langsung Link -->
+        <a class="menu-card c-protah" href="menu-kepsek/protah-promes.html">
+          <div class="icon">📚</div>
+          <div class="card-text">
+            <h3>Protah &amp; Promes</h3>
+            <p>Program tahunan &amp; semester</p>
+          </div>
+        </a>
+
+        <!-- Monitoring Adm Guru (MENU BARU) -->
+        <a class="menu-card c-monitoring" href="menu-kepsek/monitoring-adm-guru.html">
+          <div class="icon">📋</div>
+          <div class="card-text">
+            <h3>Monitoring Adm Guru</h3>
+            <p>Pantau tugas &amp; administrasi guru</p>
+          </div>
+        </a>
 
         <!-- Validasi RPP -->
         <a class="menu-card c-rpp" href="menu-kepsek/validasi-rpp.html">
@@ -911,7 +919,6 @@ function pakaiFotoAtauAvatar(el, nama){
   
   function cobaLoad(){
     if(idx >= exts.length){ 
-      // PERBAIKAN: Masukkan SVG ke dalam elemen HTML
       el.innerHTML = avatarSvg(nama); 
       return; 
     }
@@ -1090,12 +1097,6 @@ console.log('✅ kepsek.html loaded (pakai panggilan.js + 17 ornamen + hover glo
 
 /* ============================================================
    BUKA SUBMENU / PANEL DARI HASH
-   - #supervisi      → buka submenu supervisi
-   - #supervisi-guru → langsung ke halaman supervisi guru
-   - #supervisi-kepsek → langsung ke halaman supervisi kepsek
-   - #prota-promes   → buka submenu protah
-   - #protah         → langsung ke protah
-   - #promes         → langsung ke promes
    ============================================================ */
 function bukaDariHash(){
   const hash = (location.hash || '').toLowerCase().replace(/^#/, '');
@@ -1133,6 +1134,8 @@ function bukaDariHash(){
     window.location.href = 'menu-kepsek/todo.html';
   } else if(hash === 'keuangan'){
     window.location.href = 'menu-kepsek/keuangan.html';
+  } else if(hash === 'monitoring-adm-guru'){
+    window.location.href = 'menu-kepsek/monitoring-adm-guru.html';
   }
 }
 setTimeout(bukaDariHash, 150);
@@ -1142,9 +1145,6 @@ window.addEventListener('hashchange', bukaDariHash);
 <script>
 /* ============================================================
    SERVICE WORKER REGISTER + AUTO-UPDATE CHECKER
-   - Service Worker Network-First
-   - Cek versi file via HEAD request (ETag/Last-Modified)
-   - Auto-reload kalau versi baru terdeteksi
    ============================================================ */
 (function autoUpdateChecker(){
   const VERSI_KEY = 'siagra_versi_terakhir';
@@ -1153,10 +1153,8 @@ window.addEventListener('hashchange', bukaDariHash);
   /* ---------- 1. Register Service Worker ---------- */
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js').then(reg => {
-      // Paksa cek update tiap load
       reg.update().catch(() => {});
 
-      // Kalau ada SW baru → aktifkan langsung + reload
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
         if (!newSW) return;
