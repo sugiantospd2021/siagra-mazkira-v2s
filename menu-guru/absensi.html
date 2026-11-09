@@ -207,6 +207,43 @@
   .toast.show{ transform:translate(-50%, 0);opacity:1; }
   .toast.success{background:#059669} .toast.error{background:#DC2626} .toast.info{background:#3B82F6} .toast.warn{background:#D97706}
 
+  /* ✨ CSS TAMBAHAN UNTUK REKAP & BACKUP ✨ */
+  .rekap-guru-card{ background:var(--role-card-inner); border-radius:14px; padding:18px 20px; border:1px solid var(--role-border); margin-bottom:14px; }
+  .rekap-stat-mini{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:14px; }
+  .rekap-stat-mini .rmini{ padding:10px 8px; border-radius:10px; border:1px solid var(--role-border); background:var(--role-card); text-align:center; }
+  .rekap-stat-mini .rmini .em{ font-size:18px; margin-bottom:3px; }
+  .rekap-stat-mini .rmini .n{ font-size:18px; font-weight:900; color:var(--role-primary); }
+  .rekap-stat-mini .rmini .l{ font-size:9px; font-weight:700; color:var(--sub); text-transform:uppercase; }
+  
+  .rekap-tabel{ width:100%; border-collapse:collapse; font-size:11.5px; background:var(--role-card); min-width:600px; border-radius:10px; overflow:hidden; }
+  .rekap-tabel th{ padding:10px 8px; text-align:left; font-weight:800; color:var(--role-primary); border-bottom:1px solid var(--role-border); }
+  .rekap-tabel td{ padding:8px; border-top:1px solid var(--role-border); color:var(--text); }
+  .rekap-tabel tr:hover td{ background:rgba(255,255,255,.03); }
+  
+  .status-pill{ display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:100px; font-size:10.5px; font-weight:800; border:1px solid var(--role-border); }
+  .status-pill[data-s="hadir"]{ color:var(--absen-hadir); border-color:var(--absen-hadir); }
+  .status-pill[data-s="sakit"]{ color:var(--absen-sakit); border-color:var(--absen-sakit); }
+  .status-pill[data-s="izin"]{ color:var(--absen-izin); border-color:var(--absen-izin); }
+  .status-pill[data-s="cuti"]{ color:var(--absen-cuti); border-color:var(--absen-cuti); }
+  .status-pill[data-s="alpa"]{ color:var(--absen-alpa); border-color:var(--absen-alpa); }
+
+  .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 600px) { .backup-grid { grid-template-columns: 1fr; } }
+  .backup-card { background: var(--role-card-inner); border: 2px dashed var(--role-border); border-radius: 14px; padding: 20px; text-align: center; }
+  .backup-card .icon { font-size: 40px; margin-bottom: 10px; }
+  .backup-card h4 { margin-bottom: 8px; font-size: 15px; }
+  .backup-card p { font-size: 12px; color: var(--sub); margin-bottom: 14px; line-height: 1.5; }
+  .backup-card .btn { width: 100%; justify-content: center; }
+  .backup-card.danger { border-color: var(--danger); }
+  .backup-card.danger h4 { color: var(--danger); }
+  .backup-card.warn { border-color: var(--warning); }
+  .backup-card.warn h4 { color: var(--warning); }
+  
+  .stat-grid-backup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-box-backup { background: var(--role-card-inner); border: 1px solid var(--role-border); border-radius: 12px; padding: 14px; text-align: center; }
+  .stat-box-backup .n { font-size: 22px; font-weight: 900; color: var(--role-primary); }
+  .stat-box-backup .l { font-size: 10px; font-weight: 700; color: var(--sub); margin-top: 4px; text-transform: uppercase; }
+
   @media (max-width: 900px) {
     .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
     .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
@@ -396,10 +433,70 @@
 
     <!-- TAB 4: BACKUP -->
     <div id="panelBackup" style="display:none">
-      <div class="card" style="text-align:center; padding: 40px;">
-        <h3>Fitur Backup & Restore</h3>
-        <p style="color:var(--sub); margin-bottom: 20px;">Gunakan fitur ini untuk mencadangkan data lokal Anda.</p>
-        <button class="btn btn-primary" onclick="backupJSON()">📥 Download Backup</button>
+      
+      <!-- STATISTIK DATA -->
+      <div class="card">
+        <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+          <span>📊</span> <span>Statistik Data Absensi</span>
+        </div>
+        <div class="stat-grid-backup">
+          <div class="stat-box-backup">
+            <div class="n" id="statTotal">0</div>
+            <div class="l">Total Absen</div>
+          </div>
+          <div class="stat-box-backup">
+            <div class="n" id="statHari">0</div>
+            <div class="l">Hari Tercatat</div>
+          </div>
+          <div class="stat-box-backup">
+            <div class="n" id="statPersen">0%</div>
+            <div class="l">% Hadir</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU BACKUP -->
+      <div class="card">
+        <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+          <span>☁️</span> <span>Backup & Restore</span>
+        </div>
+        
+        <div class="backup-grid">
+          <!-- BACKUP -->
+          <div class="backup-card">
+            <div class="icon">📥</div>
+            <h4>Backup Data</h4>
+            <p>Unduh seluruh data absensi Anda sebagai file .json untuk disimpan di komputer/flashdisk.</p>
+            <button class="btn btn-primary" onclick="backupJSON()">📥 Download Backup</button>
+          </div>
+          
+          <!-- RESTORE -->
+          <div class="backup-card">
+            <div class="icon">📤</div>
+            <h4>Restore Data</h4>
+            <p>Unggah file .json hasil backup sebelumnya untuk mengembalikan data.</p>
+            <button class="btn btn-info" onclick="bukaFileRestore()">📤 Pilih File</button>
+            <input type="file" id="fileRestore" style="display:none" accept=".json" onchange="restoreJSON(event)">
+          </div>
+        </div>
+
+        <div class="backup-grid">
+          <!-- HAPUS SEMUA -->
+          <div class="backup-card danger">
+            <div class="icon">⚠️</div>
+            <h4>Hapus Semua Data</h4>
+            <p>Hapus permanen semua data absensi Anda dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
+            <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
+          </div>
+          
+          <!-- BERSIHKAN DUPLIKAT -->
+          <div class="backup-card warn">
+            <div class="icon">🧹</div>
+            <h4>Bersihkan Duplikat</h4>
+            <p>Hapus data absensi dengan tanggal yang sama untuk mencegah penumpukan data.</p>
+            <button class="btn btn-warn" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -930,7 +1027,7 @@ function resetForm(){
 }
 
 /* ============================================================
-   RIWAYAT, REKAP, BACKUP
+   RIWAYAT
    ============================================================ */
 function getRiwayatTerfilter(){
   const fDari = document.getElementById('fFilterDari').value; const fSampai = document.getElementById('fFilterSampai').value; const fStatus = document.getElementById('fFilterStatus').value;
@@ -960,18 +1057,253 @@ function renderRiwayat(){
 }
 function updateCountBadge(){ const badge = document.getElementById('countBadge'); if(!badge) return; const data = load(KEY_ABSEN, []) || []; badge.textContent = '(' + data.filter(d => normalisasiNama(d.guru) === normalisasiNama(user.nama)).length + ')'; }
 
-function renderRekap(){ document.getElementById('rekapContent').innerHTML = `<div class="card" style="text-align:center;">Fitur rekap siap digunakan.</div>`; }
-function renderStatistikBackup(){ const semua = load(KEY_ABSEN, []) || []; const milik = semua.filter(d => normalisasiNama(d.guru) === normalisasiNama(user.nama)); document.getElementById('statTotal').textContent = milik.length; document.getElementById('statHari').textContent = new Set(milik.map(d => d.tanggal)).size; document.getElementById('statPersen').textContent = '0%'; }
-function backupJSON(){ downloadFile('Backup.json', JSON.stringify(load(KEY_ABSEN, []), null, 2), 'application/json'); }
-function bukaFileRestore(){ document.getElementById('fileRestore').click(); }
-function restoreJSON(e){ showToast('Fitur restore dalam pengembangan', 'info'); }
-function hapusSemuaAbsen(){ if(confirm('Hapus semua data?')){ save(KEY_ABSEN, []); renderRiwayat(); renderStatistikBackup(); } }
-function bersihkanDuplikat(){ showToast('Tidak ada duplikat', 'info'); }
-function cetakBatch(){ window.print(); }
-function exportSemuaWord(){ showToast('Export Word segera hadir', 'info'); }
+/* ============================================================
+   REKAP BULANAN (PERBAIKAN: Mengambil dari Supabase)
+   ============================================================ */
+async function renderRekap(){
+  const bulan = document.getElementById('fRekapBulan').value || getTodayISO().substring(0,7);
+  const cont = document.getElementById('rekapContent');
+  const titleBulan = document.getElementById('bpTitleBulan');
+  
+  const [thn, blnNum] = bulan.split('-');
+  const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
+  if(titleBulan) titleBulan.textContent = namaBulan;
 
+  if(typeof sb === 'undefined'){
+    cont.innerHTML = `<div class="rekap-empty">❌ Koneksi database terputus.</div>`;
+    return;
+  }
+
+  const awalBulan = bulan + '-01';
+  const akhirBulan = new Date(bulan + '-01');
+  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+  akhirBulan.setDate(0);
+  const tglAkhir = akhirBulan.getFullYear() + '-' + 
+    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+    String(akhirBulan.getDate()).padStart(2,'0');
+
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  const { data: absenBulan, error } = await sb
+    .from('absensi')
+    .select('*')
+    .ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`)
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
+
+  if(error){
+    cont.innerHTML = `<div class="rekap-empty">❌ Gagal mengambil data rekap: ${escapeHtml(error.message)}</div>`;
+    return;
+  }
+
+  let dataBulan = absenBulan || [];
+  
+  const count = { hadir:0, sakit:0, izin:0, cuti:0, alpa:0 };
+  dataBulan.forEach(d => { if(count[d.status] !== undefined) count[d.status]++; });
+  const total = dataBulan.length;
+  const persen = total > 0 ? Math.round((count.hadir / total) * 100) : 0;
+
+  let html = `
+    <div class="rekap-guru-card">
+      <div class="rekap-stat-mini">
+        <div class="rmini" data-s="hadir"><div class="em">✅</div><div class="n" style="color:var(--absen-hadir)">${count.hadir}</div><div class="l">Hadir</div></div>
+        <div class="rmini" data-s="sakit"><div class="em">🤒</div><div class="n" style="color:var(--absen-sakit)">${count.sakit}</div><div class="l">Sakit</div></div>
+        <div class="rmini" data-s="izin"><div class="em">📝</div><div class="n" style="color:var(--absen-izin)">${count.izin}</div><div class="l">Izin</div></div>
+        <div class="rmini" data-s="cuti"><div class="em">🏖️</div><div class="n" style="color:var(--absen-cuti)">${count.cuti}</div><div class="l">Cuti</div></div>
+        <div class="rmini" data-s="alpa"><div class="em">❌</div><div class="n" style="color:var(--absen-alpa)">${count.alpa}</div><div class="l">Alpa</div></div>
+      </div>
+      <div class="persen-box" style="margin-bottom:0; border:none; background:var(--role-card);">
+        <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--sub); margin-bottom:8px;">
+          <span>📈 Persentase Kehadiran</span>
+          <span style="color:var(--role-primary)">${persen}%</span>
+        </div>
+        <div style="height:12px; background:var(--role-card-inner); border-radius:100px; overflow:hidden;">
+          <div style="height:100%; width:${persen}%; background:var(--role-primary); border-radius:100px; transition:width .6s;"></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--sub)">
+          <span>📋 ${total} entri tercatat</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if(dataBulan.length > 0){
+    dataBulan.sort((a,b) => (a.tanggal||'').localeCompare(b.tanggal||''));
+    
+    html += `
+      <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--role-border);">
+        <table class="rekap-tabel">
+          <thead>
+            <tr>
+              <th style="width:130px">Tanggal</th>
+              <th style="width:100px;text-align:center">Status</th>
+              <th style="width:70px;text-align:center">Masuk</th>
+              <th style="width:70px;text-align:center">Pulang</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    dataBulan.forEach(d => {
+      const info = { hadir: {emoji:'✅',nama:'Hadir'}, sakit: {emoji:'🤒',nama:'Sakit'}, izin: {emoji:'📝',nama:'Izin'}, cuti: {emoji:'🏖️',nama:'Cuti'}, alpa: {emoji:'❌',nama:'Alpa'} }[d.status] || {emoji:'❓',nama:d.status};
+      html += `<tr>
+        <td style="font-weight:700">${formatTanggalPendek(d.tanggal)}</td>
+        <td style="text-align:center"><span class="status-pill" data-s="${d.status}">${info.emoji} ${info.nama}</span></td>
+        <td style="text-align:center">${escapeHtml(d.jam_masuk||'-')}</td>
+        <td style="text-align:center">${escapeHtml(d.jam_pulang||'-')}</td>
+        <td style="font-size:11px;line-height:1.6">${d.keterangan || d.catatan || '-'}</td>
+      </tr>`;
+    });
+    
+    html += `</tbody></table></div>`;
+  } else {
+    html += `<div class="card" style="text-align:center; color:var(--sub); font-style:italic;">Belum ada data absensi di bulan ini.</div>`;
+  }
+
+  cont.innerHTML = html;
+}
+
+/* ============================================================
+   BACKUP & RESTORE (SUPABASE)
+   ============================================================ */
+async function renderStatistikBackup(){
+  if(typeof sb === 'undefined') return;
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  
+  const { data: absenAll } = await sb.from('absensi').select('*').ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
+  if(!absenAll) return;
+  
+  const total = absenAll.length;
+  const hari = new Set(absenAll.map(d => d.tanggal)).size;
+  const hadir = absenAll.filter(d => d.status === 'hadir').length;
+  const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
+
+  const elTotal = document.getElementById('statTotal');
+  const elHari  = document.getElementById('statHari');
+  const elPersen = document.getElementById('statPersen');
+  
+  if(elTotal) elTotal.textContent = total;
+  if(elHari) elHari.textContent = hari;
+  if(elPersen) elPersen.textContent = persen + '%';
+}
+
+async function backupJSON(){
+  if(typeof sb === 'undefined') return showToast('Koneksi terputus', 'error');
+  showToast('⏳ Mengambil data...', 'info');
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  
+  const { data, error } = await sb.from('absensi').select('*').ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
+  if(error) return showToast('❌ Gagal backup: ' + error.message, 'error');
+  
+  const d = new Date();
+  const tglFile = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  downloadFile('Backup_Absensi_' + namaKeFile(namaSaya) + '_' + tglFile + '.json', JSON.stringify(data, null, 2), 'application/json');
+  showToast('✅ Backup berhasil diunduh', 'success');
+}
+
+function bukaFileRestore(){
+  document.getElementById('fileRestore').click();
+}
+
+function restoreJSON(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!Array.isArray(data)) throw new Error("Format tidak valid (harus berupa Array)");
+      if(!confirm(`⚠️ KONFIRMASI RESTORE\n\nAnda akan menambahkan/menimpa ${data.length} data absensi ke Supabase.\n\nLanjutkan?`)) return;
+      
+      showToast('⏳ Memproses restore...', 'info');
+      
+      const payload = data.map(d => {
+        delete d.id; // Hapus ID lama agar di-generate baru oleh database
+        return d;
+      });
+
+      const { error } = await sb.from('absensi').upsert(payload, { onConflict: 'nama_guru, tanggal' });
+      
+      if(error) {
+        console.warn("Upsert gagal, mencoba insert biasa...", error);
+        const { error: errIns } = await sb.from('absensi').insert(payload);
+        if(errIns) throw new Error(errIns.message);
+      }
+      
+      showToast('✅ Restore berhasil!', 'success');
+      renderStatistikBackup();
+      renderRiwayat();
+      renderRekap();
+    }catch(err){
+      showToast('❌ Gagal restore: ' + err.message, 'error');
+    }finally{
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function hapusSemuaAbsen(){
+  if(typeof sb === 'undefined') return;
+  if(!confirm('⚠️ HATI-HATI!\n\nAnda akan MENGHAPUS SEMUA data absensi milik Anda dari database Supabase.\nTindakan ini tidak dapat dibatalkan.\n\nLanjutkan?')) return;
+  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
+  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
+  
+  showToast('⏳ Menghapus...', 'info');
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  const { error } = await sb.from('absensi').delete().ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
+  
+  showToast('🗑️ Semua data absensi Anda berhasil dihapus', 'success');
+  renderStatistikBackup();
+  renderRiwayat();
+  renderRekap();
+}
+
+async function bersihkanDuplikat(){
+  if(typeof sb === 'undefined') return;
+  if(!confirm('🧹 Fitur ini akan menghapus data ganda (berdasarkan Tanggal yang sama) milik Anda.\n\nLanjutkan?')) return;
+  
+  showToast('⏳ Memeriksa duplikat...', 'info');
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  
+  const { data, error } = await sb.from('absensi').select('*').ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`).order('created_at', { ascending: true });
+  if(error) return showToast('❌ Gagal', 'error');
+  
+  const map = {};
+  const idsToDelete = [];
+  
+  data.forEach(d => {
+    const key = d.tanggal;
+    if(map[key]){
+      idsToDelete.push(d.id);
+    } else {
+      map[key] = true;
+    }
+  });
+  
+  if(idsToDelete.length === 0){
+    return showToast('✅ Tidak ada data duplikat', 'info');
+  }
+  
+  showToast(`⏳ Menghapus ${idsToDelete.length} data duplikat...`, 'info');
+  const { error: errDel } = await sb.from('absensi').delete().in('id', idsToDelete);
+  
+  if(errDel) return showToast('❌ Gagal: ' + errDel.message, 'error');
+  showToast(`✅ ${idsToDelete.length} data duplikat dibersihkan`, 'success');
+  renderStatistikBackup();
+  renderRiwayat();
+  renderRekap();
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
 function logout(){ if(confirm('Keluar?')){ localStorage.removeItem('user'); window.location.href = '../index.html'; } }
 
+/* ============================================================
+   INIT
+   ============================================================ */
 async function init(){
   applyRoleColors(); await muatData(); setHeaderTitle(); resetForm();
   document.getElementById('fRekapBulan').value = getTodayISO().substring(0,7);
