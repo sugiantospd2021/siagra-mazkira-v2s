@@ -725,9 +725,15 @@ setInterval(updateClock, 1000);
    CEK LOGIN
    ============================================================ */
 const user = JSON.parse(localStorage.getItem('user') || 'null');
-if(!user || user.role !== 'guru'){
-  alert('Anda harus login sebagai Guru!');
-  window.location.href = 'index.html';
+// Cek apakah user ada, jika tidak ada arahkan ke login
+if(!user){
+  alert('Anda harus login dulu!');
+  window.location.href = 'login.html';
+} 
+// Jika user ada tapi bukan guru/kepala/tendik, tolak
+else if(!['guru', 'kepala', 'tendik'].includes(user.role)){
+  alert('Akses ditolak!');
+  window.location.href = 'login.html';
 }
 
 /* ============================================================
