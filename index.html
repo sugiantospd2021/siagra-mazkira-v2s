@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<!-- TAMBAHAN: Library Supabase -->
+<!-- Library Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -129,7 +129,7 @@
   .tab-btn.t-guru{--tab-glow:#F59E0B;--tab-glow-soft:rgba(245,158,11,.55)}
   .tab-btn.t-guru:hover{color:#FDE68A;background:linear-gradient(180deg,#443a20 0%,#281f10 100%);border-color:#F59E0B;transform:translateY(-3px);box-shadow:0 0 0 1px rgba(245,158,11,.35),0 0 18px rgba(245,158,11,.6),0 0 36px rgba(245,158,11,.35),-4px -4px 14px rgba(245,158,11,.35);}
   .tab-btn.t-guru:hover::before{opacity:.45;transform:scale(1.5)}
-  /* TAMBAHAN: Style untuk Tab Statistik */
+  /* Tab Statistik */
   .tab-btn.t-statistik{--tab-glow:#0EA5E9;--tab-glow-soft:rgba(14,165,233,.55)}
   .tab-btn.t-statistik:hover{color:#BAE6FD;background:linear-gradient(180deg,#1c3844 0%,#0f2228 100%);border-color:#0EA5E9;transform:translateY(-3px);box-shadow:0 0 0 1px rgba(14,165,233,.35),0 0 18px rgba(14,165,233,.6),0 0 36px rgba(14,165,233,.35),-4px -4px 14px rgba(14,165,233,.35);}
   .tab-btn.t-statistik:hover::before{opacity:.45;transform:scale(1.5)}
@@ -631,19 +631,8 @@
 
 </div>
 
-<script type="module">
-/* ============================================================
-   KONEKSI SUPABASE (TAMBAHAN UNTUK STATISTIK)
-   ============================================================ */
-const URL_SUPABASE = "https://nkothmxdwpkptuvzunkb.supabase.co";
-const KEY_SUPABASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rb3RobXhkd3BrcHR1dnp1bmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTI2NDMsImV4cCI6MjEwNjQ2ODY0M30.h1_TsMUsoiG45RWrZ5t7gY3r-KgGV230czfj0yM-GAY";
-const { createClient } = supabase;
-const sb = createClient(URL_SUPABASE, KEY_SUPABASE);
-
-/* ============================================================
-   SIAGRA v.2.s — Cover Sekolah (FINAL)
-   ============================================================ */
-
+<!-- SCRIPT 1: GLOBAL SCOPE UNTUK UI/NAVIGASI -->
+<script>
 const SEKOLAH = {
   nama        : 'RA Mazkira Imani',
   nsm         : '101263040033',
@@ -667,16 +656,17 @@ const GURU_FALLBACK = [
 ];
 
 const $ = (id) => document.getElementById(id);
+
 function getLS(key, fb = []) {
   try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fb; }
   catch(e){ return fb; }
 }
+
 function esc(t){
   return String(t||'').replace(/[&<>"']/g,
     c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ---------- NORMALISASI NAMA ---------- */
 function namaInti(nama){
   if(!nama) return '';
   let s = String(nama).trim().toLowerCase();
@@ -686,11 +676,9 @@ function namaInti(nama){
   return s;
 }
 
-/* ---------- NAMA FILE FOTO ---------- */
 function daftarKandidatFile(nama){
   if(!nama) return [];
   let bersih = String(nama).split(',')[0].trim();
-
   let tanpaGelar = bersih
     .replace(/\bS\.?\s*Pd\.?/gi, '')
     .replace(/\bM\.?\s*Pd\.?/gi, '')
@@ -704,21 +692,16 @@ function daftarKandidatFile(nama){
     .replace(/\bDr\.?/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
-
   const kandidat = [];
   kandidat.push(toFileName(bersih));
   kandidat.push(toFileName(tanpaGelar));
-  
   let tanpaSingkatan = bersih.replace(/(\s+[A-Z]\.){1,3}\s*$/g, '').trim();
   kandidat.push(toFileName(tanpaSingkatan));
-  
   let tanpaHurufTunggal = bersih.replace(/\s+[A-Z]\.?(\s+|$)/g, ' ').replace(/\s+/g,' ').trim();
   kandidat.push(toFileName(tanpaHurufTunggal));
-  
   const kata = bersih.split(/\s+/);
   if(kata.length >= 2) kandidat.push(toFileName(kata.slice(0,2).join(' ')));
   if(kata.length >= 1) kandidat.push(toFileName(kata[0]));
-
   return [...new Set(kandidat.filter(Boolean))];
 }
 
@@ -731,20 +714,17 @@ function toFileName(teks){
   return s;
 }
 
-/* ---------- INISIAL ---------- */
 function getInisial(nama){
-  return (nama || '?')
-    .split(' ').filter(Boolean).slice(0,2)
-    .map(w => w[0]).join('').toUpperCase();
+  return (nama || '?').split(' ').filter(Boolean).slice(0,2).map(w => w[0]).join('').toUpperCase();
 }
 
-/* ---------- THEME ---------- */
 function applyTheme(){
   const theme = localStorage.getItem('theme') || 'dark';
   document.body.classList.toggle('light', theme === 'light');
   const btn = $('themeBtn');
   if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
 }
+
 function toggleTheme(){
   const current = localStorage.getItem('theme') || 'dark';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -752,25 +732,19 @@ function toggleTheme(){
   applyTheme();
 }
 
-/* ---------- JAM LIVE WITA (1 BARIS) ---------- */
 function updateClock(){
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
   const wita = new Date(utc + (8 * 3600000));
-
   const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-
   const h = String(wita.getHours()).padStart(2,'0');
   const m = String(wita.getMinutes()).padStart(2,'0');
-
   const teks = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
-
   const el = document.getElementById('liveClock');
   if (el) el.textContent = teks;
 }
 
-/* ---------- LOGO AUTO-FALLBACK ---------- */
 function cekLogo(){
   const heroEl = $('heroLogo');
   const navEl  = $('navLogo');
@@ -800,7 +774,6 @@ function cekLogo(){
   }
 }
 
-/* ---------- STATISTIK HERO ---------- */
 function loadStats(){
   const anakList   = getLS('ra_anak', []);
   const guruList   = getLS('ra_guru', []);
@@ -854,9 +827,6 @@ function animateNumber(el, target, duration = 900){
   })(performance.now());
 }
 
-/* ============================================================
-   FOTO
-   ============================================================ */
 function cariFoto(nama){
   if (!nama) return '';
   return localStorage.getItem('ra_foto_' + nama) || '';
@@ -864,32 +834,25 @@ function cariFoto(nama){
 
 function renderFoto(nama, foto){
   const inisial = esc(getInisial(nama));
-
   if (foto) {
     return `<img src="${esc(foto)}" alt="${esc(nama)}"
       onerror="this.style.display='none';this.parentNode.innerHTML='<span>${inisial}</span>'">`;
   }
-
-  return `<span class="foto-loader"
-    data-nama="${esc(nama)}"
-    data-inisial="${inisial}">${inisial}</span>`;
+  return `<span class="foto-loader" data-nama="${esc(nama)}" data-inisial="${inisial}">${inisial}</span>`;
 }
 
 function hydrateFotoGuru(){
   document.querySelectorAll('.foto-loader').forEach(el => {
     const nama     = el.dataset.nama;
     const inisial  = el.dataset.inisial;
-
     const fotoUpload = localStorage.getItem('ra_foto_' + nama);
     if (fotoUpload) {
       el.outerHTML = `<img src="${fotoUpload}" alt="${esc(nama)}"
         onerror="this.style.display='none';this.parentNode.innerHTML='<span>${inisial}</span>'">`;
       return;
     }
-
     const kandidatNama = daftarKandidatFile(nama);
     const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
-
     const daftarCoba = [];
     kandidatNama.forEach(k => {
       exts.forEach(e => daftarCoba.push('foto/' + k + '.' + e));
@@ -897,13 +860,9 @@ function hydrateFotoGuru(){
 
     let idx = 0;
     function cobaLoad(){
-      if (idx >= daftarCoba.length) {
-        return;
-      }
+      if (idx >= daftarCoba.length) return;
       const img = new Image();
-      img.onload = () => {
-        el.outerHTML = `<img src="${img.src}" alt="${esc(nama)}">`;
-      };
+      img.onload = () => { el.outerHTML = `<img src="${img.src}" alt="${esc(nama)}">`; };
       img.onerror = () => { idx++; cobaLoad(); };
       img.src = daftarCoba[idx];
     }
@@ -911,30 +870,18 @@ function hydrateFotoGuru(){
   });
 }
 
-/* ============================================================
-   GRID GURU & TENDIK
-   ============================================================ */
 function loadGuruGrid(){
   const grid = $('guruGrid');
   if (!grid) return;
-
   const guruList   = getLS('ra_guru', []);
   const tendikList = getLS('ra_tendik', []);
   const kepsek     = getLS('ra_kepsek', null);
-
   let data = [];
-
   let namaKepsek = NAMA_KEPSEK;
   if (kepsek && kepsek.nama) {
     namaKepsek = NAMA_KEPSEK;
   }
-
-  data.push({
-    nama: namaKepsek,
-    role: 'Kepala Sekolah',
-    foto: cariFoto(namaKepsek),
-    isKepsek: true
-  });
+  data.push({ nama: namaKepsek, role: 'Kepala Sekolah', foto: cariFoto(namaKepsek), isKepsek: true });
 
   const kepsekInti = namaInti(namaKepsek);
   const seenGuru = new Set();
@@ -942,17 +889,9 @@ function loadGuruGrid(){
   guruList.forEach(g => {
     if (!g.nama) return;
     const inti = namaInti(g.nama);
-
-    if (inti === 'anto') return;
-    if (inti === kepsekInti) return;
-    if (seenGuru.has(inti)) return;
+    if (inti === 'anto' || inti === kepsekInti || seenGuru.has(inti)) return;
     seenGuru.add(inti);
-
-    data.push({
-      nama: g.nama,
-      role: g.rombel ? `Guru Kelas ${g.rombel}` : (g.jabatan || 'Guru'),
-      foto: cariFoto(g.nama)
-    });
+    data.push({ nama: g.nama, role: g.rombel ? `Guru Kelas ${g.rombel}` : (g.jabatan || 'Guru'), foto: cariFoto(g.nama) });
   });
 
   const seenTendik = new Set();
@@ -961,191 +900,146 @@ function loadGuruGrid(){
     const inti = namaInti(t.nama);
     if (seenTendik.has(inti)) return;
     seenTendik.add(inti);
-
-    data.push({
-      nama: t.nama,
-      role: t.jabatan || 'Tenaga Kependidikan',
-      foto: cariFoto(t.nama)
-    });
+    data.push({ nama: t.nama, role: t.jabatan || 'Tenaga Kependidikan', foto: cariFoto(t.nama) });
   });
 
-  data.push({
-    nama: NAMA_ADMIN,
-    role: 'Admin',
-    foto: cariFoto(NAMA_ADMIN),
-    isAdmin: true
-  });
+  data.push({ nama: NAMA_ADMIN, role: 'Admin', foto: cariFoto(NAMA_ADMIN), isAdmin: true });
 
   if (data.length <= 2 && guruList.length === 0) {
     const fb = GURU_FALLBACK.map(d => ({ ...d, foto: cariFoto(d.nama) }));
-    data = [data[0], ...fb, {
-      nama: NAMA_TENDIK_KUNING,
-      role: 'Tenaga Kependidikan',
-      foto: cariFoto(NAMA_TENDIK_KUNING),
-      isTendik: true
-    }, data[1]];
+    data = [data[0], ...fb, { nama: NAMA_TENDIK_KUNING, role: 'Tenaga Kependidikan', foto: cariFoto(NAMA_TENDIK_KUNING), isTendik: true }, data[1]];
   }
 
   const tendikKuningInti = namaInti(NAMA_TENDIK_KUNING);
 
   grid.innerHTML = data.map(d => {
     const inti = namaInti(d.nama);
-
     let cls = '';
     if (d.isKepsek) cls = 'is-kepsek';
     else if (d.isAdmin) cls = 'is-admin';
     else if (inti === tendikKuningInti) cls = 'is-tendik';
-
-    return `
-      <div class="guru-card ${cls}">
-        <div class="guru-photo">${renderFoto(d.nama, d.foto)}</div>
-        <h5>${esc(d.nama)}</h5>
-        <span class="role">${esc(d.role || 'Guru')}</span>
-      </div>`;
+    return `<div class="guru-card ${cls}"><div class="guru-photo">${renderFoto(d.nama, d.foto)}</div><h5>${esc(d.nama)}</h5><span class="role">${esc(d.role || 'Guru')}</span></div>`;
   }).join('');
-
   hydrateFotoGuru();
 }
 
-/* ============================================================
-   TAB SWITCH
-   ============================================================ */
-function switchTab(e, tabId){
+// GLOBAL FUNCTION UNTUK TAB
+window.switchTab = function(e, tabId){
   if (e && e.preventDefault) e.preventDefault();
-
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-
   const panel = document.getElementById(tabId);
   if (panel) panel.classList.add('active');
-
   document.querySelectorAll('.tab-btn').forEach(b => {
     const onclick = b.getAttribute('onclick') || '';
     if (onclick.includes("'" + tabId + "'")) {
       b.classList.add('active');
     }
   });
-
   const panelBox = document.querySelector('.tab-panel-box');
   if (panelBox) panelBox.scrollTop = 0;
-}
+};
 
-/* ============================================================
-   FETCH & RENDER STATISTIK ALUMNI (TAMBAHAN)
-   ============================================================ */
-async function loadStatistikAlumni(){
-  const svg = document.getElementById('coverChartSvg');
-  if(!svg) return;
+// Jalankan UI Dasar Segera (tanpa harus menunggu DOMContentLoaded penuh)
+applyTheme();
+cekLogo();
+loadStats();
+loadGuruGrid();
+updateClock();
+setInterval(updateClock, 1000);
+</script>
 
-  // Mengambil data dari tabel 'alumni'
-  const { data, error } = await sb.from('alumni').select('*').order('tahun', { ascending: true });
+<!-- SCRIPT 2: MODULE SCOPE UNTUK SUPABASE (STATISTIK) -->
+<script type="module">
+  const URL_SUPABASE = "https://nkothmxdwpkptuvzunkb.supabase.co";
+  const KEY_SUPABASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rb3RobXhkd3BrcHR1dnp1bmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTI2NDMsImV4cCI6MjEwNjQ2ODY0M30.h1_TsMUsoiG45RWrZ5t7gY3r-KgGV230czfj0yM-GAY";
+  const { createClient } = supabase;
+  const sb = createClient(URL_SUPABASE, KEY_SUPABASE);
 
-  if(error || !data || data.length === 0){
-    svg.innerHTML = '<text x="400" y="130" fill="#94A3B8" font-size="14" text-anchor="middle">Belum ada data alumni di database</text>';
-    return;
+  async function loadStatistikAlumni(){
+    const svg = document.getElementById('coverChartSvg');
+    if(!svg) return;
+
+    const { data, error } = await sb.from('alumni').select('*').order('tahun', { ascending: true });
+
+    if(error || !data || data.length === 0){
+      svg.innerHTML = '<text x="400" y="130" fill="#94A3B8" font-size="14" text-anchor="middle">Belum ada data alumni di database</text>';
+      return;
+    }
+
+    const totalMasuk = data.reduce((sum, d) => sum + (parseInt(d.masuk) || 0), 0);
+    const totalLulus = data.reduce((sum, d) => sum + (parseInt(d.lulus) || 0), 0);
+    
+    document.getElementById('coverStatMasuk').textContent = totalMasuk;
+    document.getElementById('coverStatLulus').textContent = totalLulus;
+    document.getElementById('coverLegendMasuk').textContent = totalMasuk;
+    document.getElementById('coverLegendLulus').textContent = totalLulus;
+
+    const dataGrafik = data.slice(-8);
+    const width = 800;
+    const height = 260;
+    const padding = { top: 30, right: 30, bottom: 40, left: 50 };
+    const chartW = width - padding.left - padding.right;
+    const chartH = height - padding.top - padding.bottom;
+
+    const allValues = dataGrafik.flatMap(d => [parseInt(d.masuk) || 0, parseInt(d.lulus) || 0]);
+    const maxValRaw = Math.max(...allValues, 10);
+    const maxVal = Math.ceil(maxValRaw / 10) * 10; 
+
+    const yScale = chartH / maxVal;
+    const xStep = chartW / (dataGrafik.length - 1 || 1);
+
+    const steps = 5;
+    let gridHtml = '';
+    for(let i = 0; i <= steps; i++) {
+      const val = Math.round((maxVal / steps) * i);
+      const y = padding.top + chartH - (val * yScale);
+      gridHtml += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" stroke-dasharray="4" />`;
+      gridHtml += `<text x="${padding.left - 10}" y="${y + 4}" fill="#94A3B8" font-size="11" font-weight="bold" text-anchor="end">${val}</text>`;
+    }
+
+    let pathMasuk = '';
+    let pathLulus = '';
+    let boxHtml = '';
+    let labelsX = '';
+
+    dataGrafik.forEach((d, i) => {
+      const valMasuk = parseInt(d.masuk) || 0;
+      const valLulus = parseInt(d.lulus) || 0;
+      const x = padding.left + (i * xStep);
+      const yMasuk = padding.top + chartH - (valMasuk * yScale);
+      const yLulus = padding.top + chartH - (valLulus * yScale);
+
+      pathMasuk += (i === 0 ? 'M' : 'L') + `${x},${yMasuk} `;
+      pathLulus += (i === 0 ? 'M' : 'L') + `${x},${yLulus} `;
+
+      boxHtml += `<rect x="${x - 14}" y="${yMasuk - 12}" width="28" height="22" rx="3" fill="#7F1D1D" stroke="#EF4444" stroke-width="2" /><text x="${x}" y="${yMasuk + 3}" fill="#FCD34D" font-size="12" font-weight="900" text-anchor="middle">${valMasuk}</text>`;
+      boxHtml += `<rect x="${x - 14}" y="${yLulus - 12}" width="28" height="22" rx="3" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1" /><text x="${x}" y="${yLulus + 3}" fill="#000000" font-size="12" font-weight="900" text-anchor="middle">${valLulus}</text>`;
+
+      const tahunLabel = d.tahun || '-';
+      labelsX += `<text x="${x}" y="${height - 15}" fill="#94A3B8" font-size="10" font-weight="bold" text-anchor="middle">${tahunLabel}</text>`;
+    });
+
+    svg.innerHTML = `
+      <defs>
+        <filter id="glow-green-cover" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+        <filter id="glow-blue-cover" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+      </defs>
+      ${gridHtml}
+      <path d="${pathMasuk}" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-green-cover)" />
+      <path d="${pathLulus}" fill="none" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-blue-cover)" />
+      ${boxHtml}
+      ${labelsX}
+      <text x="15" y="${height/2}" fill="#94A3B8" font-size="12" font-weight="bold" text-anchor="middle" transform="rotate(-90 15 ${height/2})">JUMLAH SISWA</text>
+    `;
   }
 
-  // Hitung Total KPI
-  const totalMasuk = data.reduce((sum, d) => sum + (parseInt(d.masuk) || 0), 0);
-  const totalLulus = data.reduce((sum, d) => sum + (parseInt(d.lulus) || 0), 0);
-  
-  document.getElementById('coverStatMasuk').textContent = totalMasuk;
-  document.getElementById('coverStatLulus').textContent = totalLulus;
-  document.getElementById('coverLegendMasuk').textContent = totalMasuk;
-  document.getElementById('coverLegendLulus').textContent = totalLulus;
+  // Panggil data alumni
+  loadStatistikAlumni();
+</script>
 
-  // Render Grafik SVG
-  const dataGrafik = data.slice(-8); // max 8 tahun terakhir
-  const width = 800;
-  const height = 260;
-  const padding = { top: 30, right: 30, bottom: 40, left: 50 };
-  const chartW = width - padding.left - padding.right;
-  const chartH = height - padding.top - padding.bottom;
-
-  const allValues = dataGrafik.flatMap(d => [parseInt(d.masuk) || 0, parseInt(d.lulus) || 0]);
-  const maxValRaw = Math.max(...allValues, 10);
-  const maxVal = Math.ceil(maxValRaw / 10) * 10; 
-
-  const yScale = chartH / maxVal;
-  const xStep = chartW / (dataGrafik.length - 1 || 1);
-
-  // Grid & Y Label
-  const steps = 5;
-  let gridHtml = '';
-  for(let i = 0; i <= steps; i++) {
-    const val = Math.round((maxVal / steps) * i);
-    const y = padding.top + chartH - (val * yScale);
-    gridHtml += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" stroke-dasharray="4" />`;
-    gridHtml += `<text x="${padding.left - 10}" y="${y + 4}" fill="#94A3B8" font-size="11" font-weight="bold" text-anchor="end">${val}</text>`;
-  }
-
-  // Garis & Kotak
-  let pathMasuk = '';
-  let pathLulus = '';
-  let boxHtml = '';
-  let labelsX = '';
-
-  dataGrafik.forEach((d, i) => {
-    const valMasuk = parseInt(d.masuk) || 0;
-    const valLulus = parseInt(d.lulus) || 0;
-    const x = padding.left + (i * xStep);
-    const yMasuk = padding.top + chartH - (valMasuk * yScale);
-    const yLulus = padding.top + chartH - (valLulus * yScale);
-
-    pathMasuk += (i === 0 ? 'M' : 'L') + `${x},${yMasuk} `;
-    pathLulus += (i === 0 ? 'M' : 'L') + `${x},${yLulus} `;
-
-    // Kotak Penerimaan (Merah)
-    boxHtml += `
-      <rect x="${x - 14}" y="${yMasuk - 12}" width="28" height="22" rx="3" fill="#7F1D1D" stroke="#EF4444" stroke-width="2" />
-      <text x="${x}" y="${yMasuk + 3}" fill="#FCD34D" font-size="12" font-weight="900" text-anchor="middle">${valMasuk}</text>
-    `;
-    // Kotak Kelulusan (Putih)
-    boxHtml += `
-      <rect x="${x - 14}" y="${yLulus - 12}" width="28" height="22" rx="3" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1" />
-      <text x="${x}" y="${yLulus + 3}" fill="#000000" font-size="12" font-weight="900" text-anchor="middle">${valLulus}</text>
-    `;
-
-    const tahunLabel = d.tahun || '-';
-    labelsX += `<text x="${x}" y="${height - 15}" fill="#94A3B8" font-size="10" font-weight="bold" text-anchor="middle">${tahunLabel}</text>`;
-  });
-
-  svg.innerHTML = `
-    <defs>
-      <filter id="glow-green-cover" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="3" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-      <filter id="glow-blue-cover" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="3" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-    </defs>
-    ${gridHtml}
-    <!-- Garis Penerimaan (Hijau) -->
-    <path d="${pathMasuk}" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-green-cover)" />
-    <!-- Garis Kelulusan (Biru) -->
-    <path d="${pathLulus}" fill="none" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-blue-cover)" />
-    ${boxHtml}
-    ${labelsX}
-    <text x="15" y="${height/2}" fill="#94A3B8" font-size="12" font-weight="bold" text-anchor="middle" transform="rotate(-90 15 ${height/2})">JUMLAH SISWA</text>
-  `;
-}
-
-/* ---------- INIT ---------- */
-window.addEventListener('DOMContentLoaded', () => {
-  applyTheme();
-  cekLogo();
-  loadStats();
-  loadGuruGrid();
-  loadStatistikAlumni(); // Panggil fungsi fetch alumni
-  updateClock();
-  setInterval(updateClock, 1000);
-});
-
-/* ============================================================
-   SERVICE WORKER REGISTER + AUTO-UPDATE CHECKER
-   ============================================================ */
+<!-- SERVICE WORKER REGISTER + AUTO-UPDATE CHECKER -->
+<script>
 (function autoUpdateChecker(){
   const VERSI_KEY = 'siagra_versi_terakhir';
   const CEK_INTERVAL = 60 * 1000;
