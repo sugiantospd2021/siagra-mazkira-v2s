@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<!-- Tambahkan Supabase agar profil bisa memuat data dari database -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/png" href="../logo-siagra.png">
@@ -10,81 +14,82 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
-    --bg:#0A0A0A;--card:#0F1A3A;--card-inner:#0A0F26;
-    --text:#F1F5F9;--sub:#94A3B8;--border:#1E3A8A;
-    --primary:#3B82F6;--primary-dark:#1E40AF;--primary-light:#1E3A8A;
-    --accent:#60A5FA;--success:#4ADE80;--danger:#F87171;--yellow:#FCD34D;
-    --card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.35);
+    --bg:#000000;--card:#0F1A3A;--card-inner:#0A0F26;
+    --text:#DBEAFE;--sub:#7EA0CF;--border:#1E3A8A;
+    --primary:#60A5FA;--primary-dark:#3B82F6;--primary-light:#1E3A8A;
+    --accent:#93C5FD;--success:#4ADE80;--danger:#F87171;--warning:#FBBF24;--yellow:#FCD34D;
+    --card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.55);
   }
   body.light{
-    --bg:#F0F4FF;--card:#FFFFFF;--card-inner:#F8FAFF;
-    --text:#1E293B;--sub:#64748B;--border:#BFDBFE;
+    --bg:#F0F4FB;--card:#FFFFFF;--card-inner:#F5F8FD;
+    --text:#0F1E3A;--sub:#5A6B85;--border:#D1DEF5;
     --primary:#3B82F6;--primary-dark:#1E40AF;--primary-light:#DBEAFE;
-    --accent:#2563EB;--success:#059669;--danger:#DC2626;--yellow:#D97706;
+    --accent:#60A5FA;--success:#10B981;--danger:#DC2626;--warning:#D97706;--yellow:#B45309;
+    --card-border:#3B82F6;--card-border-glow:rgba(59,130,246,.35);
   }
   body{
     font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
     background:var(--bg);color:var(--text);
     transition:background .3s,color .3s;
     min-height:100vh;font-size:15px;line-height:1.5;
-    background-image:radial-gradient(circle at 10% 10%, rgba(30,58,138,.25) 0%, transparent 40%),radial-gradient(circle at 90% 20%, rgba(59,130,246,.15) 0%, transparent 40%);
+    background-image:radial-gradient(circle at 10% 10%, rgba(30,58,138,.15) 0%, transparent 40%),radial-gradient(circle at 90% 20%, rgba(59,130,246,.08) 0%, transparent 40%);
     background-attachment:fixed;
   }
 
   /* ORNAMEN */
-  .ornament{position:fixed;pointer-events:none;z-index:0;opacity:.35;animation:float 6s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(10deg)}}
-  .orn1{top:8%;left:3%;font-size:38px;color:#60A5FA}
-  .orn2{top:45%;left:5%;font-size:30px;color:#93C5FD;animation-delay:1.5s}
-  .orn3{bottom:12%;right:6%;font-size:34px;color:#3B82F6;animation-delay:2.5s}
-  .orn4{top:15%;right:4%;font-size:42px;color:#FCD34D;animation-delay:1s}
-  .orn5{top:62%;left:2%;font-size:36px;color:#FBBF24;animation-delay:3s}
-  .orn6{bottom:35%;right:3%;font-size:30px;color:#FDE68A;animation-delay:.5s}
-  .orn7{bottom:20%;left:4%;font-size:36px;color:#6EE7B7;animation-delay:1.8s}
-  .orn8{top:72%;right:7%;font-size:32px;color:#86EFAC;animation-delay:.8s}
-  .orn9{bottom:25%;right:2%;font-size:34px;color:#93C5FD;animation-delay:.3s}
-  .orn10{top:52%;right:4%;font-size:26px;color:#60A5FA;animation-delay:2.8s}
-  .orn11{top:38%;right:8%;font-size:32px;color:#C4B5FD;animation-delay:1.7s}
-  .orn12{top:88%;left:30%;font-size:20px;color:#FDBA74;animation-delay:1.4s}
-  .orn13{top:25%;left:7%;font-size:28px;color:#F472B6;animation-delay:.4s}
-  .orn14{bottom:32%;left:6%;font-size:26px;color:#A78BFA;animation-delay:1.8s}
-  .orn15{bottom:15%;right:10%;font-size:24px;color:#FACC15;animation-delay:2.2s}
-  .orn16{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s}
-  .orn17{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s}
+  .ornament{position:fixed;pointer-events:none;z-index:0;opacity:.4;animation:float 6s ease-in-out infinite;font-weight:900;}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(10deg)}}
+  .orn1{top:8%;left:3%;color:#3B82F6;font-size:40px}
+  .orn2{top:12%;right:4%;color:#60A5FA;font-size:34px;animation-delay:1.5s}
+  .orn3{bottom:15%;left:5%;color:#1E40AF;font-size:34px;animation-delay:2s}
+  .orn4{bottom:20%;right:5%;color:#93C5FD;font-size:32px;animation-delay:.8s}
+  .orn5{top:50%;left:2%;color:#60A5FA;font-size:26px;animation-delay:1.2s}
+  .orn6{top:22%;left:8%;color:#FCD34D;font-size:28px;animation-delay:.4s}
+  .orn7{top:35%;right:6%;color:#60A5FA;font-size:30px;animation-delay:1s}
+  .orn8{bottom:35%;left:8%;color:#F472B6;font-size:26px;animation-delay:1.8s}
+  .orn9{bottom:8%;right:10%;color:#A78BFA;font-size:24px;animation-delay:2.4s}
+  .orn10{top:18%;left:50%;color:#FB923C;font-size:22px;animation-delay:2s}
+  .orn11{top:60%;right:3%;color:#22D3EE;font-size:26px;animation-delay:1s}
+  .orn12{bottom:50%;left:3%;color:#FACC15;font-size:24px;animation-delay:1.4s}
+  .orn13{top:5%;right:25%;color:#F87171;font-size:20px;animation-delay:.5s}
+  .orn14{bottom:5%;left:30%;color:#34D399;font-size:22px;animation-delay:1s}
+  .orn15{top:42%;left:22%;color:#A3E635;font-size:20px;animation-delay:.6s}
+  .orn16{top:68%;left:15%;color:#FBBF24;font-size:18px;animation-delay:2s}
+  .orn17{bottom:25%;right:20%;color:#818CF8;font-size:22px;animation-delay:2.2s}
   @media(max-width:768px){.ornament{display:none}}
 
   /* HEADER */
   .header{
     position:sticky;top:0;z-index:100;
-    background:linear-gradient(135deg,#1E3A8A,#1E40AF);
+    background:linear-gradient(135deg,#1E3A8A,#0F1A3A);
     color:#fff;padding:14px 24px;
     display:flex;justify-content:space-between;align-items:center;
-    box-shadow:0 4px 16px rgba(30,58,138,.5);gap:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.6);border-bottom:2px solid #3B82F6;gap:12px;
   }
   .header-left{flex:0 1 auto;min-width:0}
   .header-left h1{font-size:17px;color:#FCD34D;font-weight:800;text-shadow:0 0 12px rgba(252,211,77,.4)}
   .header-center{flex:1 1 auto;display:flex;justify-content:center;min-width:0}
   .jam-box{
     display:inline-flex;align-items:center;gap:8px;
-    background:rgba(255,255,255,.15);border:1.5px solid rgba(96,165,250,.5);
-    color:#F1F5F9;padding:8px 18px;border-radius:100px;
+    background:rgba(255,255,255,.08);border:1.5px solid rgba(59,130,246,.5);
+    color:#fff;padding:8px 18px;border-radius:100px;
     font-size:12.5px;font-weight:700;white-space:nowrap;backdrop-filter:blur(10px);
   }
   .header-right{flex:0 0 auto;display:flex;gap:8px;align-items:center}
   .theme-toggle{
-    background:rgba(255,255,255,.18);border:none;color:#fff;
-    width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer;
-    transition:transform .2s;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+    color:#fff;width:38px;height:38px;border-radius:50%;font-size:17px;cursor:pointer;
+    transition:all .2s;display:flex;align-items:center;justify-content:center;
   }
-  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);background:rgba(255,255,255,.3)}
+  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);background:rgba(255,255,255,.2)}
   .header-right button.logout{
-    background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;border:none;
+    background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;border:2px solid transparent;
     padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;
-    font-weight:700;transition:all .2s;font-size:13px;box-shadow:0 2px 8px rgba(220,38,38,.4);
+    font-weight:700;transition:all .3s ease;font-size:13px;box-shadow:0 2px 8px rgba(239,68,68,.4);
   }
   .header-right button.logout:hover{
-    background:linear-gradient(135deg,#EF4444,#B91C1C);transform:translateY(-1px);
-    box-shadow:0 4px 12px rgba(220,38,38,.6);
+    background:linear-gradient(135deg,#F87171,#DC2626);transform:translateY(-2px) scale(1.05);
+    box-shadow:0 0 15px rgba(239,68,68,.6);border-color:#FCA5A5;
   }
 
   /* WRAPPER */
@@ -94,56 +99,51 @@
     position:relative;z-index:1;align-items:start;
   }
 
-  /* PROFIL */
+  /* PROFIL (PERSIS KEPSEK.HTML) */
   .col-profil{position:sticky;top:88px;height:calc(100vh - 110px);max-height:calc(100vh - 110px)}
   .profile-card{
-    background:var(--card);border-radius:16px;border:2px solid var(--border);
+    background:var(--card);border-radius:16px;border:2px solid var(--card-border);
     box-shadow:0 0 25px var(--card-border-glow),0 8px 24px rgba(0,0,0,.6);
-    border-top:4px solid var(--accent);height:100%;max-height:100%;
-    display:flex;flex-direction:column;overflow:hidden;
+    height:100%;max-height:100%;display:flex;flex-direction:column;overflow:hidden;
   }
   .profile-card-header{
-    padding:20px 18px 16px;text-align:center;
-    border-bottom:1px dashed rgba(96,165,250,.25);flex-shrink:0;
-    background:rgba(30,58,138,.35);
+    padding:20px 18px 16px;text-align:center;border-bottom:1px dashed var(--border);flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(15,26,58,.6));
   }
-  body.light .profile-card-header{background:rgba(219,234,254,.5)}
+  body.light .profile-card-header{background:linear-gradient(135deg,rgba(240,244,251,.6),rgba(220,235,255,.8))}
   .profile-photo{
     width:80px;height:80px;border-radius:50%;
-    background:linear-gradient(135deg,#1E3A8A,#3B82F6);
+    background:linear-gradient(135deg,#0F1A3A,#1E3A8A);
     display:flex;align-items:center;justify-content:center;
-    font-size:32px;font-weight:800;color:#F1F5F9;
-    overflow:hidden;border:3px solid var(--accent);
-    box-shadow:0 4px 14px rgba(59,130,246,.4);margin:0 auto 12px;
+    font-size:32px;font-weight:800;color:#DBEAFE;
+    overflow:hidden;border:3px solid var(--card-border);margin:0 auto 12px;
   }
   .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
   .profile-card-header h2{font-size:14.5px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.35}
   .profile-card-header .jabatan-badge{
-    display:inline-block;padding:4px 12px;border-radius:100px;
-    font-size:10.5px;font-weight:700;background:rgba(96,165,250,.25);color:#93C5FD;
+    display:inline-block;padding:4px 12px;border-radius:100px;font-size:10.5px;font-weight:700;
+    background:rgba(0,0,0,.4);color:#FCD34D;border:1px solid rgba(59,130,246,.5);
     text-transform:uppercase;margin-bottom:6px;
   }
-  body.light .profile-card-header .jabatan-badge{background:rgba(37,99,235,.15);color:#1E40AF}
-  .profile-card-header .lama-text{display:block;font-size:11.5px;font-weight:700;color:var(--yellow);margin-top:4px}
-  .profile-card-body{flex:1;overflow-y:auto;padding:14px 18px 18px}
+  body.light .profile-card-header .jabatan-badge{background:rgba(59,130,246,.15);color:#1E40AF}
+  .profile-card-header .lama-text{display:block;font-size:11.5px;font-weight:700;color:#FCD34D;margin-top:4px}
+  body.light .profile-card-header .lama-text{color:var(--primary-dark)}
+  .profile-card-body{flex:1;overflow-y:auto;padding:14px 18px 18px;scrollbar-width:thin;scrollbar-color:var(--card-border) transparent}
   .profile-card-body::-webkit-scrollbar{width:6px}
-  .profile-card-body::-webkit-scrollbar-thumb{background:rgba(96,165,250,.4);border-radius:10px}
+  .profile-card-body::-webkit-scrollbar-thumb{background:rgba(59,130,246,.4);border-radius:10px}
   .info-section-title{
-    font-size:10px;font-weight:800;color:#93C5FD;text-transform:uppercase;
+    font-size:10px;font-weight:800;color:var(--sub);text-transform:uppercase;
     letter-spacing:.06em;margin-bottom:8px;margin-top:6px;display:flex;align-items:center;gap:6px;
   }
-  body.light .info-section-title{color:#1E40AF}
-  .info-section-title::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px}
+  .info-section-title::before{content:'';width:3px;height:12px;background:var(--card-border);border-radius:2px}
   .info-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
   .info-item{
     display:flex;justify-content:space-between;gap:8px;padding:7px 10px;
-    background:var(--card-inner);border:1px solid rgba(96,165,250,.15);
-    border-radius:8px;font-size:11.5px;
+    background:var(--card-inner);border:1px solid var(--border);border-radius:8px;font-size:11.5px;
   }
-  body.light .info-item{border:1px solid rgba(37,99,235,.15)}
-  .info-item .lbl{color:#93C5FD;font-weight:600;flex-shrink:0}
-  body.light .info-item .lbl{color:#1E40AF}
-  .info-item .val{color:var(--text);font-weight:700;text-align:right;word-break:break-word}
+  .info-item .lbl{color:var(--sub);font-weight:600;flex-shrink:0}
+  .info-item .val{color:var(--text);font-weight:700;text-align:right;word-break:break-word;min-width:0}
 
   /* KOLOM KANAN */
   .col-menu{min-width:0}
@@ -157,16 +157,16 @@
     display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;
     color:var(--yellow);margin:0;text-shadow:0 0 12px rgba(252,211,77,.4);
   }
-  body.light .form-header-inline .form-title-text{color:#D97706}
   .btn-back-inline{
-    background:var(--card);color:var(--text);border:2px solid var(--border);
+    background:var(--card);color:var(--text);border:2px solid var(--card-border);
     padding:10px 20px;border-radius:10px;font-family:inherit;font-size:13px;
     font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
-    transition:all .25s;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.3);
+    transition:all .25s;text-decoration:none;box-shadow:0 0 15px var(--card-border-glow);
   }
   .btn-back-inline:hover{
-    background:linear-gradient(135deg,#1E3A8A,#3B82F6);border-color:var(--accent);
-    color:#fff;transform:translateY(-2px);box-shadow:0 0 20px rgba(59,130,246,.55);
+    background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;
+    border-color:#3B82F6;transform:translateY(-2px);
+    box-shadow:0 0 20px rgba(59,130,246,.55);
   }
 
   /* TOOLBAR */
@@ -174,22 +174,21 @@
     display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;
   }
   .btn-action{
-    background:var(--card);border:2px solid var(--border);color:var(--text);
+    background:var(--card);border:2px solid var(--card-border);color:var(--text);
     padding:10px 18px;border-radius:10px;font-family:inherit;font-size:13px;
     font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
-    transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.2);
+    transition:all .2s;box-shadow:0 0 10px var(--card-border-glow);
   }
-  .btn-action:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
+  .btn-action:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--card-border-glow)}
   .btn-action.primary{background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;border-color:#3B82F6}
-  .btn-action.primary:hover{box-shadow:0 0 20px rgba(59,130,246,.5)}
   .btn-action.success{background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-color:#10B981}
   .btn-action.success:hover{box-shadow:0 0 20px rgba(16,185,129,.5)}
-  .btn-action.danger{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;border-color:#DC2626}
-  .btn-action.danger:hover{box-shadow:0 0 20px rgba(220,38,38,.5)}
 
-  /* TABEL PROTAH (Biru) */
+  /* ============================================================
+     TABEL PROTAH (BIRU)
+     ============================================================ */
   .table-card.prota {
-    background:var(--card);border-radius:16px;border:2px solid var(--border);
+    background:var(--card);border-radius:16px;border:2px solid var(--card-border);
     box-shadow:0 0 15px var(--card-border-glow);overflow:hidden;margin-bottom:24px;
   }
   .table-card.prota .table-card-header {
@@ -199,19 +198,26 @@
   }
   body.light .table-card.prota .table-card-header{background:rgba(191,219,254,.3)}
   
-  /* TABEL PROMES (Hijau) */
+  /* ============================================================
+     TABEL PROMES (HIJAU) - Perubahan Utama
+     ============================================================ */
   .table-card.promes {
-    background:var(--card);border-radius:16px;border:2px solid rgba(16,185,129,.4);
-    box-shadow:0 0 15px rgba(16,185,129,.25);overflow:hidden;margin-bottom:24px;
+    background:var(--card);border-radius:16px;
+    border:2px solid rgba(16,185,129,.6); /* Border Hijau */
+    box-shadow:0 0 25px rgba(16,185,129,.35); /* Glow Hijau */
+    overflow:hidden;margin-bottom:24px;
   }
   .table-card.promes .table-card-header {
-    padding:16px 20px;border-bottom:2px solid rgba(16,185,129,.3);
+    padding:16px 20px;
+    border-bottom:2px solid rgba(16,185,129,.3);
     display:flex;justify-content:space-between;align-items:center;
-    background:rgba(16,185,129,.15);
+    background:rgba(16,185,129,.15); /* Background Header Hijau */
   }
   body.light .table-card.promes .table-card-header{background:rgba(16,185,129,.1)}
-
+  
+  /* Header teks */
   .table-card-header h3{font-size:15px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+  .table-card.promes .table-card-header h3{color:#10B981;} /* Teks judul Promes hijau */
   
   /* Badge Count Protah (Biru) */
   .table-card.prota .badge-count{
@@ -229,12 +235,11 @@
 
   .table-scroll{overflow-x:auto}
   table{width:100%;border-collapse:separate;border-spacing:0;min-width:600px}
-  thead{background:rgba(0,0,0,.3)}
+  thead{background:rgba(0,0,0,.5)}
   body.light thead{background:#F0F4FB}
   th{
     text-align:left;padding:12px 16px;font-size:11px;font-weight:800;
-    color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);
-    white-space:nowrap;
+    color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;
   }
   td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);font-weight:500}
   tbody tr:hover td{background:rgba(255,255,255,.03)}
@@ -273,7 +278,7 @@
   .modal-overlay.active{display:flex}
   .modal{
     background:var(--card);border-radius:20px;width:100%;max-width:480px;
-    border:2px solid var(--border);box-shadow:0 25px 70px rgba(0,0,0,.7);
+    border:2px solid var(--card-border);box-shadow:0 0 30px var(--card-border-glow);
     animation:slideUp .3s ease;
   }
   @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -282,7 +287,6 @@
     display:flex;justify-content:space-between;align-items:center;
   }
   .modal-header h3{font-size:15px;font-weight:800;color:var(--yellow)}
-  body.light .modal-header h3{color:#D97706}
   .modal-close{
     width:30px;height:30px;border-radius:8px;border:none;background:rgba(220,38,38,.2);
     color:#FCA5A5;cursor:pointer;font-size:15px;font-weight:700;
@@ -299,7 +303,7 @@
     font-size:13.5px;color:var(--text);outline:none;transition:all .2s;
   }
   .form-field input:focus,.form-field select:focus{
-    border-color:var(--accent);box-shadow:0 0 0 4px rgba(96,165,250,.2);
+    border-color:var(--card-border);box-shadow:0 0 0 4px var(--card-border-glow);
   }
 
   .btn-cancel{
@@ -318,14 +322,14 @@
   /* TOAST */
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
-    background:#1E3A8A;color:#F1F5F9;padding:13px 24px;border-radius:12px;
-    font-size:13.5px;font-weight:600;box-shadow:0 20px 40px rgba(0,0,0,.5),0 0 20px rgba(96,165,250,.4);
-    border:1px solid rgba(96,165,250,.5);opacity:0;transition:all .3s;z-index:99999;
+    background:#0F1A3A;color:#fff;padding:13px 24px;border-radius:12px;
+    font-size:13.5px;font-weight:600;box-shadow:0 20px 40px rgba(0,0,0,.5);
+    border:2px solid var(--card-border);opacity:0;transition:all .3s;z-index:99999;
   }
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-  .toast.success{background:linear-gradient(135deg,#065F46,#047857)}
-  .toast.error{background:linear-gradient(135deg,#7F1D1D,#B91C1C)}
-  .toast.info{background:linear-gradient(135deg,#1E3A8A,#1D4ED8)}
+  .toast.success{background:linear-gradient(135deg,#059669,#047857);border-color:#10B981}
+  .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
+  .toast.info{background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-color:#60A5FA}
 
   @media(max-width:900px){
     .wrapper{grid-template-columns:1fr;gap:18px}
@@ -345,12 +349,12 @@
 <body>
 
 <!-- ORNAMEN -->
-<div class="ornament orn1">♡</div><div class="ornament orn2">❤</div><div class="ornament orn3">♡</div>
-<div class="ornament orn4">★</div><div class="ornament orn5">☆</div><div class="ornament orn6">✦</div>
-<div class="ornament orn7">🍃</div><div class="ornament orn8">🌿</div><div class="ornament orn9">✨</div>
-<div class="ornament orn10">✧</div><div class="ornament orn11">◆</div><div class="ornament orn12">●</div>
-<div class="ornament orn13">✿</div><div class="ornament orn14">❀</div><div class="ornament orn15">✺</div>
-<div class="ornament orn16">✹</div><div class="ornament orn17">♦</div>
+<div class="ornament orn1">♡</div><div class="ornament orn2">✦</div><div class="ornament orn3">✿</div>
+<div class="ornament orn4">◆</div><div class="ornament orn5">★</div><div class="ornament orn6">✧</div>
+<div class="ornament orn7">❋</div><div class="ornament orn8">✿</div><div class="ornament orn9">♦</div>
+<div class="ornament orn10">★</div><div class="ornament orn11">✦</div><div class="ornament orn12">✺</div>
+<div class="ornament orn13">❀</div><div class="ornament orn14">♢</div><div class="ornament orn15">✹</div>
+<div class="ornament orn16">☆</div><div class="ornament orn17">✵</div>
 
 <!-- HEADER -->
 <div class="header">
@@ -531,7 +535,6 @@ function formatTanggal(iso){
   return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
 }
 
-// Fungsi untuk mengubah format YYYY-MM-DD ke format input date
 function formatDateForInput(isoString) {
   if (!isoString) return '';
   const d = new Date(isoString);
@@ -540,6 +543,202 @@ function formatDateForInput(isoString) {
   const day = String(d.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+function formatTanggalPanjang(tgl){
+  if(!tgl) return '-';
+  const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function normalisasiNama(nama){
+  if(!nama) return '';
+  let s = String(nama).trim().toLowerCase();
+  s = s.split(',')[0].trim();
+  s = s.replace(/[.,']/g, ' ');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+
+function namaKeFile(nama){
+  let bersih = String(nama||'').split(',')[0].trim();
+  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ').replace(/\bS\.?\s*Pd\.?/gi, ' ').replace(/\bM\.?\s*Pd\.?/gi, ' ')
+    .replace(/\bS\.?\s*Ag\.?/gi, ' ').replace(/\bS\.?\s*Si\.?/gi, ' ').replace(/\bS\.?\s*Kom\.?/gi, ' ')
+    .replace(/\bM\.?\s*Si\.?/gi, ' ').replace(/\bGr\.?/gi, ' ').replace(/\bDrs\.?/gi, ' ').replace(/\bDra\.?/gi, ' ')
+    .replace(/\bDr\.?/gi, ' ').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').replace(/[^a-zA-Z0-9\-]/g, '');
+  return bersih;
+}
+
+/* ============================================================
+   AVATAR SVG (SAMA SEPERTI KEPSEK.HTML)
+   ============================================================ */
+function avatarSvg(nama){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+  const palettes = [
+    { bg1:'#0F1A3A', bg2:'#1E3A8A', fg:'#F5F5F5' },
+    { bg1:'#0A1F17', bg2:'#1E3A8A', fg:'#F5F5F5' },
+    { bg1:'#1F1A14', bg2:'#3D2A1A', fg:'#F5F5F5' },
+    { bg1:'#1A141F', bg2:'#2A1A3D', fg:'#F5F5F5' }
+  ];
+  const p = palettes[variant];
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/>
+      </linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${p.bg1}"/>
+        <stop offset="100%" stop-color="${p.bg2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    <circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+    <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>
+  </svg>`;
+}
+
+function pakaiFotoAtauAvatar(el, nama){
+  if(!el) return;
+  const userEmail = user && user.email ? user.email : nama;
+  const fotoUpload = localStorage.getItem('ra_foto_' + userEmail);
+  
+  if(fotoUpload){ 
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">'; 
+    return; 
+  }
+  
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
+  let idx = 0;
+  
+  function cobaLoad(){
+    if(idx >= exts.length){ 
+      el.innerHTML = avatarSvg(nama); 
+      return; 
+    }
+    const img = new Image();
+    img.onload = function(){ 
+      el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; 
+    };
+    img.onerror = function(){ 
+      idx++; 
+      cobaLoad(); 
+    };
+    img.src = '../foto/' + baseName + '.' + exts[idx]; // PERBAIKAN: Pakai ../foto/
+  }
+  cobaLoad();
+}
+
+/* ============================================================
+   CARI DATA KEPSEK DARI SUPABASE (SAMA SEPERTI KEPSEK.HTML)
+   ============================================================ */
+async function cariDataKepsekSupabase(){
+  const namaLogin = normalisasiNama(user.nama);
+  let { data, error } = await sb
+    .from('guru').select('*')
+    .ilike('nama', `%${namaLogin}%`)
+    .limit(1).maybeSingle();
+  if(error){ console.error('Error cari kepsek:', error); return null; }
+  if(data) return data;
+  const namaDepan = namaLogin.split(' ')[0];
+  if(namaDepan.length > 2){
+    let { data: data2 } = await sb
+      .from('guru').select('*')
+      .ilike('nama', `%${namaDepan}%`)
+      .limit(1).maybeSingle();
+    if(data2) return data2;
+  }
+  return null;
+}
+
+/* ============================================================
+   RENDER PROFIL (LOGIKA PERSIS KEPSEK.HTML)
+   ============================================================ */
+async function renderProfil(){
+  const nama = user.nama;
+  const body = document.getElementById('profileBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data...</div>';
+
+  const dataKepsek = await cariDataKepsekSupabase();
+
+  if(!dataKepsek){
+    document.getElementById('profileNama').textContent = nama;
+    document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
+    document.getElementById('profileLama').textContent = '';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0"><div style="font-size:36px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Data Belum Lengkap</div><div style="font-size:11.5px;color:#93C5FD;line-height:1.5">Profil Anda belum terdaftar di Data GTK.<br>Silakan hubungi Admin.</div></div>';
+    pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), nama);
+    return;
+  }
+
+  document.getElementById('profileNama').textContent = dataKepsek.nama;
+  document.getElementById('profileJabatan').textContent = dataKepsek.jabatan || 'Kepala Sekolah';
+  const lama = hitungLamaMengajar(dataKepsek.tmt);
+  document.getElementById('profileLama').textContent = dataKepsek.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+  const identitas = [];
+  if(dataKepsek.nik) identitas.push({ l: 'NIK', v: dataKepsek.nik });
+  if(dataKepsek.npk) identitas.push({ l: 'NPK/PEGID', v: dataKepsek.npk });
+  if(dataKepsek.jk) identitas.push({ l: 'Jenis Kelamin', v: dataKepsek.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(dataKepsek.tempat_lahir) identitas.push({ l: 'Tempat Lahir', v: dataKepsek.tempat_lahir });
+  if(dataKepsek.tanggal_lahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataKepsek.tanggal_lahir) });
+  if(identitas.length > 0){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    identitas.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const pegawai = [];
+  if(dataKepsek.pendidikan) pegawai.push({ l: 'Pendidikan', v: dataKepsek.pendidikan });
+  if(dataKepsek.tmt) pegawai.push({ l: 'TMT', v: formatTanggalPanjang(dataKepsek.tmt) });
+  if(dataKepsek.tmt) pegawai.push({ l: 'Lama Mengajar', v: lama.teks });
+  if(dataKepsek.jabatan) pegawai.push({ l: 'Jabatan', v: dataKepsek.jabatan });
+  if(pegawai.length > 0){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    pegawai.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const kontak = [];
+  if(dataKepsek.hp) kontak.push({ l: 'HP/WA', v: dataKepsek.hp });
+  if(dataKepsek.email) kontak.push({ l: 'Email', v: dataKepsek.email });
+  if(dataKepsek.alamat) kontak.push({ l: 'Alamat', v: dataKepsek.alamat });
+  if(kontak.length > 0){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  body.innerHTML = html;
+  pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataKepsek.nama);
+}
+
+// Panggil render profil
+setTimeout(renderProfil, 100);
 
 /* ============================================================
    THEME & CLOCK
@@ -572,82 +771,9 @@ updateClock();
 setInterval(updateClock, 1000);
 
 /* ============================================================
-   RENDER PROFIL (DIPERBAIKI TOTAL)
-   ============================================================ */
-function renderProfil(){
-  const nama = user.nama;
-  document.getElementById('profileNama').textContent = nama;
-  document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
-  
-  // 1. Ambil data guru dari localStorage
-  let guruList = [];
-  try {
-    const rawGuru = localStorage.getItem('ra_guru') || '[]';
-    guruList = JSON.parse(rawGuru);
-  } catch(e) { console.error("Gagal parse ra_guru", e); }
-
-  // 2. Cari data yang cocok (berdasarkan nama depan agar lebih akurat)
-  const namaDepan = nama.split(',')[0].trim().toLowerCase();
-  const dataGuru = guruList.find(g => 
-    g.nama.toLowerCase().includes(namaDepan) || 
-    namaDepan.includes(g.nama.split(',')[0].trim().toLowerCase())
-  );
-  
-  const body = document.getElementById('profileBody');
-  if(dataGuru){
-    // Hitung Lama Mengajar
-    if(dataGuru.tmt) {
-      document.getElementById('profileLama').textContent = '⏱️ ' + hitungLama(dataGuru.tmt);
-    }
-
-    // Susun HTML Info Lengkap
-    let html = '';
-    if(dataGuru.nip) html += `<div class="info-item"><span class="lbl">NIP</span><span class="val">${dataGuru.nip}</span></div>`;
-    if(dataGuru.npk) html += `<div class="info-item"><span class="lbl">NPK</span><span class="val">${dataGuru.npk}</span></div>`;
-    if(dataGuru.jk) html += `<div class="info-item"><span class="lbl">Jenis Kelamin</span><span class="val">${dataGuru.jk === 'L' ? 'Laki-laki' : 'Perempuan'}</span></div>`;
-    if(dataGuru.tempatLahir) html += `<div class="info-item"><span class="lbl">Tempat Lahir</span><span class="val">${dataGuru.tempatLahir}</span></div>`;
-    if(dataGuru.tglLahir) html += `<div class="info-item"><span class="lbl">Tanggal Lahir</span><span class="val">${formatTanggal(dataGuru.tglLahir)}</span></div>`;
-    if(dataGuru.jabatan) html += `<div class="info-item"><span class="lbl">Jabatan</span><span class="val">${dataGuru.jabatan}</span></div>`;
-    
-    body.innerHTML = '<div class="info-section-title">📇 Identitas</div><div class="info-list">' + html + '</div>';
-  } else {
-    // Jika data guru tidak ketemu di localStorage
-    document.getElementById('profileLama').textContent = '';
-    body.innerHTML = `
-      <div class="info-item"><span class="lbl">NIP</span><span class="val">-</span></div>
-      <div class="info-item"><span class="lbl">NPK</span><span class="val">-</span></div>
-      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--sub);">Data detail tidak ditemukan.</div>
-    `;
-  }
-  
-  // 3. Render Foto (Perbaikan Path & Fallback)
-  const foto = localStorage.getItem('ra_foto_' + nama);
-  const elPhoto = document.getElementById('profilePhoto');
-  if(foto){
-    elPhoto.innerHTML = `<img src="${foto}">`;
-  } else {
-    // Fallback ke inisial nama jika foto tidak ada
-    elPhoto.textContent = nama.charAt(0).toUpperCase();
-  }
-}
-
-function hitungLama(tmt){
-  if(!tmt) return '-';
-  const a = new Date(tmt);
-  const b = new Date();
-  let tahun = b.getFullYear() - a.getFullYear();
-  let bulan = b.getMonth() - a.getMonth();
-  if(bulan < 0){ tahun--; bulan += 12; }
-  return tahun + ' thn ' + bulan + ' bln';
-}
-// Panggil render profil
-setTimeout(renderProfil, 100);
-
-/* ============================================================
    LOGIKA TABEL & MODAL
    ============================================================ */
 function renderTabel(){
-  // Render Prota
   const listProta = loadData('prota');
   const tbodyProta = document.getElementById('tbodyProta');
   const countProta = document.getElementById('countProta');
@@ -673,7 +799,6 @@ function renderTabel(){
     `).join('');
   }
 
-  // Render Promes
   const listPromes = loadData('promes');
   const tbodyPromes = document.getElementById('tbodyPromes');
   const countPromes = document.getElementById('countPromes');
@@ -707,18 +832,15 @@ function bukaModal(jenis, editId = null){
   document.getElementById('inputTahun').value = '';
   document.getElementById('inputSemester').value = 'Ganjil';
   
-  // Set Tanggal Default ke hari ini
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const dd = String(today.getDate()).padStart(2, '0');
   document.getElementById('inputTanggal').value = `${yyyy}-${mm}-${dd}`;
 
-  // Tampilkan/Sembunyikan field semester
   document.getElementById('fieldSemester').style.display = jenis === 'promes' ? 'block' : 'none';
   
   if(editId) {
-    // Mode Edit: Isi form dengan data lama
     document.getElementById('modalTitle').textContent = jenis === 'prota' ? '✏️ Edit Protah' : '✏️ Edit Promes';
     const list = loadData(jenis);
     const data = list.find(x => x.id === editId);
@@ -730,7 +852,6 @@ function bukaModal(jenis, editId = null){
       }
     }
   } else {
-    // Mode Tambah
     document.getElementById('modalTitle').textContent = jenis === 'prota' ? '➕ Tambah Protah' : '➕ Tambah Promes';
   }
   
@@ -749,32 +870,21 @@ function simpanData(){
   const tanggalInput = document.getElementById('inputTanggal').value;
   const editId = document.getElementById('editId').value;
 
-  if(!tahun){
-    showToast('❌ Tahun Pelajaran wajib diisi!', 'error');
-    return;
-  }
-  if(!tanggalInput){
-    showToast('❌ Tanggal Input wajib diisi!', 'error');
-    return;
-  }
+  if(!tahun){ showToast('❌ Tahun Pelajaran wajib diisi!', 'error'); return; }
+  if(!tanggalInput){ showToast('❌ Tanggal Input wajib diisi!', 'error'); return; }
 
   let list = loadData(jenis);
 
   if(editId){
-    // Mode Edit
     list = list.map(item => item.id === editId ? { 
-      ...item, 
-      tahun: tahun, 
-      semester: jenis === 'promes' ? semester : item.semester,
+      ...item, tahun: tahun, semester: jenis === 'promes' ? semester : item.semester,
       createdAt: new Date(tanggalInput).toISOString()
     } : item);
     showToast('✅ Data berhasil diperbarui', 'success');
   } else {
-    // Mode Tambah
     const newData = {
       id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-      tahun: tahun,
-      createdAt: new Date(tanggalInput).toISOString()
+      tahun: tahun, createdAt: new Date(tanggalInput).toISOString()
     };
     if(jenis === 'promes') newData.semester = semester;
     
@@ -803,16 +913,11 @@ function logout(){
   }
 }
 
-/* ============================================================
-   INIT
-   ============================================================ */
 renderTabel();
 
-// Tutup modal klik overlay
 document.getElementById('modalForm').addEventListener('click', function(e){
   if(e.target === this) tutupModal();
 });
-// ESC tutup modal
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){
     const modal = document.getElementById('modalForm');
