@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<!-- TAMBAHAN: Library Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -51,14 +53,11 @@
   
   /* === TAMPILAN KHUSUS HP === */
   @media(max-width:760px){
-    /* 1. Rata Kiri Teks */
     .nav-brand .brand-info { align-items: flex-start !important; text-align: left !important; }
-    /* 2. Jam Pindah ke Atas Logo */
     .nav-inner { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; }
     .nav-clock { order: 1 !important; width: 100% !important; justify-content: center !important; margin-bottom: 12px; }
     .nav-brand { order: 2 !important; flex: 1 !important; justify-content: flex-start !important; }
     .nav-right { order: 3 !important; flex: 0 0 auto !important; }
-    /* 3. Sembunyikan Teks Login di Tombol (Sisakan Ikon) */
     .btn-login { padding: 10px; border-radius: 50%; }
     .btn-login .login-txt { display: none; }
     .btn-login .login-ico { font-size: 18px; }
@@ -130,6 +129,10 @@
   .tab-btn.t-guru{--tab-glow:#F59E0B;--tab-glow-soft:rgba(245,158,11,.55)}
   .tab-btn.t-guru:hover{color:#FDE68A;background:linear-gradient(180deg,#443a20 0%,#281f10 100%);border-color:#F59E0B;transform:translateY(-3px);box-shadow:0 0 0 1px rgba(245,158,11,.35),0 0 18px rgba(245,158,11,.6),0 0 36px rgba(245,158,11,.35),-4px -4px 14px rgba(245,158,11,.35);}
   .tab-btn.t-guru:hover::before{opacity:.45;transform:scale(1.5)}
+  /* TAMBAHAN: Style untuk Tab Statistik */
+  .tab-btn.t-statistik{--tab-glow:#0EA5E9;--tab-glow-soft:rgba(14,165,233,.55)}
+  .tab-btn.t-statistik:hover{color:#BAE6FD;background:linear-gradient(180deg,#1c3844 0%,#0f2228 100%);border-color:#0EA5E9;transform:translateY(-3px);box-shadow:0 0 0 1px rgba(14,165,233,.35),0 0 18px rgba(14,165,233,.6),0 0 36px rgba(14,165,233,.35),-4px -4px 14px rgba(14,165,233,.35);}
+  .tab-btn.t-statistik:hover::before{opacity:.45;transform:scale(1.5)}
   .tab-btn.t-kontak{--tab-glow:#3B82F6;--tab-glow-soft:rgba(59,130,246,.55)}
   .tab-btn.t-kontak:hover{color:#BFDBFE;background:linear-gradient(180deg,#2a3a4a 0%,#18222e 100%);border-color:#3B82F6;transform:translateY(-3px);box-shadow:0 0 0 1px rgba(59,130,246,.35),0 0 18px rgba(59,130,246,.6),0 0 36px rgba(59,130,246,.35),-4px -4px 14px rgba(59,130,246,.35);}
   .tab-btn.t-kontak:hover::before{opacity:.45;transform:scale(1.5)}
@@ -329,7 +332,18 @@
   .kontak-card.k4:hover h4{color:#FDE68A}
   .kontak-card.k4:hover p{color:var(--text)}
 
-  @media(max-width:640px){.tab-btn{padding:10px 12px;font-size:11.5px;min-width:120px}.tab-btn.active{padding-bottom:12px}.tab-panel-box{padding:20px 16px;max-height:none}}
+  /* STYLE TAMBAHAN: Statistik di Cover */
+  .stat-cover-wrap { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 18px; border: 1px solid rgba(14,165,233,.3); }
+  .stat-cover-header { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; align-items:center;}
+  .stat-cover-title { font-size:15px; font-weight:800; color:#38BDF8; }
+  .stat-cover-kpi { display:flex; gap:10px; }
+  .stat-cover-kpi-item { background:rgba(14,165,233,.1); border:1px solid rgba(14,165,233,.3); border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; color:#F1F5F9; text-align:center; }
+  body.light .stat-cover-kpi-item { background:rgba(14,165,233,.1); color:#0F172A; border-color:rgba(14,165,233,.4); }
+  .stat-cover-kpi-item span { display:block; font-size:16px; color:#BAE6FD; font-weight:900; }
+  body.light .stat-cover-kpi-item span { color:#0284C7; }
+  #coverChartSvg { width:100%; height:260px; overflow:visible; }
+
+  @media(max-width:640px){.tab-btn{padding:10px 12px;font-size:11.5px;min-width:120px}.tab-btn.active{padding-bottom:12px}.tab-panel-box{padding:20px 16px;max-height:none}.stat-cover-header{flex-direction:column;align-items:flex-start;}}
   body.light .tab-btn{background:linear-gradient(180deg,#e5e7eb 0%,#cbd5e1 100%);border-color:#94A3B8;color:#475569;}
   body.light .tab-btn.active{background:#FFFFFF;color:var(--tab-glow);box-shadow:0 -4px 12px var(--tab-glow-soft);}
   body.light .tab-btn.active::after{background:#FFFFFF}
@@ -444,6 +458,10 @@
       <button class="tab-btn t-guru" onclick="switchTab(event,'tab-guru')" role="tab">
         <span class="tab-ico">👩‍🏫</span><span>Guru &amp; Tendik</span>
       </button>
+      <!-- TAMBAHAN TAB STATISTIK -->
+      <button class="tab-btn t-statistik" onclick="switchTab(event,'tab-statistik')" role="tab">
+        <span class="tab-ico">📊</span><span>Statistik Alumni</span>
+      </button>
       <button class="tab-btn t-kontak" onclick="switchTab(event,'tab-kontak')" role="tab">
         <span class="tab-ico">📞</span><span>Kontak</span>
       </button>
@@ -543,7 +561,40 @@
         </div>
       </div>
 
-      <!-- TAB 6: KONTAK -->
+      <!-- TAMBAHAN TAB 6: STATISTIK ALUMNI -->
+      <div class="tab-panel" id="tab-statistik">
+        <div class="stat-cover-wrap">
+          <div class="stat-cover-header">
+            <div class="stat-cover-title">📈 Grafik Penerimaan &amp; Kelulusan Siswa</div>
+            <div class="stat-cover-kpi">
+              <div class="stat-cover-kpi-item">Masuk <span id="coverStatMasuk">0</span></div>
+              <div class="stat-cover-kpi-item">Lulus <span id="coverStatLulus">0</span></div>
+            </div>
+          </div>
+          <div style="position:relative; width:100%; overflow:hidden;">
+            <svg id="coverChartSvg" viewBox="0 0 800 260" preserveAspectRatio="none"></svg>
+          </div>
+          <!-- Legenda Gaya Excel -->
+          <div style="display:flex; justify-content:center; margin-top:16px;">
+            <table style="border-collapse: collapse; font-size: 11px; text-align: center; border: 1px solid #475569;">
+              <tr>
+                <td style="padding: 4px 10px; border: 1px solid #475569; background:var(--neutral-bg); font-weight:700; color:var(--text); width:120px;">
+                  <span style="display:inline-block; width:12px; height:3px; background:#4ADE80; margin-right:5px; vertical-align:middle;"></span> PENERIMAAN
+                </td>
+                <td id="coverLegendMasuk" style="padding: 4px 10px; border: 1px solid #475569; background:var(--neutral-bg); color:var(--text); width:80px; font-weight:600;">0</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 10px; border: 1px solid #475569; background:var(--neutral-bg); font-weight:700; color:var(--text);">
+                  <span style="display:inline-block; width:12px; height:3px; background:#60A5FA; margin-right:5px; vertical-align:middle;"></span> KELULUSAN
+                </td>
+                <td id="coverLegendLulus" style="padding: 4px 10px; border: 1px solid #475569; background:var(--neutral-bg); color:var(--text); font-weight:600;">0</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: KONTAK -->
       <div class="tab-panel" id="tab-kontak">
         <div class="kontak-grid">
           <div class="kontak-card k1">
@@ -580,7 +631,15 @@
 
 </div>
 
-<script>
+<script type="module">
+/* ============================================================
+   KONEKSI SUPABASE (TAMBAHAN UNTUK STATISTIK)
+   ============================================================ */
+const URL_SUPABASE = "https://nkothmxdwpkptuvzunkb.supabase.co";
+const KEY_SUPABASE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rb3RobXhkd3BrcHR1dnp1bmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTI2NDMsImV4cCI6MjEwNjQ2ODY0M30.h1_TsMUsoiG45RWrZ5t7gY3r-KgGV230czfj0yM-GAY";
+const { createClient } = supabase;
+const sb = createClient(URL_SUPABASE, KEY_SUPABASE);
+
 /* ============================================================
    SIAGRA v.2.s — Cover Sekolah (FINAL)
    ============================================================ */
@@ -741,7 +800,7 @@ function cekLogo(){
   }
 }
 
-/* ---------- STATISTIK ---------- */
+/* ---------- STATISTIK HERO ---------- */
 function loadStats(){
   const anakList   = getLS('ra_anak', []);
   const guruList   = getLS('ra_guru', []);
@@ -971,12 +1030,115 @@ function switchTab(e, tabId){
   if (panelBox) panelBox.scrollTop = 0;
 }
 
+/* ============================================================
+   FETCH & RENDER STATISTIK ALUMNI (TAMBAHAN)
+   ============================================================ */
+async function loadStatistikAlumni(){
+  const svg = document.getElementById('coverChartSvg');
+  if(!svg) return;
+
+  // Mengambil data dari tabel 'alumni'
+  const { data, error } = await sb.from('alumni').select('*').order('tahun', { ascending: true });
+
+  if(error || !data || data.length === 0){
+    svg.innerHTML = '<text x="400" y="130" fill="#94A3B8" font-size="14" text-anchor="middle">Belum ada data alumni di database</text>';
+    return;
+  }
+
+  // Hitung Total KPI
+  const totalMasuk = data.reduce((sum, d) => sum + (parseInt(d.masuk) || 0), 0);
+  const totalLulus = data.reduce((sum, d) => sum + (parseInt(d.lulus) || 0), 0);
+  
+  document.getElementById('coverStatMasuk').textContent = totalMasuk;
+  document.getElementById('coverStatLulus').textContent = totalLulus;
+  document.getElementById('coverLegendMasuk').textContent = totalMasuk;
+  document.getElementById('coverLegendLulus').textContent = totalLulus;
+
+  // Render Grafik SVG
+  const dataGrafik = data.slice(-8); // max 8 tahun terakhir
+  const width = 800;
+  const height = 260;
+  const padding = { top: 30, right: 30, bottom: 40, left: 50 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  const allValues = dataGrafik.flatMap(d => [parseInt(d.masuk) || 0, parseInt(d.lulus) || 0]);
+  const maxValRaw = Math.max(...allValues, 10);
+  const maxVal = Math.ceil(maxValRaw / 10) * 10; 
+
+  const yScale = chartH / maxVal;
+  const xStep = chartW / (dataGrafik.length - 1 || 1);
+
+  // Grid & Y Label
+  const steps = 5;
+  let gridHtml = '';
+  for(let i = 0; i <= steps; i++) {
+    const val = Math.round((maxVal / steps) * i);
+    const y = padding.top + chartH - (val * yScale);
+    gridHtml += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" stroke-dasharray="4" />`;
+    gridHtml += `<text x="${padding.left - 10}" y="${y + 4}" fill="#94A3B8" font-size="11" font-weight="bold" text-anchor="end">${val}</text>`;
+  }
+
+  // Garis & Kotak
+  let pathMasuk = '';
+  let pathLulus = '';
+  let boxHtml = '';
+  let labelsX = '';
+
+  dataGrafik.forEach((d, i) => {
+    const valMasuk = parseInt(d.masuk) || 0;
+    const valLulus = parseInt(d.lulus) || 0;
+    const x = padding.left + (i * xStep);
+    const yMasuk = padding.top + chartH - (valMasuk * yScale);
+    const yLulus = padding.top + chartH - (valLulus * yScale);
+
+    pathMasuk += (i === 0 ? 'M' : 'L') + `${x},${yMasuk} `;
+    pathLulus += (i === 0 ? 'M' : 'L') + `${x},${yLulus} `;
+
+    // Kotak Penerimaan (Merah)
+    boxHtml += `
+      <rect x="${x - 14}" y="${yMasuk - 12}" width="28" height="22" rx="3" fill="#7F1D1D" stroke="#EF4444" stroke-width="2" />
+      <text x="${x}" y="${yMasuk + 3}" fill="#FCD34D" font-size="12" font-weight="900" text-anchor="middle">${valMasuk}</text>
+    `;
+    // Kotak Kelulusan (Putih)
+    boxHtml += `
+      <rect x="${x - 14}" y="${yLulus - 12}" width="28" height="22" rx="3" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1" />
+      <text x="${x}" y="${yLulus + 3}" fill="#000000" font-size="12" font-weight="900" text-anchor="middle">${valLulus}</text>
+    `;
+
+    const tahunLabel = d.tahun || '-';
+    labelsX += `<text x="${x}" y="${height - 15}" fill="#94A3B8" font-size="10" font-weight="bold" text-anchor="middle">${tahunLabel}</text>`;
+  });
+
+  svg.innerHTML = `
+    <defs>
+      <filter id="glow-green-cover" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+      <filter id="glow-blue-cover" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+    ${gridHtml}
+    <!-- Garis Penerimaan (Hijau) -->
+    <path d="${pathMasuk}" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-green-cover)" />
+    <!-- Garis Kelulusan (Biru) -->
+    <path d="${pathLulus}" fill="none" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-blue-cover)" />
+    ${boxHtml}
+    ${labelsX}
+    <text x="15" y="${height/2}" fill="#94A3B8" font-size="12" font-weight="bold" text-anchor="middle" transform="rotate(-90 15 ${height/2})">JUMLAH SISWA</text>
+  `;
+}
+
 /* ---------- INIT ---------- */
 window.addEventListener('DOMContentLoaded', () => {
   applyTheme();
   cekLogo();
   loadStats();
   loadGuruGrid();
+  loadStatistikAlumni(); // Panggil fungsi fetch alumni
   updateClock();
   setInterval(updateClock, 1000);
 });
@@ -1032,7 +1194,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setInterval(cekVersi, CEK_INTERVAL);
   setTimeout(cekVersi, 3000);
 
-  console.log('✅ SIAGRA v.2.s — warna-warni + auto-update aktif');
+  console.log('✅ SIAGRA v.2.s — Statistik Alumni ditambahkan');
 })();
 </script>
 
