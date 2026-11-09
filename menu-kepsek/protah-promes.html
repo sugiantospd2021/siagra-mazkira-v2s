@@ -99,7 +99,7 @@
     position:relative;z-index:1;align-items:start;
   }
 
-  /* PROFIL (PERSIS KEPSEK.HTML) */
+  /* PROFIL */
   .col-profil{position:sticky;top:88px;height:calc(100vh - 110px);max-height:calc(100vh - 110px)}
   .profile-card{
     background:var(--card);border-radius:16px;border:2px solid var(--card-border);
@@ -180,9 +180,19 @@
     transition:all .2s;box-shadow:0 0 10px var(--card-border-glow);
   }
   .btn-action:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--card-border-glow)}
+  
+  /* Tombol Protah Biru */
   .btn-action.primary{background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;border-color:#3B82F6}
-  .btn-action.success{background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-color:#10B981}
-  .btn-action.success:hover{box-shadow:0 0 20px rgba(16,185,129,.5)}
+  
+  /* ============================================================
+     TOMBOL PROMES (HIJAU TERANG)
+     ============================================================ */
+  .btn-action.success{
+    background:linear-gradient(135deg,#10B981,#059669);
+    color:#fff;border-color:#10B981;
+    box-shadow:0 0 15px rgba(16,185,129,.4);
+  }
+  .btn-action.success:hover{box-shadow:0 0 25px rgba(16,185,129,.6)}
 
   /* ============================================================
      TABEL PROTAH (BIRU)
@@ -199,12 +209,14 @@
   body.light .table-card.prota .table-card-header{background:rgba(191,219,254,.3)}
   
   /* ============================================================
-     TABEL PROMES (HIJAU) - Perubahan Utama
+     TABEL PROMES (HIJAU TERANG FULL)
      ============================================================ */
   .table-card.promes {
-    background:var(--card);border-radius:16px;
-    border:2px solid rgba(16,185,129,.6); /* Border Hijau */
-    box-shadow:0 0 25px rgba(16,185,129,.35); /* Glow Hijau */
+    /* Background hijau gelap transparan agar teks tetap terbaca */
+    background:rgba(16, 185, 129, 0.08); 
+    border-radius:16px;
+    border:2px solid #10B981; /* Border Hijau Terang */
+    box-shadow:0 0 25px rgba(16,185,129,.25); /* Glow Hijau */
     overflow:hidden;margin-bottom:24px;
   }
   .table-card.promes .table-card-header {
@@ -217,7 +229,7 @@
   
   /* Header teks */
   .table-card-header h3{font-size:15px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
-  .table-card.promes .table-card-header h3{color:#10B981;} /* Teks judul Promes hijau */
+  .table-card.promes .table-card-header h3{color:#4ADE80;} /* Teks judul Promes hijau terang */
   
   /* Badge Count Protah (Biru) */
   .table-card.prota .badge-count{
@@ -233,6 +245,23 @@
   }
   body.light .table-card.promes .badge-count{background:rgba(16,185,129,.1);color:#047857;border-color:rgba(16,185,129,.3)}
 
+  /* Styling Tabel dalam Card Promes */
+  .table-card.promes thead {
+    background:rgba(16,185,129,0.05);
+  }
+  .table-card.promes th {
+    border-bottom:1px solid rgba(16,185,129,.2);
+    color:#A7F3D0; /* Warna teks header agak kehijauan */
+  }
+  .table-card.promes td {
+    border-bottom:1px solid rgba(16,185,129,.15);
+    background:transparent;
+  }
+  .table-card.promes tr:hover td {
+    background:rgba(16,185,129,0.05);
+  }
+
+  /* STYLING UMUM TABEL */
   .table-scroll{overflow-x:auto}
   table{width:100%;border-collapse:separate;border-spacing:0;min-width:600px}
   thead{background:rgba(0,0,0,.5)}
@@ -394,6 +423,7 @@
     <!-- TOOLBAR AKSI -->
     <div class="toolbar">
       <button class="btn-action primary" onclick="bukaModal('prota')">➕ Tambah Protah</button>
+      <!-- Tombol Promes Hijau -->
       <button class="btn-action success" onclick="bukaModal('promes')">➕ Tambah Promes</button>
     </div>
 
@@ -586,7 +616,7 @@ function namaKeFile(nama){
 }
 
 /* ============================================================
-   AVATAR SVG (SAMA SEPERTI KEPSEK.HTML)
+   AVATAR SVG
    ============================================================ */
 function avatarSvg(nama){
   let hash = 0;
@@ -644,13 +674,13 @@ function pakaiFotoAtauAvatar(el, nama){
       idx++; 
       cobaLoad(); 
     };
-    img.src = '../foto/' + baseName + '.' + exts[idx]; // PERBAIKAN: Pakai ../foto/
+    img.src = '../foto/' + baseName + '.' + exts[idx];
   }
   cobaLoad();
 }
 
 /* ============================================================
-   CARI DATA KEPSEK DARI SUPABASE (SAMA SEPERTI KEPSEK.HTML)
+   CARI DATA KEPSEK DARI SUPABASE
    ============================================================ */
 async function cariDataKepsekSupabase(){
   const namaLogin = normalisasiNama(user.nama);
@@ -672,7 +702,7 @@ async function cariDataKepsekSupabase(){
 }
 
 /* ============================================================
-   RENDER PROFIL (LOGIKA PERSIS KEPSEK.HTML)
+   RENDER PROFIL
    ============================================================ */
 async function renderProfil(){
   const nama = user.nama;
