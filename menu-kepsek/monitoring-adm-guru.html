@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<!-- Tambahkan Supabase agar profil bisa memuat data dari database -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/png" href="../logo-siagra.png">
@@ -69,7 +73,86 @@
   /* WRAPPER */
   .wrapper{
     max-width:1200px;margin:0 auto;padding:24px 16px;
-    position:relative;z-index:1;
+    display:grid;grid-template-columns:300px 1fr;gap:24px;
+    position:relative;z-index:1;align-items:start;
+  }
+
+  /* PROFIL */
+  .col-profil{position:sticky;top:88px;height:calc(100vh - 110px);max-height:calc(100vh - 110px)}
+  .profile-card{
+    background:var(--card);border-radius:16px;border:2px solid var(--card-border);
+    box-shadow:0 0 25px var(--card-border-glow),0 8px 24px rgba(0,0,0,.6);
+    height:100%;max-height:100%;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .profile-card-header{
+    padding:20px 18px 16px;text-align:center;border-bottom:1px dashed var(--border);flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(15,26,58,.6));
+  }
+  body.light .profile-card-header{background:linear-gradient(135deg,rgba(240,244,251,.6),rgba(220,235,255,.8))}
+  .profile-photo{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#0F1A3A,#1E3A8A);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:800;color:#DBEAFE;
+    overflow:hidden;border:3px solid var(--card-border);margin:0 auto 12px;
+  }
+  .profile-photo img{width:100%;height:100%;object-fit:cover}
+  .profile-photo svg{width:100%;height:100%;display:block}
+  .profile-card-header h2{font-size:14.5px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.35}
+  .profile-card-header .jabatan-badge{
+    display:inline-block;padding:4px 12px;border-radius:100px;font-size:10.5px;font-weight:700;
+    background:rgba(0,0,0,.4);color:#FCD34D;border:1px solid rgba(59,130,246,.5);
+    text-transform:uppercase;margin-bottom:6px;
+  }
+  body.light .profile-card-header .jabatan-badge{background:rgba(59,130,246,.15);color:#1E40AF}
+  .profile-card-header .lama-text{display:block;font-size:11.5px;font-weight:700;color:#FCD34D;margin-top:4px}
+  body.light .profile-card-header .lama-text{color:var(--primary-dark)}
+  .profile-card-body{flex:1;overflow-y:auto;padding:14px 18px 18px;scrollbar-width:thin;scrollbar-color:var(--card-border) transparent}
+  .profile-card-body::-webkit-scrollbar{width:6px}
+  .profile-card-body::-webkit-scrollbar-thumb{background:rgba(59,130,246,.4);border-radius:10px}
+  .info-section-title{
+    font-size:10px;font-weight:800;color:var(--sub);text-transform:uppercase;
+    letter-spacing:.06em;margin-bottom:8px;margin-top:6px;display:flex;align-items:center;gap:6px;
+  }
+  .info-section-title::before{content:'';width:3px;height:12px;background:var(--card-border);border-radius:2px}
+  .info-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .info-item{
+    display:flex;justify-content:space-between;gap:8px;padding:7px 10px;
+    background:var(--card-inner);border:1px solid var(--border);border-radius:8px;font-size:11.5px;
+  }
+  .info-item .lbl{color:var(--sub);font-weight:600;flex-shrink:0}
+  .info-item .val{color:var(--text);font-weight:700;text-align:right;word-break:break-word;min-width:0}
+
+  /* KOLOM KANAN */
+  .col-menu{min-width:0}
+
+  /* ============================================================
+     HERO / INTRO CARD
+     ============================================================ */
+  .intro-card{
+    background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 55%,#3B82F6 100%);
+    color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px;
+    border:2px solid rgba(191,219,254,.5);
+    box-shadow:0 10px 30px rgba(59,130,246,.45);
+    position:relative;overflow:hidden;
+  }
+  .intro-card::before{
+    content:'';position:absolute;top:-60px;right:-60px;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);
+    pointer-events:none;
+  }
+  .intro-card h2{
+    font-size:20px;font-weight:800;margin-bottom:6px;
+    position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  .intro-card p{
+    font-size:13px;font-weight:600;line-height:1.5;
+    opacity:.95;position:relative;z-index:1;text-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  body.light .intro-card{
+    background:linear-gradient(135deg,#1E40AF 0%,#2563EB 55%,#3B82F6 100%);
+    border-color:rgba(96,165,250,.5);
   }
 
   /* HEADER INLINE */
@@ -81,7 +164,6 @@
     display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;
     color:var(--yellow);margin:0;text-shadow:0 0 12px rgba(252,211,77,.4);
   }
-  body.dark .form-header-inline .form-title-text { color: var(--yellow); }
   .btn-back-inline{
     background:var(--card);color:var(--text);border:2px solid var(--card-border);
     padding:10px 20px;border-radius:10px;font-family:inherit;font-size:13px;
@@ -118,9 +200,9 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 26px; flex-shrink: 0;
   }
-  .stat-icon.anekdot { background: rgba(16,185,129,.15); color: #10B981; border: 1px solid rgba(16,185,129,.3); }
-  .stat-icon.observasi { background: rgba(59,130,246,.15); color: #3B82F6; border: 1px solid rgba(59,130,246,.3); }
-  .stat-icon.penilaian { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  .stat-icon.anekdot { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  .stat-icon.observasi { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
+  .stat-icon.penilaian { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
   
   .stat-info h3 { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
   .stat-info p { font-size: 12px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: .05em; }
@@ -176,9 +258,10 @@
     padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 800;
     min-width: 40px;
   }
-  .badge.anekdot { background: rgba(16,185,129,.15); color: #10B981; border: 1px solid rgba(16,185,129,.3); }
-  .badge.observasi { background: rgba(59,130,246,.15); color: #3B82F6; border: 1px solid rgba(59,130,246,.3); }
-  .badge.penilaian { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  /* Warna badge disesuaikan dengan menu guru.html */
+  .badge.anekdot { background: rgba(139,92,246,.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,.3); }
+  .badge.observasi { background: rgba(249,115,22,.15); color: #F97316; border: 1px solid rgba(249,115,22,.3); }
+  .badge.penilaian { background: rgba(6,182,212,.15); color: #06B6D4; border: 1px solid rgba(6,182,212,.3); }
   .badge.zero { opacity: .4; filter: grayscale(1); }
 
   /* TOAST */
@@ -193,11 +276,18 @@
   .toast.error{background:linear-gradient(135deg,#DC2626,#991B1B);border-color:#EF4444}
   .toast.info{background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-color:#60A5FA}
 
-  @media(max-width: 640px) {
-    .header { flex-wrap: wrap; padding: 12px 16px; }
-    .header-left, .header-center, .header-right { flex: 1 1 100%; justify-content: center; text-align: center; }
-    .form-header-inline { flex-direction: column; align-items: stretch; }
-    .btn-back-inline { justify-content: center; }
+  @media(max-width:900px){
+    .wrapper{grid-template-columns:1fr;gap:18px}
+    .col-profil{position:static;height:auto;max-height:none}
+    .profile-card{max-height:none;height:auto}
+    .profile-card-body{overflow-y:visible;max-height:none}
+  }
+  @media(max-width:640px){
+    .header{flex-wrap:wrap;padding:12px 16px;position:relative}
+    .header-left,.header-center,.header-right{flex:1 1 100%;justify-content:center;text-align:center}
+    .wrapper{padding:16px 12px}
+    .form-header-inline{flex-direction:column;align-items:stretch}
+    .btn-back-inline{justify-content:center}
   }
 </style>
 </head>
@@ -218,75 +308,103 @@
 <!-- MAIN WRAPPER -->
 <div class="wrapper">
   
-  <!-- HEADER INLINE -->
-  <div class="form-header-inline">
-    <div class="form-title-text"><span class="emoji">📊</span><span>Dashboard Administrasi Guru</span></div>
-    <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
-  </div>
-
-  <!-- KARTU STATISTIK TOTAL -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon anekdot">📔</div>
-      <div class="stat-info">
-        <h3 id="totalAnekdot">0</h3>
-        <p>Catatan Anekdot</p>
+  <!-- KOLOM KIRI: PROFIL -->
+  <div class="col-profil">
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-photo" id="profilePhoto">-</div>
+        <h2 id="profileNama">-</h2>
+        <div class="jabatan-badge" id="profileJabatan">-</div>
+        <span class="lama-text" id="profileLama">-</span>
       </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon observasi">👀</div>
-      <div class="stat-info">
-        <h3 id="totalObservasi">0</h3>
-        <p>Observasi Harian</p>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon penilaian">⭐</div>
-      <div class="stat-info">
-        <h3 id="totalPenilaian">0</h3>
-        <p>Penilaian KBC</p>
-      </div>
+      <div class="profile-card-body" id="profileBody"></div>
     </div>
   </div>
 
-  <!-- FILTER -->
-  <div class="filter-card">
-    <div class="filter-row">
-      <div class="filter-field">
-        <label>Periode (Bulan)</label>
-        <input type="month" id="filterPeriode" onchange="renderTabel()">
+  <!-- KOLOM KANAN: KONTEN -->
+  <div class="col-menu">
+    
+    <!-- HERO / INTRO CARD -->
+    <div class="intro-card">
+      <h2>📊 Monitoring Administrasi Guru</h2>
+      <p>Pantau kelengkapan administrasi guru seperti Catatan Anekdot, Observasi Harian, dan Penilaian KBC secara berkala.</p>
+    </div>
+
+    <!-- HEADER INLINE -->
+    <div class="form-header-inline">
+      <div class="form-title-text"><span class="emoji">📊</span><span>Dashboard Administrasi Guru</span></div>
+      <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
+    </div>
+
+    <!-- TANGGAL CETAK -->
+    <div style="text-align:right; font-size:11.5px; color:var(--sub); margin-bottom:10px; font-weight:600;">
+      Laporan dibuat: <span id="tanggalCetak" style="font-weight:800; color:var(--text);"></span>
+    </div>
+
+    <!-- KARTU STATISTIK TOTAL -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon anekdot">📔</div>
+        <div class="stat-info">
+          <h3 id="totalAnekdot">0</h3>
+          <p>Catatan Anekdot</p>
+        </div>
       </div>
-      <div class="filter-field">
-        <label>Cari Nama Guru</label>
-        <input type="text" id="filterCari" placeholder="Ketik nama guru..." oninput="renderTabel()">
+      <div class="stat-card">
+        <div class="stat-icon observasi">👀</div>
+        <div class="stat-info">
+          <h3 id="totalObservasi">0</h3>
+          <p>Observasi Harian</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon penilaian">⭐</div>
+        <div class="stat-info">
+          <h3 id="totalPenilaian">0</h3>
+          <p>Penilaian KBC</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- TABEL MONITORING -->
-  <div class="table-wrap">
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 50px;">No</th>
-            <th>Nama Guru</th>
-            <th style="text-align: center;">Anekdot</th>
-            <th style="text-align: center;">Observasi</th>
-            <th style="text-align: center;">Penilaian KBC</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyMonitoring">
-          <tr>
-            <td colspan="5" style="text-align: center; padding: 40px; color: var(--sub);">
-              ⏳ Memuat data...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- FILTER -->
+    <div class="filter-card">
+      <div class="filter-row">
+        <div class="filter-field">
+          <label>Periode (Bulan)</label>
+          <input type="month" id="filterPeriode" onchange="renderTabel()">
+        </div>
+        <div class="filter-field">
+          <label>Cari Nama Guru</label>
+          <input type="text" id="filterCari" placeholder="Ketik nama guru..." oninput="renderTabel()">
+        </div>
+      </div>
     </div>
-  </div>
 
+    <!-- TABEL MONITORING -->
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px;">No</th>
+              <th>Nama Guru</th>
+              <th style="text-align: center;">Anekdot</th>
+              <th style="text-align: center;">Observasi</th>
+              <th style="text-align: center;">Penilaian KBC</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyMonitoring">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 40px; color: var(--sub);">
+                ⏳ Memuat data...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <div class="toast" id="toast">✨</div>
@@ -355,12 +473,195 @@ function updateClock(){
   const m = String(wita.getMinutes()).padStart(2,'0');
   const el = document.getElementById('liveClock');
   if(el) el.textContent = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear() + ' • ' + h + '.' + m + ' WITA';
+  
+  // Set Tanggal Cetak
+  const elCetak = document.getElementById('tanggalCetak');
+  if(elCetak) elCetak.textContent = days[wita.getDay()] + ', ' + wita.getDate() + ' ' + months[wita.getMonth()] + ' ' + wita.getFullYear();
 }
 updateClock();
 setInterval(updateClock, 1000);
 
 /* ============================================================
-   PROSES DATA
+   UTIL PROFIL & AVATAR
+   ============================================================ */
+function namaKeFile(nama){
+  let bersih = String(nama||'').split(',')[0].trim();
+  bersih = bersih.replace(/\bP\.?\s*S\.?/gi, ' ').replace(/\bS\.?\s*Pd\.?/gi, ' ').replace(/\bM\.?\s*Pd\.?/gi, ' ')
+    .replace(/\bS\.?\s*Ag\.?/gi, ' ').replace(/\bS\.?\s*Si\.?/gi, ' ').replace(/\bS\.?\s*Kom\.?/gi, ' ')
+    .replace(/\bM\.?\s*Si\.?/gi, ' ').replace(/\bGr\.?/gi, ' ').replace(/\bDrs\.?/gi, ' ').replace(/\bDra\.?/gi, ' ')
+    .replace(/\bDr\.?/gi, ' ').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').replace(/[^a-zA-Z0-9\-]/g, '');
+  return bersih;
+}
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function normalisasiNama(nama){
+  if(!nama) return '';
+  let s = String(nama).trim().toLowerCase();
+  s = s.split(',')[0].trim();
+  s = s.replace(/[.,']/g, ' ').replace(/\s+/g, ' ').trim();
+  return s;
+}
+function hitungLamaMengajar(tmt){
+  if(!tmt) return { teks:'-', tahun:0, bulan:0 };
+  const a = new Date(tmt + 'T00:00:00');
+  const b = new Date();
+  if(isNaN(a) || a > b) return { teks:'-', tahun:0, bulan:0 };
+  let tahun = b.getFullYear() - a.getFullYear();
+  let bulan = b.getMonth() - a.getMonth();
+  if(bulan < 0){ tahun--; bulan += 12; }
+  let teks = '';
+  if(tahun > 0) teks += tahun + ' thn ';
+  if(bulan > 0) teks += bulan + ' bln';
+  if(!teks) teks = 'Baru';
+  return { teks: teks.trim(), tahun, bulan };
+}
+function formatTanggalPanjang(tgl){
+  if(!tgl) return '-';
+  const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const d = new Date(tgl + 'T00:00:00');
+  if(isNaN(d)) return tgl;
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function avatarSvg(nama){
+  let hash = 0;
+  for(let i=0; i<(nama||'').length; i++) hash += nama.charCodeAt(i);
+  const variant = Math.abs(hash) % 4;
+  const palettes = [
+    { bg1:'#0F1A3A', bg2:'#1E3A8A', fg:'#F5F5F5' },
+    { bg1:'#0A1F17', bg2:'#1E3A8A', fg:'#F5F5F5' },
+    { bg1:'#1F1A14', bg2:'#3D2A1A', fg:'#F5F5F5' },
+    { bg1:'#1A141F', bg2:'#2A1A3D', fg:'#F5F5F5' }
+  ];
+  const p = palettes[variant];
+  const id = 'av' + Math.random().toString(36).slice(2, 9);
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g${id}" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="${p.fg}" stop-opacity="0.95"/><stop offset="100%" stop-color="${p.fg}" stop-opacity="0.75"/></linearGradient>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${p.bg1}"/><stop offset="100%" stop-color="${p.bg2}"/></linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#bg${id})"/>
+    <circle cx="60" cy="42" r="18" fill="url(#g${id})"/>
+    <path d="M 20 100 Q 20 68 60 68 Q 100 68 100 100 Z" fill="url(#g${id})"/>
+  </svg>`;
+}
+function pakaiFotoAtauAvatar(el, nama){
+  if(!el) return;
+  const userEmail = user && user.email ? user.email : nama;
+  const fotoUpload = localStorage.getItem('ra_foto_' + userEmail);
+  
+  if(fotoUpload){ 
+    el.innerHTML = '<img src="' + fotoUpload + '" alt="Foto">'; 
+    return; 
+  }
+  
+  const baseName = namaKeFile(nama);
+  const exts = ['jpg', 'png', 'jpeg', 'JPG', 'PNG'];
+  let idx = 0;
+  
+  function cobaLoad(){
+    if(idx >= exts.length){ 
+      el.innerHTML = avatarSvg(nama); 
+      return; 
+    }
+    const img = new Image();
+    img.onload = function(){ 
+      el.innerHTML = '<img src="' + img.src + '" alt="Foto">'; 
+    };
+    img.onerror = function(){ 
+      idx++; 
+      cobaLoad(); 
+    };
+    img.src = '../foto/' + baseName + '.' + exts[idx];
+  }
+  cobaLoad();
+}
+
+/* ============================================================
+   CARI DATA KEPSEK — SUPABASE (Profil)
+   ============================================================ */
+async function cariDataKepsekSupabase(){
+  if (typeof sb === 'undefined') return null;
+  const namaLogin = normalisasiNama(user.nama);
+  let { data, error } = await sb.from('guru').select('*').ilike('nama', `%${namaLogin}%`).limit(1).maybeSingle();
+  if(error || data) return data;
+  
+  const namaDepan = namaLogin.split(' ')[0];
+  if(namaDepan.length > 2){
+    let { data: data2 } = await sb.from('guru').select('*').ilike('nama', `%${namaDepan}%`).limit(1).maybeSingle();
+    if(data2) return data2;
+  }
+  return null;
+}
+
+async function renderProfil(){
+  const nama = user.nama;
+  const body = document.getElementById('profileBody');
+  if(!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--sub)">⏳ Memuat data...</div>';
+
+  const dataKepsek = await cariDataKepsekSupabase();
+
+  if(!dataKepsek){
+    document.getElementById('profileNama').textContent = nama;
+    document.getElementById('profileJabatan').textContent = 'Kepala Sekolah';
+    document.getElementById('profileLama').textContent = '';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0"><div style="font-size:36px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Data Belum Lengkap</div><div style="font-size:11.5px;color:#93C5FD;line-height:1.5">Profil Anda belum terdaftar di Data GTK.<br>Silakan hubungi Admin.</div></div>';
+    pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), nama);
+    return;
+  }
+
+  document.getElementById('profileNama').textContent = dataKepsek.nama;
+  document.getElementById('profileJabatan').textContent = dataKepsek.jabatan || 'Kepala Sekolah';
+  const lama = hitungLamaMengajar(dataKepsek.tmt);
+  document.getElementById('profileLama').textContent = dataKepsek.tmt ? '⏱️ ' + lama.teks : '';
+
+  let html = '';
+  const identitas = [];
+  if(dataKepsek.nik) identitas.push({ l: 'NIK', v: dataKepsek.nik });
+  if(dataKepsek.npk) identitas.push({ l: 'NPK/PEGID', v: dataKepsek.npk });
+  if(dataKepsek.jk) identitas.push({ l: 'Jenis Kelamin', v: dataKepsek.jk === 'L' ? 'Laki-laki' : 'Perempuan' });
+  if(dataKepsek.tempat_lahir) identitas.push({ l: 'Tempat Lahir', v: dataKepsek.tempat_lahir });
+  if(dataKepsek.tanggal_lahir) identitas.push({ l: 'Tanggal Lahir', v: formatTanggalPanjang(dataKepsek.tanggal_lahir) });
+  if(identitas.length > 0){
+    html += '<div class="info-section-title">📇 Identitas</div><div class="info-list">';
+    identitas.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const pegawai = [];
+  if(dataKepsek.pendidikan) pegawai.push({ l: 'Pendidikan', v: dataKepsek.pendidikan });
+  if(dataKepsek.tmt) pegawai.push({ l: 'TMT', v: formatTanggalPanjang(dataKepsek.tmt) });
+  if(dataKepsek.tmt) pegawai.push({ l: 'Lama Mengajar', v: lama.teks });
+  if(dataKepsek.jabatan) pegawai.push({ l: 'Jabatan', v: dataKepsek.jabatan });
+  if(pegawai.length > 0){
+    html += '<div class="info-section-title">💼 Kepegawaian</div><div class="info-list">';
+    pegawai.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  const kontak = [];
+  if(dataKepsek.hp) kontak.push({ l: 'HP/WA', v: dataKepsek.hp });
+  if(dataKepsek.email) kontak.push({ l: 'Email', v: dataKepsek.email });
+  if(dataKepsek.alamat) kontak.push({ l: 'Alamat', v: dataKepsek.alamat });
+  if(kontak.length > 0){
+    html += '<div class="info-section-title">📞 Kontak</div><div class="info-list">';
+    kontak.forEach(it => {
+      html += `<div class="info-item"><span class="lbl">${escapeHtml(it.l)}</span><span class="val">${escapeHtml(it.v)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  body.innerHTML = html;
+  pakaiFotoAtauAvatar(document.getElementById('profilePhoto'), dataKepsek.nama);
+}
+setTimeout(renderProfil, 100);
+
+/* ============================================================
+   PROSES DATA MONITORING
    ============================================================ */
 function loadData(key) {
   try {
@@ -369,23 +670,23 @@ function loadData(key) {
   } catch(e) { return []; }
 }
 
-// Ambil semua nama guru unik dari berbagai sumber
+// Ambil semua nama guru unik, KECUALIKAN nama-nama tertentu
 function getDaftarGuru() {
   const guruSet = new Set();
   
-  // 1. Dari data master guru (jika ada)
+  // 1. Dari data master guru
   const masterGuru = loadData('ra_guru');
   masterGuru.forEach(g => { if(g.nama) guruSet.add(g.nama); });
 
-  // 2. Dari data Anekdot (field `guru`)
+  // 2. Dari data Anekdot
   const anekdot = loadData('ra_anekdot');
   anekdot.forEach(d => { if(d.guru) guruSet.add(d.guru); });
 
-  // 3. Dari data Observasi (field `guru`)
+  // 3. Dari data Observasi
   const observasi = loadData('ra_observasi_kbc');
   observasi.forEach(d => { if(d.guru) guruSet.add(d.guru); });
 
-  // 4. Dari data Penilaian (field `guruNama`)
+  // 4. Dari data Penilaian
   for(let i=0; i<localStorage.length; i++) {
     const k = localStorage.key(i);
     if(k && k.startsWith('ra_penilaian_kbc_')) {
@@ -396,7 +697,17 @@ function getDaftarGuru() {
     }
   }
 
-  return Array.from(guruSet).sort();
+  // Daftar nama yang dikecualikan (bukan guru kelas)
+  const namaDikecualikan = ['anto', 'puspa', 'sugianto'];
+
+  // Filter dan urutkan
+  return Array.from(guruSet)
+    .filter(nama => {
+      const namaBersih = normalisasiNama(nama).toLowerCase();
+      // Cek apakah nama mengandung salah satu kata yang dikecualikan
+      return !namaDikecualikan.some(dikecualikan => namaBersih.includes(dikecualikan));
+    })
+    .sort();
 }
 
 function hitungDataGuru(namaGuru, periodeFilter) {
@@ -407,14 +718,14 @@ function hitungDataGuru(namaGuru, periodeFilter) {
   // 1. Hitung Anekdot
   const anekdot = loadData('ra_anekdot');
   countAnekdot = anekdot.filter(d => 
-    d.guru === namaGuru && 
+    normalisasiNama(d.guru) === normalisasiNama(namaGuru) && 
     (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
   ).length;
 
   // 2. Hitung Observasi
   const observasi = loadData('ra_observasi_kbc');
   countObservasi = observasi.filter(d => 
-    d.guru === namaGuru && 
+    normalisasiNama(d.guru) === normalisasiNama(namaGuru) && 
     (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)
   ).length;
 
@@ -424,7 +735,7 @@ function hitungDataGuru(namaGuru, periodeFilter) {
     if(k && k.startsWith('ra_penilaian_kbc_')) {
       try {
         const d = JSON.parse(localStorage.getItem(k));
-        if(d && d.guruNama === namaGuru && (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)) {
+        if(d && normalisasiNama(d.guruNama) === normalisasiNama(namaGuru) && (!periodeFilter || (d.tanggal||'').substring(0,7) === periodeFilter)) {
           countPenilaian++;
         }
       } catch(e){}
@@ -454,8 +765,8 @@ function renderTabel() {
   // Jika yang login adalah GURU, filter hanya dirinya sendiri
   let guruTampil = daftarGuru;
   if(user.role === 'guru') {
-    const namaSaya = user.nama.split(',')[0].trim().toLowerCase();
-    guruTampil = daftarGuru.filter(g => g.toLowerCase().includes(namaSaya));
+    const namaSaya = normalisasiNama(user.nama);
+    guruTampil = daftarGuru.filter(g => normalisasiNama(g).includes(namaSaya));
   }
 
   let totalAnekdot = 0;
@@ -522,7 +833,7 @@ function logout(){
 document.getElementById('filterPeriode').value = getTodayISO().substring(0,7);
 renderTabel();
 
-console.log('✅ monitoring-administrasi.html loaded');
+console.log('✅ monitoring-adm-guru.html loaded');
 </script>
 
 <script src="../auto-update.js"></script>
