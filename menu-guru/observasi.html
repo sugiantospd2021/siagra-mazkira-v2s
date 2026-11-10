@@ -1852,7 +1852,7 @@ function togglePilar(id){
 /* ============================================================
    SIMPAN OBSERVASI
    ============================================================ */
-function simpanObservasi(){
+async function simpanObservasi(){
   const tanggal = document.getElementById('fTanggal').value;
   const waktu   = document.getElementById('fWaktu').value;
   const rombel  = document.getElementById('fRombel').value;
@@ -1863,17 +1863,14 @@ function simpanObservasi(){
   const catatan = document.getElementById('fCatatan').value.trim();
   const emoji   = document.getElementById('fEmoji').value;
 
+  // Validasi
   if(!tanggal){ showToast('📅 Tanggal wajib diisi', 'warn'); return; }
   if(!rombel){ showToast('🏫 Rombel belum dipilih', 'warn'); return; }
-
   if(!anakVal || !anakObj){
     playBeep('warn');
     showToast('👶 Pilih anak dulu sebelum menyimpan observasi!', 'warn');
     const selAnak = document.getElementById('fAnak');
-    if(selAnak){
-      selAnak.focus();
-      selAnak.scrollIntoView({behavior:'smooth', block:'center'});
-    }
+    if(selAnak){ selAnak.focus(); selAnak.scrollIntoView({behavior:'smooth', block:'center'}); }
     return;
   }
   if(!anak){ showToast('👶 Pilih anak dulu', 'warn'); return; }
@@ -1891,6 +1888,26 @@ function simpanObservasi(){
     }
   });
 
+  // 1. SIMPAN KE SUPABASE
+  if (typeof sb !== 'undefined') {
+    const payload = {
+      tanggal: tanggal,
+      waktu: waktu || getNowHHMM(),
+      rombel: rombel,
+      setting: setting,
+      anak: anak,
+      pilar: pilarArr,
+      catatan: catatan,
+      emoji: emoji,
+      guru: user.nama,
+      guru_id: normalisasiNama(user.nama)
+    };
+
+    const { error } = await sb.from('observasi').insert([payload]);
+    if (error) { showToast('❌ Gagal simpan ke server: ' + error.message, 'error'); return; }
+  }
+
+  // 2. SIMPAN KE LOCALSTORAGE
   const semuaObs = load(KEY_OBS, []) || [];
   const item = {
     id: 'obs_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
@@ -1907,7 +1924,7 @@ function simpanObservasi(){
     resetForm();
     updateCountBadge();
   } else {
-    showToast('❌ Gagal menyimpan', 'error');
+    showToast('❌ Gagal menyimpan di perangkat.', 'error');
   }
 }
 
