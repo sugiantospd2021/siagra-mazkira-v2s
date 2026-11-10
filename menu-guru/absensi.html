@@ -423,6 +423,17 @@
         </div>
       </div>
       <div id="rekapContent"></div>
+      
+      <!-- TOMBOL HAPUS REKAP BULANAN (BARU) -->
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn btn-danger" onclick="hapusRekapBulanAktif()" style="width: 100%;">
+          🗑️ Hapus Data Rekap Bulan Ini
+        </button>
+        <p style="font-size: 11px; color: var(--sub); margin-top: 8px; text-align: center;">
+          *Data yang dihapus tidak dapat dikembalikan.
+        </p>
+      </div>
+
     </div>
 
     <!-- TAB 4: BACKUP -->
@@ -457,12 +468,12 @@
         </div>
         
         <div class="backup-grid">
-          <!-- TOMBOL HAPUS TOTAL -->
+          <!-- HAPUS SEMUA -->
           <div class="backup-card danger">
             <div class="icon">🗑️</div>
-            <h4>Hapus Data Absensi</h4>
-            <p>Pilih dan hapus data absensi berdasarkan bulan tertentu atau hapus seluruh data secara permanen.</p>
-            <button class="btn btn-danger" onclick="konfirmasiHapusData()">🗑️ Mulai Hapus Data</button>
+            <h4>Hapus Semua Data</h4>
+            <p>Hapus permanen semua data absensi Anda dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
+            <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
           </div>
           
           <!-- BERSIHKAN DUPLIKAT -->
@@ -1260,75 +1271,30 @@ function restoreJSON(event){
   reader.readAsText(file);
 }
 
-/* ============================================================
-   FUNGSI HAPUS DATA (PAMUNGKAS - HAPUS CACHE & RELOAD PAKSA)
-   ============================================================ */
-async function konfirmasiHapusData(){
-  const bulanDefault = getTodayISO().substring(0,7);
-  const opsi = prompt(`⚠️ ZONA HAPUS DATA\n\nKetik bulan yang ingin dihapus (format: TAHUN-BULAN).\nContoh: ${bulanDefault}\n\nATAU ketik "SEMUA" untuk menghapus seluruh data.\n\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN!`, bulanDefault);
-  
-  if(!opsi) return;
-  
-  const hapusSemua = (opsi.toUpperCase() === 'SEMUA');
-  let bulanTarget = '';
-
-  if(!hapusSemua){
-    if (!/^\d{4}-\d{2}$/.test(opsi)) {
-      return showToast('❌ Format salah. Gunakan YYYY-MM atau ketik "SEMUA".', 'error');
-    }
-    bulanTarget = opsi;
-  }
-
-  const ketik = prompt(`Ketik "HAPUS" untuk mengonfirmasi:`);
+async function hapusSemuaAbsen(){
+  if(typeof sb === 'undefined') return;
+  if(!confirm('⚠️ HATI-HATI!\n\nAnda akan MENGHAPUS SEMUA data absensi milik Anda dari database Supabase.\nTindakan ini tidak dapat dibatalkan.\n\nLanjutkan?')) return;
+  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
   if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
   
-  showToast('⏳ Menghapus data...', 'info');
+  showToast('⏳ Menghapus...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-
-  // 1. HAPUS DARI SUPABASE
-  let queryHapus = sb.from('absensi').delete().eq('nama_guru', namaSaya);
   
-  if (!hapusSemua) {
-    const awalBulan = bulanTarget + '-01';
-    const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
-    akhirBulan.setMonth(akhirBulan.getMonth() + 1);
-    akhirBulan.setDate(0);
-    const tglAkhir = akhirBulan.getFullYear() + '-' + 
-      String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
-      String(akhirBulan.getDate()).padStart(2,'0');
-      
-    queryHapus = queryHapus.gte('tanggal', awalBulan).lte('tanggal', tglAkhir);
-  }
-
-  const { error } = await queryHapus;
-  if(error) {
-    alert('Gagal menghapus dari Supabase: ' + error.message);
-    return;
-  }
-
-  // 2. HAPUS DARI CACHE LOKAL
-  if (hapusSemua) {
-    let dataLokal = load(KEY_ABSEN, []) || [];
-    dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
-    save(KEY_ABSEN, dataLokal);
-  } else {
-    let dataLokal = load(KEY_ABSEN, []) || [];
-    const awalBulan = bulanTarget + '-01';
-    const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
-    akhirBulan.setMonth(akhirBulan.getMonth() + 1);
-    akhirBulan.setDate(0);
-    const tglAkhir = akhirBulan.getFullYear() + '-' + 
-      String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
-      String(akhirBulan.getDate()).padStart(2,'0');
-
-    dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
-    save(KEY_ABSEN, dataLokal);
-  }
-
-  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
+  // Hapus dari Supabase
+  const { error } = await sb.from('absensi').delete().eq('nama_guru', namaSaya);
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
   
-  // 3. PAKSA RELOAD HALAMAN (Ini kunci agar tampilan benar-benar bersih)
-  window.location.reload();
+  // Hapus dari LocalStorage (Cache Offline)
+  let dataLokal = load(KEY_ABSEN, []) || [];
+  dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
+  save(KEY_ABSEN, dataLokal);
+
+  showToast('🗑️ Semua data absensi Anda berhasil dihapus', 'success');
+  
+  // Refresh tampilan
+  renderRiwayat();         
+  renderRekap();           
+  updateCountBadge();      
 }
 
 async function bersihkanDuplikat(){
@@ -1364,6 +1330,54 @@ async function bersihkanDuplikat(){
   showToast(`✅ ${idsToDelete.length} data duplikat dibersihkan`, 'success');
   renderRiwayat();
   renderRekap();
+}
+
+/* ============================================================
+   FUNGSI HAPUS REKAP BULANAN (DARI TAB REKAP)
+   ============================================================ */
+async function hapusRekapBulanAktif(){
+  if(typeof sb === 'undefined') return;
+  
+  const bulanTarget = document.getElementById('fRekapBulan').value;
+  if(!bulanTarget) return showToast('Pilih bulan terlebih dahulu', 'warn');
+
+  const [thn, blnNum] = bulanTarget.split('-');
+  const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
+
+  if(!confirm(`⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA data absensi untuk bulan ${namaBulan}.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?`)) return;
+  
+  const ketik = prompt(`Ketik "HAPUS" untuk mengonfirmasi:`);
+  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
+
+  showToast('⏳ Menghapus...', 'info');
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+
+  const awalBulan = bulanTarget + '-01';
+  const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
+  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+  akhirBulan.setDate(0);
+  const tglAkhir = akhirBulan.getFullYear() + '-' + 
+    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+    String(akhirBulan.getDate()).padStart(2,'0');
+
+  // Hapus dari Supabase
+  const { error } = await sb.from('absensi')
+    .delete()
+    .eq('nama_guru', namaSaya)
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
+
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
+
+  // Hapus dari LocalStorage
+  let dataLokal = load(KEY_ABSEN, []) || [];
+  dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
+  save(KEY_ABSEN, dataLokal);
+
+  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
+  
+  // Paksa reload agar tampilan benar-benar kosong
+  window.location.reload();
 }
 
 /* ============================================================
