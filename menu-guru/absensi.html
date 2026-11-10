@@ -1376,8 +1376,8 @@ async function hapusRekapBulanAktif(){
 
   alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
   
-  // Paksa reload agar tampilan benar-benar kosong
-  window.location.reload();
+  // Gunakan hard reload agar PWA/Browser benar-benar memuat ulang datanya
+  window.location.href = window.location.pathname + '?t=' + new Date().getTime();
 }
 
 /* ============================================================
