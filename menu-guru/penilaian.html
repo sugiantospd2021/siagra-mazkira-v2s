@@ -2720,19 +2720,15 @@ function nilaiCepat(idAnak){
 /* ============================================================
    SIMPAN PENILAIAN — VALIDASI ANAK + BEEP
    ============================================================ */
-function simpanPenilaian(){
+async function simpanPenilaian(){
   const tglVal = document.getElementById('fTanggal').value;
   const anakVal = document.getElementById('fAnak').value;
   const semester = document.getElementById('fSemester').value;
   const catatan = document.getElementById('iCatatan').value.trim();
 
-  if(!tglVal){
-    showToast('⚠️ Isi Tanggal dulu di filter', 'warn');
-    return;
-  }
-  if(!pastikanAnakTerpilih(anakVal, 'Pilih Anak dulu di filter')){
-    return;
-  }
+  // Validasi
+  if(!tglVal){ showToast('⚠️ Isi Tanggal dulu di filter', 'warn'); return; }
+  if(!pastikanAnakTerpilih(anakVal, 'Pilih Anak dulu di filter')){ return; }
 
   const nilai = {};
   const kosong = [];
@@ -2748,19 +2744,48 @@ function simpanPenilaian(){
   }
 
   const anak = cariAnak(anakVal);
-  if(!anak){
-    showToast('⚠️ Data anak tidak ditemukan', 'error');
-    return;
-  }
+  if(!anak){ showToast('⚠️ Data anak tidak ditemukan', 'error'); return; }
 
   const idSimpan = String(anak.id || anak.nis || anak.nama || anakVal);
+  const periode = periodeDariTanggal(tglVal);
 
+  // 1. SIMPAN KE SUPABASE
+  if (typeof sb !== 'undefined') {
+    const payload = {
+      id_anak: idSimpan,
+      nama_anak: anak.nama || '-',
+      rombel: ambilRombelAnak(anak) || '',
+      tanggal: tglVal,
+      periode: periode,
+      semester: semester,
+      nilai: nilai,
+      catatan: catatan,
+      guru_id: guruProfil ? (guruProfil.id || '') : '',
+      guru_nama: guruProfil ? guruProfil.nama : user.nama,
+      updated_at: new Date().toISOString()
+    };
+
+    if (editMode && editKey) {
+      // Mode Edit: Update data (berdasarkan id_anak & periode/tanggal)
+      const { error } = await sb.from('penilaian')
+        .update(payload)
+        .eq('id_anak', idSimpan)
+        .eq('periode', periode);
+      if (error) { showToast('❌ Gagal update server: ' + error.message, 'error'); return; }
+    } else {
+      // Mode Tambah: Insert data
+      const { error } = await sb.from('penilaian').insert([payload]);
+      if (error) { showToast('❌ Gagal simpan ke server: ' + error.message, 'error'); return; }
+    }
+  }
+
+  // 2. SIMPAN KE LOCALSTORAGE
   const record = {
     idAnak: idSimpan,
     namaAnak: anak.nama || '-',
     rombel: ambilRombelAnak(anak) || '',
     tanggal: tglVal,
-    periode: periodeDariTanggal(tglVal),
+    periode: periode,
     semester: semester,
     nilai: nilai,
     catatan: catatan,
@@ -2780,7 +2805,7 @@ function simpanPenilaian(){
     renderSemua();
     updateCountBadge();
   } else {
-    showToast('❌ Gagal menyimpan', 'error');
+    showToast('❌ Gagal menyimpan di perangkat', 'error');
   }
 }
 </script>
