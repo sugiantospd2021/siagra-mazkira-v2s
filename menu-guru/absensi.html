@@ -145,13 +145,14 @@
   .tab-btn{ flex:1;min-width:130px;padding:11px;border-radius:10px;border:none; background:transparent;color:var(--sub);font-weight:700;cursor:pointer;text-decoration:none;text-align:center; }
   .tab-btn.active{ background:var(--role-primary);color:#fff; }
   
-    .card{ background:var(--role-card);border-radius:16px; border:2px solid var(--role-primary-dark); padding:22px;margin-bottom:18px; }
+  .card{ background:var(--role-card);border-radius:16px; border:2px solid var(--role-primary-dark); padding:22px;margin-bottom:18px; }
   
   .form-group{display:flex;flex-direction:column;gap:6px}
   .form-group.full{grid-column:1 / -1}
   .form-group label{ font-size:10.5px;font-weight:800;color:var(--role-primary); text-transform:uppercase; }
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .form-group input, .form-group select, .form-group textarea{ width:100%;padding:11px; background:var(--role-card-inner);color:var(--text); border:1.5px solid var(--role-border);border-radius:10px; outline:none; }
+  .form-group input:disabled { opacity: 0.7; cursor: not-allowed; }
   
   .pengisi-info{ padding:12px;background:var(--role-card-inner); border:1.5px solid var(--role-border);border-radius:10px; display:flex;align-items:center;gap:12px; }
   .pengisi-info .p-avatar{ width:38px;height:38px;border-radius:50%; background:var(--role-primary); color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800; overflow:hidden;}
@@ -168,6 +169,7 @@
   .status-opt[data-status="cuti"]{--status-color:var(--absen-cuti)}
   .status-opt[data-status="alpa"]{--status-color:var(--absen-alpa)}
   .status-opt .status-emoji{ font-size:24px;margin-bottom:4px; }
+  .status-opt.disabled { opacity: 0.5; pointer-events: none; }
 
   .jam-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
   .jam-box-mini{ background:var(--role-card-inner);border:1.5px solid var(--role-border); border-radius:10px;padding:14px; }
@@ -198,16 +200,10 @@
   .bulan-picker-card{ background:var(--role-intro-grad); color:#fff;padding:20px;border-radius:18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px; }
   .bulan-picker-input input{ padding:10px;border-radius:8px;border:none;font-weight:800; }
 
-  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .stat-box{ padding:14px;border-radius:12px; background:var(--role-card-inner); text-align:center; border:1px solid var(--role-border); }
-  .stat-box .n{ font-size:22px;font-weight:900;color:var(--role-primary); }
-  .stat-box .l{ font-size:10px;font-weight:700;color:var(--sub);margin-top:4px; text-transform:uppercase; }
-
   .toast{ position:fixed;bottom:24px;left:50%; transform:translate(-50%, 100px); background:var(--role-card);color:#fff; padding:13px 24px;border-radius:12px; font-weight:600; z-index:9999; transition:all .3s; opacity:0; }
   .toast.show{ transform:translate(-50%, 0);opacity:1; }
   .toast.success{background:#059669} .toast.error{background:#DC2626} .toast.info{background:#3B82F6} .toast.warn{background:#D97706}
 
-  /* ✨ CSS TAMBAHAN UNTUK REKAP & BACKUP ✨ */
   .rekap-guru-card{ background:var(--role-card-inner); border-radius:14px; padding:18px 20px; border:1px solid var(--role-border); margin-bottom:14px; }
   .rekap-stat-mini{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:14px; }
   .rekap-stat-mini .rmini{ padding:10px 8px; border-radius:10px; border:1px solid var(--role-border); background:var(--role-card); text-align:center; }
@@ -349,7 +345,6 @@
           <input type="date" id="fTanggal" onchange="saatTanggalBerubah()">
         </div>
 
-        <!-- Rombel Dihilangkan dari Formulir, disimpan di hidden agar sistem tetap jalan -->
         <input type="hidden" id="fRombel" value="">
 
         <div class="form-group full" style="margin-top:14px">
@@ -398,7 +393,7 @@
 
         <div class="action-row">
           <button class="btn btn-primary" id="btnSimpan" onclick="simpanAbsen()" disabled>💾 Simpan Absensi</button>
-          <button class="btn btn-ghost" id="btnReset" onclick="resetForm()">🔄 Bersihkan</button>
+          <button class="btn btn-ghost" id="btnReset" onclick="resetForm(true)">🔄 Bersihkan</button>
         </div>
 
         <div id="infoSudahAbsen" style="display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.35);font-size:12.5px;font-weight:700;color:#3B82F6;line-height:1.5"></div>
@@ -433,66 +428,41 @@
 
     <!-- TAB 4: BACKUP -->
     <div id="panelBackup" style="display:none">
-      
-      <!-- STATISTIK DATA -->
       <div class="card">
         <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
           <span>📊</span> <span>Statistik Data Absensi</span>
         </div>
         <div class="stat-grid-backup">
-          <div class="stat-box-backup">
-            <div class="n" id="statTotal">0</div>
-            <div class="l">Total Absen</div>
-          </div>
-          <div class="stat-box-backup">
-            <div class="n" id="statHari">0</div>
-            <div class="l">Hari Tercatat</div>
-          </div>
-          <div class="stat-box-backup">
-            <div class="n" id="statPersen">0%</div>
-            <div class="l">% Hadir</div>
-          </div>
+          <div class="stat-box-backup"><div class="n" id="statTotal">0</div><div class="l">Total Absen</div></div>
+          <div class="stat-box-backup"><div class="n" id="statHari">0</div><div class="l">Hari Tercatat</div></div>
+          <div class="stat-box-backup"><div class="n" id="statPersen">0%</div><div class="l">% Hadir</div></div>
         </div>
       </div>
-
-      <!-- MENU BACKUP -->
       <div class="card">
         <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
           <span>☁️</span> <span>Backup & Restore</span>
         </div>
-        
         <div class="backup-grid">
-          <!-- BACKUP -->
           <div class="backup-card">
-            <div class="icon">📥</div>
-            <h4>Backup Data</h4>
+            <div class="icon">📥</div><h4>Backup Data</h4>
             <p>Unduh seluruh data absensi Anda sebagai file .json untuk disimpan di komputer/flashdisk.</p>
             <button class="btn btn-primary" onclick="backupJSON()">📥 Download Backup</button>
           </div>
-          
-          <!-- RESTORE -->
           <div class="backup-card">
-            <div class="icon">📤</div>
-            <h4>Restore Data</h4>
+            <div class="icon">📤</div><h4>Restore Data</h4>
             <p>Unggah file .json hasil backup sebelumnya untuk mengembalikan data.</p>
             <button class="btn btn-info" onclick="bukaFileRestore()">📤 Pilih File</button>
             <input type="file" id="fileRestore" style="display:none" accept=".json" onchange="restoreJSON(event)">
           </div>
         </div>
-
         <div class="backup-grid">
-          <!-- HAPUS SEMUA -->
           <div class="backup-card danger">
-            <div class="icon">⚠️</div>
-            <h4>Hapus Semua Data</h4>
+            <div class="icon">⚠️</div><h4>Hapus Semua Data</h4>
             <p>Hapus permanen semua data absensi Anda dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
             <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
           </div>
-          
-          <!-- BERSIHKAN DUPLIKAT -->
           <div class="backup-card warn">
-            <div class="icon">🧹</div>
-            <h4>Bersihkan Duplikat</h4>
+            <div class="icon">🧹</div><h4>Bersihkan Duplikat</h4>
             <p>Hapus data absensi dengan tanggal yang sama untuk mencegah penumpukan data.</p>
             <button class="btn btn-warn" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
           </div>
@@ -513,7 +483,7 @@
 
 <script>
 /* ============================================================
-   KONFIGURASI STORAGE
+   KONFIGURASI STORAGE & JAM
    ============================================================ */
 const KEY_ANAK   = 'ra_anak';
 const KEY_GURU   = 'ra_guru';
@@ -521,9 +491,6 @@ const KEY_TENDIK = 'ra_tendik';
 const KEY_KELAS  = 'ra_kelas';
 const KEY_ABSEN  = 'ra_absensi_guru';
 
-/* ============================================================
-   KONFIGURASI JAM
-   ============================================================ */
 const JAM_MASUK_MULAI = '07:30';
 const JAM_MASUK_BATAS = '12:00';
 const JAM_PULANG_NORMAL = { 1:'12:00', 2:'12:00', 3:'12:00', 4:'12:00', 5:'11:00', 6:'12:00' };
@@ -638,11 +605,9 @@ function applyRoleColors(){
   root.style.setProperty('--role-card-inner', c.cardInner);
   root.style.setProperty('--role-border', c.border);
 
-  // Set tombol kembali secara dinamis
   const btnBack = document.getElementById('btnKembali');
   if(btnBack) btnBack.href = c.backHref;
 
-  // Set Intro Card agar teks kuning/putih sesuai tema
   const introCard = document.getElementById('introCard');
   if(introCard) introCard.style.color = (role === 'tendik') ? '#FCD34D' : '#fff';
 }
@@ -818,9 +783,14 @@ function klikAbsenMasuk(){
   document.getElementById('fJamMasuk').value = jamSekarang;
   document.getElementById('displayJamMasuk').textContent = jamSekarang + ':00';
   
+  // Kunci UI
   document.getElementById('btnAbsenMasuk').disabled = true;
   document.getElementById('btnAbsenMasuk').innerHTML = '✅ Masuk Terkunci';
   document.getElementById('btnAbsenPulang').disabled = false;
+  
+  // Kunci Tanggal dan Status
+  document.getElementById('fTanggal').disabled = true;
+  document.querySelectorAll('#statusGrid .status-opt').forEach(el => el.classList.add('disabled'));
 
   analisisJamAbsensi();
   showToast('✅ Absen masuk berhasil dikunci pada jam ' + jamSekarang, 'success');
@@ -923,6 +893,9 @@ function validasiCuti(){
 }
 
 function saatTanggalBerubah(){
+  // Hanya berjalan jika tanggal BELUM dikunci
+  if (document.getElementById('fTanggal').disabled) return;
+
   cekSudahAbsen();
   const tanggal = document.getElementById('fTanggal').value;
   const hariIni = getTodayISO();
@@ -996,6 +969,7 @@ function cekSudahAbsen(){
     info.innerHTML = `ℹ️ Anda sudah absen tanggal <b>${formatTanggalPendek(tanggal)}</b> sebagai <b>${sudah.status}</b>${sudah.jamMasuk ? ' • Masuk: ' + sudah.jamMasuk : ''}${sudah.jamPulang ? ' • Pulang: ' + sudah.jamPulang : ''}.`;
   } else { info.style.display = 'none'; }
 }
+</script>
 
 /* ============================================================
    SIMPAN ABSEN (KE SUPABASE)
@@ -1045,34 +1019,48 @@ async function simpanAbsen(){
   save(KEY_ABSEN, semua);
 
   showToast('✅ Absensi tersimpan di Server', 'success');
-  resetForm();
+  resetForm(true); // Paksa reset total setelah simpan
   updateCountBadge();
   setTimeout(() => switchTab('list'), 700);
 }
 
-function resetForm(){
+// Penambahan parameter isManual agar saat load awal tidak mereset data dari database
+function resetForm(isManual = false){
+  // Jika dipanggil otomatis dari sistem (bukan tombol reset), jangan hapus data hari ini
   document.getElementById('fTanggal').value = getTodayISO();
-  document.getElementById('fJamMasuk').value = ''; document.getElementById('fJamPulang').value = '';
-  document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
-  document.getElementById('fCatatan').value = ''; document.getElementById('fCutiDari').value = ''; document.getElementById('fCutiSampai').value = '';
-  statusTerpilih = ''; document.getElementById('fStatus').value = '';
-  document.querySelectorAll('#statusGrid .status-opt').forEach(el => el.classList.remove('active'));
   
-  const btnMasuk = document.getElementById('btnAbsenMasuk');
-  const btnPulang = document.getElementById('btnAbsenPulang');
-  const btnSimpan = document.getElementById('btnSimpan');
-  const btnReset = document.getElementById('btnReset');
-  const actionRow = document.querySelector('.action-row');
-  
-  btnMasuk.disabled = true; btnMasuk.innerHTML = '🖐️ Absen Masuk';
-  btnPulang.disabled = true; btnPulang.innerHTML = '🏃 Absen Pulang';
-  btnSimpan.disabled = true; btnSimpan.style.display = 'inline-flex';
-  btnReset.style.display = 'inline-flex'; actionRow.style.display = 'flex';
-  
-  document.getElementById('keteranganBox').style.display = 'none';
-  document.getElementById('warningBox').style.display = 'none';
-  document.getElementById('cutiRangeBox').style.display = 'none';
-  document.getElementById('jamSection').style.display = 'grid';
+  if(isManual) {
+    document.getElementById('fJamMasuk').value = ''; 
+    document.getElementById('fJamPulang').value = '';
+    document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); 
+    document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
+    document.getElementById('fCatatan').value = ''; 
+    document.getElementById('fCutiDari').value = ''; 
+    document.getElementById('fCutiSampai').value = '';
+    statusTerpilih = ''; 
+    document.getElementById('fStatus').value = '';
+    document.querySelectorAll('#statusGrid .status-opt').forEach(el => {
+       el.classList.remove('active', 'disabled'); 
+    });
+    
+    const btnMasuk = document.getElementById('btnAbsenMasuk');
+    const btnPulang = document.getElementById('btnAbsenPulang');
+    const btnSimpan = document.getElementById('btnSimpan');
+    const btnReset = document.getElementById('btnReset');
+    const actionRow = document.querySelector('.action-row');
+    
+    btnMasuk.disabled = true; btnMasuk.innerHTML = '🖐️ Absen Masuk';
+    btnPulang.disabled = true; btnPulang.innerHTML = '🏃 Absen Pulang';
+    btnSimpan.disabled = true; btnSimpan.style.display = 'inline-flex';
+    btnReset.style.display = 'inline-flex'; actionRow.style.display = 'flex';
+    
+    document.getElementById('keteranganBox').style.display = 'none';
+    document.getElementById('warningBox').style.display = 'none';
+    document.getElementById('cutiRangeBox').style.display = 'none';
+    document.getElementById('jamSection').style.display = 'grid';
+    
+    document.getElementById('fTanggal').disabled = false;
+  }
   cekSudahAbsen();
 }
 
@@ -1308,6 +1296,7 @@ async function hapusSemuaAbsen(){
   renderStatistikBackup();
   renderRiwayat();
   renderRekap();
+  resetForm(true);
 }
 
 async function bersihkanDuplikat(){
@@ -1347,7 +1336,7 @@ async function bersihkanDuplikat(){
 }
 
 /* ============================================================
-   PERBAIKAN UTAMA: CEK KUNCIAN JAM SAAT HALAMAN DIMUAT
+   FUNGSI PENGUNCIAN JAM DARI DATABASE (PERBAIKAN UTAMA)
    ============================================================ */
 async function cekStatusAbsenHariIni() {
   if (typeof sb === 'undefined') return;
@@ -1383,8 +1372,12 @@ async function cekStatusAbsenHariIni() {
       
       // 5. Aktifkan Tombol Absen Pulang
       document.getElementById('btnAbsenPulang').disabled = false;
+      
+      // 6. Kunci Tanggal & Status
+      document.getElementById('fTanggal').disabled = true;
+      document.querySelectorAll('#statusGrid .status-opt').forEach(el => el.classList.add('disabled'));
 
-      // 6. Jika sudah ada jam pulang, kunci juga tombol pulang dan aktifkan simpan
+      // 7. Jika sudah ada jam pulang, kunci juga tombol pulang dan aktifkan simpan
       if (data.jam_pulang) {
         document.getElementById('fJamPulang').value = data.jam_pulang;
         document.getElementById('displayJamPulang').textContent = data.jam_pulang + ':00';
@@ -1396,7 +1389,7 @@ async function cekStatusAbsenHariIni() {
         document.getElementById('btnSimpan').disabled = false;
       }
 
-      // 7. Tampilkan analisis keterlambatan (jika ada)
+      // 8. Tampilkan analisis keterlambatan (jika ada)
       analisisJamAbsensi();
       
       showToast('ℹ️ Sesi absen masuk Anda dilanjutkan dari database.', 'info');
@@ -1407,18 +1400,17 @@ async function cekStatusAbsenHariIni() {
 }
 
 /* ============================================================
-   LOGOUT
+   LOGOUT & INIT
    ============================================================ */
 function logout(){ if(confirm('Keluar?')){ localStorage.removeItem('user'); window.location.href = '../index.html'; } }
 
-/* ============================================================
-   INIT
-   ============================================================ */
 async function init(){
   applyRoleColors(); 
   await muatData(); 
   setHeaderTitle(); 
-  resetForm();
+  
+  // Set tanggal hari ini di form, TAPI jangan hapus isian (isManual = false)
+  resetForm(false);
   
   // Set tanggal rekap bulanan ke bulan ini
   document.getElementById('fRekapBulan').value = getTodayISO().substring(0,7);
@@ -1429,7 +1421,7 @@ async function init(){
   updateCountBadge(); 
   renderRiwayat(); 
   renderStatistikBackup();
-  console.log('✅ absensi.html loaded — SIAGRA v.2.s (Kuncian Jam Diperbaiki)');
+  console.log('✅ absensi.html loaded — SIAGRA v.2.s (Kuncian Jam Profesional)');
 }
 
 // Jalankan inisialisasi setelah semua fungsi dideklarasikan
