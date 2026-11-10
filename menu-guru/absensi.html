@@ -1145,10 +1145,10 @@ async function renderRekap(){
     String(akhirBulan.getDate()).padStart(2,'0');
 
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  const { data: absenBulan, error } = await sb
+    const { data: absenBulan, error } = await sb
     .from('absensi')
     .select('*')
-    .ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`)
+    .eq('nama_guru', namaSaya) // <--- GUNAKAN EQ AGAR SINKRON DENGAN PROSES HAPUS
     .gte('tanggal', awalBulan)
     .lte('tanggal', tglAkhir);
 
