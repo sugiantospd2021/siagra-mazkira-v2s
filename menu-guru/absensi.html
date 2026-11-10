@@ -391,7 +391,7 @@
 
         <div class="action-row">
           <button class="btn btn-primary" id="btnSimpan" onclick="simpanAbsen()" disabled>💾 Simpan Absensi</button>
-          <button class="btn btn-ghost" id="btnReset" onclick="resetForm()">🔄 Bersihkan</button>
+          
         </div>
 
         <div id="infoSudahAbsen" style="display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.35);font-size:12.5px;font-weight:700;color:#3B82F6;line-height:1.5"></div>
@@ -877,8 +877,7 @@ function updateUISetelahPilihStatus(kode){
   btnMasuk.disabled = true; 
   btnPulang.disabled = true; 
   btnSimpan.disabled = true;
-  btnReset.style.display = 'inline-flex'; 
-  actionRow.style.display = 'flex';
+    actionRow.style.display = 'flex';
   
   document.getElementById('fJamMasuk').value = ''; 
   document.getElementById('fJamPulang').value = '';
@@ -894,7 +893,7 @@ function updateUISetelahPilihStatus(kode){
     jamSection.style.display = 'none'; 
     btnSimpan.style.display = 'inline-flex'; 
     btnSimpan.disabled = false; 
-    btnReset.style.display = 'none'; 
+     
     
     warningBox.style.display = 'flex'; 
     warningBox.className = 'warning-box alpa';
@@ -1078,9 +1077,8 @@ function resetForm(){
   btnMasuk.disabled = true; btnMasuk.innerHTML = '🖐️ Absen Masuk';
   btnPulang.disabled = true; btnPulang.innerHTML = '🏃 Absen Pulang';
   btnSimpan.disabled = true; btnSimpan.style.display = 'inline-flex';
-  btnReset.style.display = 'inline-flex'; actionRow.style.display = 'flex';
-  
-  document.getElementById('keteranganBox').style.display = 'none';
+   actionRow.style.display = 'flex';
+    document.getElementById('keteranganBox').style.display = 'none';
   document.getElementById('warningBox').style.display = 'none';
   document.getElementById('cutiRangeBox').style.display = 'none';
   document.getElementById('jamSection').style.display = 'grid';
