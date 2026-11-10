@@ -1261,70 +1261,74 @@ function restoreJSON(event){
 }
 
 /* ============================================================
-   FUNGSI HAPUS DATA (METODE PAMUNGKAS - TARIK ID & HAPUS 1 PER 1)
+   FUNGSI HAPUS DATA (PAMUNGKAS - HAPUS CACHE & RELOAD PAKSA)
    ============================================================ */
 async function konfirmasiHapusData(){
   const bulanDefault = getTodayISO().substring(0,7);
-  const opsi = prompt(`⚠️ ZONA HAPUS DATA\n\nKetik bulan yang ingin dihapus (format: TAHUN-BULAN).\nContoh: ${bulanDefault}\n\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN!`, bulanDefault);
+  const opsi = prompt(`⚠️ ZONA HAPUS DATA\n\nKetik bulan yang ingin dihapus (format: TAHUN-BULAN).\nContoh: ${bulanDefault}\n\nATAU ketik "SEMUA" untuk menghapus seluruh data.\n\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN!`, bulanDefault);
   
   if(!opsi) return;
   
-  if (!/^\d{4}-\d{2}$/.test(opsi)) {
-    return showToast('❌ Format salah. Gunakan format YYYY-MM (contoh: 2026-11)', 'error');
+  const hapusSemua = (opsi.toUpperCase() === 'SEMUA');
+  let bulanTarget = '';
+
+  if(!hapusSemua){
+    if (!/^\d{4}-\d{2}$/.test(opsi)) {
+      return showToast('❌ Format salah. Gunakan YYYY-MM atau ketik "SEMUA".', 'error');
+    }
+    bulanTarget = opsi;
   }
 
-  const [thn, blnNum] = opsi.split('-');
-  const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
-
-  const ketik = prompt(`Ketik "HAPUS" untuk mengonfirmasi penghapusan data bulan ${namaBulan}:`);
+  const ketik = prompt(`Ketik "HAPUS" untuk mengonfirmasi:`);
   if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
   
   showToast('⏳ Menghapus data...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
 
-  // RENTANG TANGGAL
-  const awalBulan = opsi + '-01';
-  const akhirBulan = new Date(opsi + '-01T00:00:00');
-  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
-  akhirBulan.setDate(0);
-  const tglAkhir = akhirBulan.getFullYear() + '-' + 
-    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
-    String(akhirBulan.getDate()).padStart(2,'0');
-
-  // 1. AMBIL SEMUA DATA BULAN INI (UNTUK DAPATKAN ID)
-  const { data: dataDitemukan, error: errCari } = await sb.from('absensi')
-    .select('id')
-    .eq('nama_guru', namaSaya) 
-    .gte('tanggal', awalBulan)
-    .lte('tanggal', tglAkhir);
-
-  if (errCari) {
-    alert('Gagal mencari data: ' + errCari.message);
-    return;
-  }
+  // 1. HAPUS DARI SUPABASE
+  let queryHapus = sb.from('absensi').delete().eq('nama_guru', namaSaya);
   
-  if (!dataDitemukan || dataDitemukan.length === 0) {
-    alert('Tidak ada data untuk dihapus di bulan ini.');
+  if (!hapusSemua) {
+    const awalBulan = bulanTarget + '-01';
+    const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
+    akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+    akhirBulan.setDate(0);
+    const tglAkhir = akhirBulan.getFullYear() + '-' + 
+      String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+      String(akhirBulan.getDate()).padStart(2,'0');
+      
+    queryHapus = queryHapus.gte('tanggal', awalBulan).lte('tanggal', tglAkhir);
+  }
+
+  const { error } = await queryHapus;
+  if(error) {
+    alert('Gagal menghapus dari Supabase: ' + error.message);
     return;
   }
 
-  // 2. HAPUS SATU PER SATU BERDASARKAN ID (Sangat Ampuh)
-  for (let i = 0; i < dataDitemukan.length; i++) {
-    await sb.from('absensi').delete().eq('id', dataDitemukan[i].id);
+  // 2. HAPUS DARI CACHE LOKAL
+  if (hapusSemua) {
+    let dataLokal = load(KEY_ABSEN, []) || [];
+    dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
+    save(KEY_ABSEN, dataLokal);
+  } else {
+    let dataLokal = load(KEY_ABSEN, []) || [];
+    const awalBulan = bulanTarget + '-01';
+    const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
+    akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+    akhirBulan.setDate(0);
+    const tglAkhir = akhirBulan.getFullYear() + '-' + 
+      String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+      String(akhirBulan.getDate()).padStart(2,'0');
+
+    dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
+    save(KEY_ABSEN, dataLokal);
   }
 
-  // 3. HAPUS DARI LOCALSTORAGE
-  let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
-  save(KEY_ABSEN, dataLokal);
-
-  alert('✅ Data berhasil dihapus!');
+  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
   
-  // 4. PAKSA MUNCULKAN TAMPILAN KOSONG SECARA INSTAN
-  document.getElementById('fRekapBulan').value = opsi;
-  renderRekap();           
-  renderRiwayat();         
-  updateCountBadge();      
+  // 3. PAKSA RELOAD HALAMAN (Ini kunci agar tampilan benar-benar bersih)
+  window.location.reload();
 }
 
 async function bersihkanDuplikat(){
