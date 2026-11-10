@@ -2408,7 +2408,7 @@ function tutupFormAnekdot(){
 }
 
 /* SIMPAN */
-function simpanAnekdot(){
+async function simpanAnekdot(){
   const tanggal      = document.getElementById('fTanggal').value;
   const waktu        = document.getElementById('fWaktu').value;
   const rombel       = document.getElementById('fRombel').value;
@@ -2421,12 +2421,42 @@ function simpanAnekdot(){
   const tindakLanjut = document.getElementById('fTindakLanjut').value.trim();
   const emoji        = document.getElementById('fEmoji').value;
 
+  // Validasi
   if(!tanggal){ showToast('📅 Tanggal wajib diisi', 'warn'); return; }
   if(!rombel){ showToast('🏫 Rombel belum tersedia', 'warn'); return; }
   if(!pastikanAnakTerpilih(anak, 'Pilih anak dulu')) return;
   if(!komponen){ showToast('💖 Pilih komponen anekdot KBC', 'warn'); return; }
   if(!deskripsi){ showToast('📖 Deskripsi kejadian wajib diisi', 'warn'); return; }
 
+  // 1. SIMPAN KE SUPABASE
+  if (typeof sb !== 'undefined') {
+    const payload = {
+      tanggal: tanggal,
+      waktu: waktu || getNowHHMM(),
+      rombel: rombel,
+      anak: anak,
+      komponen: komponen,
+      sub_nilai: subNilai,
+      deskripsi: deskripsi,
+      refleksi: refleksi,
+      tindak_lanjut: tindakLanjut,
+      emoji: emoji,
+      guru: user.nama,
+      guru_id: normalisasiNama(user.nama)
+    };
+
+    if (window._editAnekdotId) {
+      // Mode Edit: Update data di Supabase
+      const { error } = await sb.from('anekdot').update(payload).eq('id', window._editAnekdotId);
+      if (error) { showToast('❌ Gagal update server: ' + error.message, 'error'); return; }
+    } else {
+      // Mode Tambah: Insert data ke Supabase
+      const { error } = await sb.from('anekdot').insert([payload]);
+      if (error) { showToast('❌ Gagal simpan ke server: ' + error.message, 'error'); return; }
+    }
+  }
+
+  // 2. SIMPAN KE LOCALSTORAGE (Sebagai Cadangan/Offline)
   const anekdotList = load(KEY_ANEKDOT, []);
   const item = {
     id: 'anek_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
@@ -2458,7 +2488,7 @@ function simpanAnekdot(){
     updateCountBadge();
     renderProfilGuru();
   } else {
-    showToast('❌ Gagal menyimpan. Coba lagi.', 'error');
+    showToast('❌ Gagal menyimpan di perangkat.', 'error');
   }
 }
 
