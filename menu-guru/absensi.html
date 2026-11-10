@@ -241,11 +241,6 @@
   .backup-card.warn { border-color: var(--warning); }
   .backup-card.warn h4 { color: var(--warning); }
   
-  .stat-grid-backup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-  .stat-box-backup { background: var(--role-card-inner); border: 1px solid var(--role-border); border-radius: 12px; padding: 14px; text-align: center; }
-  .stat-box-backup .n { font-size: 22px; font-weight: 900; color: var(--role-primary); }
-  .stat-box-backup .l { font-size: 10px; font-weight: 700; color: var(--sub); margin-top: 4px; text-transform: uppercase; }
-
   @media (max-width: 900px) {
     .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
     .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
@@ -441,26 +436,6 @@
       
       <div class="card">
         <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-          <span>📊</span> <span>Statistik Data Absensi</span>
-        </div>
-        <div class="stat-grid-backup">
-          <div class="stat-box-backup" onclick="bukaRiwayatDariStatistik()" style="cursor:pointer;" title="Klik untuk lihat riwayat">
-            <div class="n" id="statTotal">0</div>
-            <div class="l">Total Absen</div>
-          </div>
-          <div class="stat-box-backup" onclick="bukaRiwayatDariStatistik()" style="cursor:pointer;" title="Klik untuk lihat riwayat">
-            <div class="n" id="statHari">0</div>
-            <div class="l">Hari Tercatat</div>
-          </div>
-          <div class="stat-box-backup" onclick="bukaRiwayatDariStatistik()" style="cursor:pointer;" title="Klik untuk lihat riwayat">
-            <div class="n" id="statPersen">0%</div>
-            <div class="l">% Hadir</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
           <span>☁️</span> <span>Backup & Restore</span>
         </div>
         
@@ -480,12 +455,19 @@
             <input type="file" id="fileRestore" style="display:none" accept=".json" onchange="restoreJSON(event)">
           </div>
         </div>
+      </div>
 
+      <div class="card">
+        <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+          <span>⚠️</span> <span style="color:var(--danger)">Zona Hapus Data</span>
+        </div>
+        
+        <!-- BARIS 1: HAPUS SEMUA & BERSIHKAN DUPLIKAT -->
         <div class="backup-grid">
           <div class="backup-card danger">
-            <div class="icon">⚠️</div>
+            <div class="icon">🗑️</div>
             <h4>Hapus Semua Data</h4>
-            <p>Hapus permanen semua data absensi Anda dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
+            <p>Menghapus seluruh data absensi, riwayat, dan rekap secara permanen.</p>
             <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
           </div>
           
@@ -494,6 +476,23 @@
             <h4>Bersihkan Duplikat</h4>
             <p>Hapus data absensi dengan tanggal yang sama untuk mencegah penumpukan data.</p>
             <button class="btn btn-warn" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
+          </div>
+        </div>
+
+        <!-- BARIS 2: PILIHAN HAPUS SPESIFIK -->
+        <div class="backup-grid">
+          <div class="backup-card danger">
+            <div class="icon">📚</div>
+            <h4>Hapus Riwayat Saja</h4>
+            <p>Menghapus seluruh catatan riwayat absensi. Rekap bulanan juga akan ikut kosong.</p>
+            <button class="btn btn-danger" onclick="hapusRiwayatAbsensi()">🗑️ Hapus Riwayat</button>
+          </div>
+          
+          <div class="backup-card danger">
+            <div class="icon">📊</div>
+            <h4>Hapus Rekap Bulan Ini</h4>
+            <p>Menghapus data absensi khusus untuk bulan yang sedang dipilih di menu Rekap.</p>
+            <button class="btn btn-danger" onclick="hapusRekapBulanan()">🗑️ Hapus Rekap</button>
           </div>
         </div>
       </div>
@@ -789,7 +788,7 @@ function switchTab(tab){
   const panels = { form:document.getElementById('panelForm'), list:document.getElementById('panelList'), rekap:document.getElementById('panelRekap'), backup:document.getElementById('panelBackup') };
   const tabs = { form:document.getElementById('tabForm'), list:document.getElementById('tabList'), rekap:document.getElementById('tabRekap'), backup:document.getElementById('tabBackup') };
   Object.keys(panels).forEach(k => { if(panels[k]) panels[k].style.display = (k === tab) ? '' : 'none'; if(tabs[k]) tabs[k].classList.toggle('active', k === tab); });
-  if(tab === 'list') renderRiwayat(); else if(tab === 'rekap') renderRekap(); else if(tab === 'backup') renderStatistikBackup();
+  if(tab === 'list') renderRiwayat(); else if(tab === 'rekap') renderRekap(); else if(tab === 'backup') {} // Fungsi statistik dihapus
 }
 function tanganiTabClick(e, tab){ if(e.ctrlKey || e.metaKey) return; e.preventDefault(); switchTab(tab); window.scrollTo({top:0, behavior:'smooth'}); }
 
@@ -1229,27 +1228,6 @@ async function renderRekap(){
 /* ============================================================
    BACKUP & RESTORE
    ============================================================ */
-async function renderStatistikBackup(){
-  if(typeof sb === 'undefined') return;
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  
-  const { data: absenAll } = await sb.from('absensi').select('*').ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
-  if(!absenAll) return;
-  
-  const total = absenAll.length;
-  const hari = new Set(absenAll.map(d => d.tanggal)).size;
-  const hadir = absenAll.filter(d => d.status === 'hadir').length;
-  const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
-
-  const elTotal = document.getElementById('statTotal');
-  const elHari  = document.getElementById('statHari');
-  const elPersen = document.getElementById('statPersen');
-  
-  if(elTotal) elTotal.textContent = total;
-  if(elHari) elHari.textContent = hari;
-  if(elPersen) elPersen.textContent = persen + '%';
-}
-
 async function backupJSON(){
   if(typeof sb === 'undefined') return showToast('Koneksi terputus', 'error');
   showToast('⏳ Mengambil data...', 'info');
@@ -1294,7 +1272,6 @@ function restoreJSON(event){
       }
       
       showToast('✅ Restore berhasil!', 'success');
-      renderStatistikBackup();
       renderRiwayat();
       renderRekap();
     }catch(err){
@@ -1306,9 +1283,12 @@ function restoreJSON(event){
   reader.readAsText(file);
 }
 
+/* ============================================================
+   FUNGSI HAPUS DATA (DENGAN NOTIFIKASI TIDAK DAPAT DIBATALKAN)
+   ============================================================ */
 async function hapusSemuaAbsen(){
   if(typeof sb === 'undefined') return;
-  if(!confirm('⚠️ HATI-HATI!\n\nAnda akan MENGHAPUS SEMUA data absensi milik Anda dari database Supabase.\nTindakan ini tidak dapat dibatalkan.\n\nLanjutkan?')) return;
+  if(!confirm('⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA data absensi milik Anda dari database Supabase.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?')) return;
   const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
   if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
   
@@ -1327,10 +1307,73 @@ async function hapusSemuaAbsen(){
   showToast('🗑️ Semua data absensi Anda berhasil dihapus', 'success');
   
   // Refresh tampilan
-  renderStatistikBackup(); // Angka jadi 0
-  renderRiwayat();         // Riwayat jadi kosong
-  renderRekap();           // Rekap bulanan jadi kosong
-  updateCountBadge();      // Badge angka riwayat jadi 0
+  renderRiwayat();         
+  renderRekap();           
+  updateCountBadge();      
+}
+
+async function hapusRiwayatAbsensi(){
+  if(typeof sb === 'undefined') return;
+  if(!confirm('⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA CATATAN RIWAYAT absensi milik Anda dari database.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?')) return;
+  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
+  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
+  
+  showToast('⏳ Menghapus riwayat...', 'info');
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  
+  const { error } = await sb.from('absensi').delete().ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
+  
+  // Hapus dari LocalStorage juga
+  let dataLokal = load(KEY_ABSEN, []) || [];
+  dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
+  save(KEY_ABSEN, dataLokal);
+
+  showToast('🗑️ Semua riwayat absensi berhasil dihapus', 'success');
+  renderRiwayat();         
+  renderRekap();           
+  updateCountBadge();      
+}
+
+async function hapusRekapBulanan(){
+  if(typeof sb === 'undefined') return;
+  const bulan = document.getElementById('fRekapBulan').value || getTodayISO().substring(0,7);
+  const [thn, blnNum] = bulan.split('-');
+  const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
+
+  if(!confirm(`⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA data absensi untuk periode ${namaBulan}.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?`)) return;
+  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
+  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
+  
+  showToast('⏳ Menghapus rekap bulan ini...', 'info');
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+
+  const awalBulan = bulan + '-01';
+  const akhirBulan = new Date(bulan + '-01');
+  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+  akhirBulan.setDate(0);
+  const tglAkhir = akhirBulan.getFullYear() + '-' + 
+    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+    String(akhirBulan.getDate()).padStart(2,'0');
+
+  const { error } = await sb.from('absensi')
+    .delete()
+    .ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`)
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
+
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
+
+  // Hapus dari LocalStorage juga untuk bulan tersebut
+  let dataLokal = load(KEY_ABSEN, []) || [];
+  dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
+  save(KEY_ABSEN, dataLokal);
+
+  showToast(`🗑️ Data absensi bulan ${namaBulan} berhasil dihapus`, 'success');
+  
+  renderRekap();           
+  renderRiwayat();         
+  updateCountBadge();      
 }
 
 async function bersihkanDuplikat(){
@@ -1364,15 +1407,8 @@ async function bersihkanDuplikat(){
   
   if(errDel) return showToast('❌ Gagal: ' + errDel.message, 'error');
   showToast(`✅ ${idsToDelete.length} data duplikat dibersihkan`, 'success');
-  renderStatistikBackup();
   renderRiwayat();
   renderRekap();
-}
-
-// Fungsi agar saat card statistik diklik, pindah ke tab riwayat
-function bukaRiwayatDariStatistik() {
-  switchTab('list'); // Pindah ke tab Riwayat
-  window.scrollTo({top: 0, behavior: 'smooth'}); // Scroll ke atas
 }
 
 /* ============================================================
@@ -1460,7 +1496,6 @@ async function init(){
 
   updateCountBadge(); 
   renderRiwayat(); 
-  renderStatistikBackup();
   console.log('✅ absensi.html loaded — SIAGRA (Fix Sukses)');
 }
 
