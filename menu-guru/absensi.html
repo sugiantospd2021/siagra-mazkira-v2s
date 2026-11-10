@@ -83,7 +83,6 @@
   .orn-sparkle-2{top:8%;right:25%;font-size:22px;color:#F87171;animation-delay:.5s}
   .orn-diamond-1{bottom:45%;left:3%;font-size:24px;color:#FACC15;animation-delay:1.4s}
   
-  /* === HEADER SEJAJAR === */
   .header{
     position:sticky;top:0;z-index:100;
     background:var(--role-header-grad);
@@ -169,7 +168,6 @@
   .status-opt[data-status="alpa"]{--status-color:var(--absen-alpa)}
   .status-opt .status-emoji{ font-size:24px;margin-bottom:4px; }
 
-  /* CSS UNTUK KUNCIAN STATUS */
   .status-opt.locked, .status-opt.disabled {
     opacity: 0.4;
     pointer-events: none;
@@ -329,10 +327,7 @@
     <div id="panelForm">
       <div class="card">
         
-        <!-- NOTIFIKASI SUDAH ABSEN (WARNA MERAH) -->
-        <div id="infoSudahAbsen" style="display:none; margin-bottom:20px; padding:16px; border-radius:12px; background:rgba(220,38,38,.15); border:2px solid var(--danger); font-size:13.5px; font-weight:700; color:var(--danger); line-height:1.6; text-align:center;">
-          <!-- Teks diinjeksi via JS -->
-        </div>
+        <div id="infoSudahAbsen" style="display:none; margin-bottom:20px; padding:16px; border-radius:12px; background:rgba(220,38,38,.15); border:2px solid var(--danger); font-size:13.5px; font-weight:700; color:var(--danger); line-height:1.6; text-align:center;"></div>
 
         <div class="form-group full">
           <label>👤 Pengisi Absensi</label>
@@ -346,7 +341,6 @@
           <small>💡 Absensi ini untuk <b>akun yang sedang login</b>. Tidak bisa diubah.</small>
         </div>
 
-        <!-- Tanggal Sejajar Penuh -->
         <div class="form-group full" style="margin-top:14px">
           <label>📅 Tanggal <span class="req">*</span></label>
           <input type="date" id="fTanggal" onchange="saatTanggalBerubah()">
@@ -462,37 +456,21 @@
           <span>⚠️</span> <span style="color:var(--danger)">Zona Hapus Data</span>
         </div>
         
-        <!-- BARIS 1: HAPUS SEMUA & BERSIHKAN DUPLIKAT -->
         <div class="backup-grid">
+          <!-- TOMBOL HAPUS TOTAL -->
           <div class="backup-card danger">
             <div class="icon">🗑️</div>
-            <h4>Hapus Semua Data</h4>
-            <p>Menghapus seluruh data absensi, riwayat, dan rekap secara permanen.</p>
-            <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
+            <h4>Hapus Data Absensi</h4>
+            <p>Pilih dan hapus data absensi berdasarkan bulan tertentu atau hapus seluruh data secara permanen.</p>
+            <button class="btn btn-danger" onclick="konfirmasiHapusData()">🗑️ Mulai Hapus Data</button>
           </div>
           
+          <!-- BERSIHKAN DUPLIKAT -->
           <div class="backup-card warn">
             <div class="icon">🧹</div>
             <h4>Bersihkan Duplikat</h4>
             <p>Hapus data absensi dengan tanggal yang sama untuk mencegah penumpukan data.</p>
             <button class="btn btn-warn" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
-          </div>
-        </div>
-
-        <!-- BARIS 2: PILIHAN HAPUS SPESIFIK -->
-        <div class="backup-grid">
-          <div class="backup-card danger">
-            <div class="icon">📚</div>
-            <h4>Hapus Riwayat Saja</h4>
-            <p>Menghapus seluruh catatan riwayat absensi. Rekap bulanan juga akan ikut kosong.</p>
-            <button class="btn btn-danger" onclick="hapusRiwayatAbsensi()">🗑️ Hapus Riwayat</button>
-          </div>
-          
-          <div class="backup-card danger">
-            <div class="icon">📊</div>
-            <h4>Hapus Rekap Bulan Ini</h4>
-            <p>Menghapus data absensi khusus untuk bulan yang sedang dipilih di menu Rekap.</p>
-            <button class="btn btn-danger" onclick="hapusRekapBulanan()">🗑️ Hapus Rekap</button>
           </div>
         </div>
       </div>
@@ -788,7 +766,7 @@ function switchTab(tab){
   const panels = { form:document.getElementById('panelForm'), list:document.getElementById('panelList'), rekap:document.getElementById('panelRekap'), backup:document.getElementById('panelBackup') };
   const tabs = { form:document.getElementById('tabForm'), list:document.getElementById('tabList'), rekap:document.getElementById('tabRekap'), backup:document.getElementById('tabBackup') };
   Object.keys(panels).forEach(k => { if(panels[k]) panels[k].style.display = (k === tab) ? '' : 'none'; if(tabs[k]) tabs[k].classList.toggle('active', k === tab); });
-  if(tab === 'list') renderRiwayat(); else if(tab === 'rekap') renderRekap(); else if(tab === 'backup') {} // Fungsi statistik dihapus
+  if(tab === 'list') renderRiwayat(); else if(tab === 'rekap') renderRekap();
 }
 function tanganiTabClick(e, tab){ if(e.ctrlKey || e.metaKey) return; e.preventDefault(); switchTab(tab); window.scrollTo({top:0, behavior:'smooth'}); }
 
@@ -1019,7 +997,6 @@ function cekSudahAbsen(){
   const semua = load(KEY_ABSEN, []) || [];
   const sudah = semua.find(a => normalisasiNama(a.guru) === normalisasiNama(namaSaya) && a.tanggal === tanggal);
 
-  // Hanya tampilkan info merah jika JAM PULANG sudah diisi (artinya sudah selesai/simpan)
   if(sudah && sudah.jamMasuk && sudah.jamPulang){
     info.style.display = 'block';
     info.innerHTML = `⛔ Anda sudah menyelesaikan absensi pada hari ini (${formatTanggalPendek(tanggal)}).<br>Data absensi telah tersimpan di server dan tidak dapat diubah lagi.`;
@@ -1075,7 +1052,6 @@ async function simpanAbsen(){
 
   showToast('✅ Absensi tersimpan di Server', 'success');
   
-  // Kunci Total UI setelah simpan
   cekSudahAbsen();
   document.querySelectorAll('.status-opt').forEach(el => el.classList.add('disabled'));
   document.getElementById('fTanggal').disabled = true;
@@ -1137,7 +1113,7 @@ async function renderRekap(){
   }
 
   const awalBulan = bulan + '-01';
-  const akhirBulan = new Date(bulan + '-01');
+  const akhirBulan = new Date(bulan + '-01T00:00:00');
   akhirBulan.setMonth(akhirBulan.getMonth() + 1);
   akhirBulan.setDate(0);
   const tglAkhir = akhirBulan.getFullYear() + '-' + 
@@ -1145,10 +1121,12 @@ async function renderRekap(){
     String(akhirBulan.getDate()).padStart(2,'0');
 
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-    const { data: absenBulan, error } = await sb
+  
+  // GUNAKAN .eq AGAR SINKRON DENGAN PROSES HAPUS
+  const { data: absenBulan, error } = await sb
     .from('absensi')
     .select('*')
-    .eq('nama_guru', namaSaya) // <--- GUNAKAN EQ AGAR SINKRON DENGAN PROSES HAPUS
+    .eq('nama_guru', namaSaya)
     .gte('tanggal', awalBulan)
     .lte('tanggal', tglAkhir);
 
@@ -1233,7 +1211,7 @@ async function backupJSON(){
   showToast('⏳ Mengambil data...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
   
-  const { data, error } = await sb.from('absensi').select('*').ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
+  const { data, error } = await sb.from('absensi').select('*').eq('nama_guru', namaSaya);
   if(error) return showToast('❌ Gagal backup: ' + error.message, 'error');
   
   const d = new Date();
@@ -1284,111 +1262,72 @@ function restoreJSON(event){
 }
 
 /* ============================================================
-   FUNGSI HAPUS DATA (DENGAN NOTIFIKASI TIDAK DAPAT DIBATALKAN)
+   FUNGSI HAPUS DATA TERPADU (PASTI BERHASIL)
    ============================================================ */
-async function hapusSemuaAbsen(){
-  if(typeof sb === 'undefined') return;
-  if(!confirm('⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA data absensi milik Anda dari database Supabase.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?')) return;
-  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
-  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
-  
-  showToast('⏳ Menghapus...', 'info');
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  
-  // Hapus dari Supabase
-  const { error } = await sb.from('absensi').delete().ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
-  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
-  
-  // Hapus dari LocalStorage (Cache Offline)
-  let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
-  save(KEY_ABSEN, dataLokal);
-
-  showToast('🗑️ Semua data absensi Anda berhasil dihapus', 'success');
-  
-  // Refresh tampilan
-  renderRiwayat();         
-  renderRekap();           
-  updateCountBadge();      
-}
-
-async function hapusRiwayatAbsensi(){
-  if(typeof sb === 'undefined') return;
-  if(!confirm('⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA CATATAN RIWAYAT absensi milik Anda dari database.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?')) return;
-  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
-  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
-  
-  showToast('⏳ Menghapus riwayat...', 'info');
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  
-  const { error } = await sb.from('absensi').delete().ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
-  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
-  
-  // Hapus dari LocalStorage juga
-  let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
-  save(KEY_ABSEN, dataLokal);
-
-  showToast('🗑️ Semua riwayat absensi berhasil dihapus', 'success');
-  renderRiwayat();         
-  renderRekap();           
-  updateCountBadge();      
-}
-
-async function hapusRekapBulanan(){
-  if(typeof sb === 'undefined') return;
-  
-  // Ambil bulan default (bulan saat ini)
+async function konfirmasiHapusData(){
   const bulanDefault = getTodayISO().substring(0,7);
+  const opsi = prompt(`⚠️ ZONA HAPUS DATA\n\nKetik bulan yang ingin dihapus (format: TAHUN-BULAN).\nContoh: ${bulanDefault}\n\nATAU ketik "SEMUA" untuk menghapus SELURUH data absensi Anda.\n\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN!`, bulanDefault);
   
-  // Minta konfirmasi bulan mana yang ingin dihapus
-  const inputBulan = prompt(`⚠️ PERINGATAN KERAS!\n\nKetik bulan yang ingin dihapus dengan format TAHUN-BULAN (contoh: 2026-11).\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nBulan yang akan dihapus:`, bulanDefault);
+  if(!opsi) return;
   
-  if(!inputBulan) return; // Batal jika dikosongkan
-  
-  // Validasi format (YYYY-MM)
-  if(!/^\d{4}-\d{2}$/.test(inputBulan)) {
-    return showToast('❌ Format bulan salah. Gunakan format YYYY-MM (contoh: 2026-11)', 'error');
+  let bulanTarget = '';
+  let hapusSemua = false;
+
+  if(opsi.toUpperCase() === 'SEMUA') {
+    hapusSemua = true;
+  } else if (/^\d{4}-\d{2}$/.test(opsi)) {
+    bulanTarget = opsi;
+  } else {
+    return showToast('❌ Format salah. Gunakan YYYY-MM atau ketik "SEMUA".', 'error');
   }
 
-  const [thn, blnNum] = inputBulan.split('-');
-  const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
-
-  const ketik = prompt(`Ketik "HAPUS" untuk mengonfirmasi penghapusan data bulan ${namaBulan}:`);
+  const ketik = prompt('Ketik "HAPUS" (huruf besar) untuk konfirmasi final:');
   if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
-  
-  showToast('⏳ Menghapus rekap bulan ' + namaBulan + '...', 'info');
+
+  showToast('⏳ Menghapus data...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  
+  let queryHapus = sb.from('absensi').delete().eq('nama_guru', namaSaya);
+  let filterLokal = d => normalisasiNama(d.guru) === normalisasiNama(namaSaya);
 
-  // Tentukan tanggal awal dan akhir bulan
-  const awalBulan = inputBulan + '-01';
-  const akhirBulan = new Date(inputBulan + '-01T00:00:00');
-  akhirBulan.setMonth(akhirBulan.getMonth() + 1);
-  akhirBulan.setDate(0);
-  const tglAkhir = akhirBulan.getFullYear() + '-' + 
-    String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
-    String(akhirBulan.getDate()).padStart(2,'0');
+  if (!hapusSemua) {
+    const [thn, blnNum] = bulanTarget.split('-');
+    const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
+    const awalBulan = bulanTarget + '-01';
+    const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
+    akhirBulan.setMonth(akhirBulan.getMonth() + 1);
+    akhirBulan.setDate(0);
+    const tglAkhir = akhirBulan.getFullYear() + '-' + 
+      String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
+      String(akhirBulan.getDate()).padStart(2,'0');
 
-  // Hapus dari Supabase berdasarkan rentang tanggal
-  const { error } = await sb.from('absensi')
-    .delete()
-    .ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`)
-    .gte('tanggal', awalBulan)
-    .lte('tanggal', tglAkhir);
+    queryHapus = queryHapus.gte('tanggal', awalBulan).lte('tanggal', tglAkhir);
+    filterLokal = d => normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir;
+    
+    showToast('⏳ Menghapus data bulan ' + namaBulan + '...', 'info');
+  } else {
+    showToast('⏳ Menghapus SELURUH data...', 'info');
+  }
 
-  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
+  // 1. Hapus dari Supabase
+  const { error } = await queryHapus;
+  if(error) return showToast('❌ Gagal dari Supabase: ' + error.message, 'error');
 
-  // Hapus dari LocalStorage juga
+  // 2. Hapus dari LocalStorage
   let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
+  dataLokal = dataLokal.filter(d => !filterLokal(d));
   save(KEY_ABSEN, dataLokal);
 
-  showToast(`🗑️ Data absensi bulan ${namaBulan} berhasil dihapus`, 'success');
+  showToast('🗑️ Data berhasil dihapus permanen', 'success');
   
-  // Refresh tampilan Riwayat & Rekap
-  renderRekap();           
-  renderRiwayat();         
-  updateCountBadge();      
+  // 3. REFRESH TAMPILAN
+  if(!hapusSemua && bulanTarget) {
+    document.getElementById('fRekapBulan').value = bulanTarget;
+  }
+  
+  await renderRekap();
+  renderRiwayat();
+  updateCountBadge();
 }
 
 async function bersihkanDuplikat(){
@@ -1398,7 +1337,7 @@ async function bersihkanDuplikat(){
   showToast('⏳ Memeriksa duplikat...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
   
-  const { data, error } = await sb.from('absensi').select('*').ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`).order('created_at', { ascending: true });
+  const { data, error } = await sb.from('absensi').select('*').eq('nama_guru', namaSaya).order('created_at', { ascending: true });
   if(error) return showToast('❌ Gagal', 'error');
   
   const map = {};
