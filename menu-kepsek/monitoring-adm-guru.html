@@ -659,13 +659,53 @@ async function renderProfil(){
 setTimeout(renderProfil, 100);
 
 /* ============================================================
-   PROSES DATA MONITORING
+   PROSES DATA MONITORING (DARI SUPABASE)
    ============================================================ */
-function loadData(key) {
+let cacheData = {
+  anekdot: [],
+  observasi: [],
+  penilaian: []
+};
+
+async function muatDataDariSupabase() {
+  if (typeof sb === 'undefined') {
+    showToast('Koneksi Supabase gagal', 'error');
+    return;
+  }
+
   try {
-    const v = localStorage.getItem(key);
-    return v ? JSON.parse(v) : [];
-  } catch(e) { return []; }
+    // 1. Ambil Anekdot
+    const { data: dataAnekdot, error: errAnekdot } = await sb
+      .from('anekdot')
+      .select('*')
+      .order('tanggal', { ascending: false });
+    
+    if (!errAnekdot && dataAnekdot) cacheData.anekdot = dataAnekdot;
+    else if (errAnekdot) console.error("Gagal ambil anekdot:", errAnekdot);
+
+    // 2. Ambil Observasi
+    const { data: dataObservasi, error: errObservasi } = await sb
+      .from('observasi')
+      .select('*')
+      .order('tanggal', { ascending: false });
+    
+    if (!errObservasi && dataObservasi) cacheData.observasi = dataObservasi;
+    else if (errObservasi) console.error("Gagal ambil observasi:", errObservasi);
+
+    // 3. Ambil Penilaian
+    const { data: dataPenilaian, error: errPenilaian } = await sb
+      .from('penilaian')
+      .select('*')
+      .order('tanggal', { ascending: false });
+    
+    if (!errPenilaian && dataPenilaian) cacheData.penilaian = dataPenilaian;
+    else if (errPenilaian) console.error("Gagal ambil penilaian:", errPenilaian);
+
+    console.log("✅ Data monitoring berhasil dimuat dari Supabase");
+  } catch (err) {
+    console.error("Gagal memuat data:", err);
+    showToast('Gagal memuat data dari server', 'error');
+  }
 }
 
 /* ============================================================
@@ -700,24 +740,11 @@ function renderDetailTabel() {
   else if(jenisAktif === 'observasi') periodeAktif = periodeObservasi;
   else periodeAktif = periodePenilaian;
 
-  // Kumpulkan semua data laporan berdasarkan jenis
+  // Ambil dari cache (data Supabase)
   let listData = [];
-  
-  if(jenisAktif === 'anekdot') {
-    listData = loadData('ra_anekdot');
-  } else if(jenisAktif === 'observasi') {
-    listData = loadData('ra_observasi_kbc');
-  } else {
-    for(let i=0; i<localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if(k && k.startsWith('ra_penilaian_kbc_')) {
-        try {
-          const d = JSON.parse(localStorage.getItem(k));
-          if(d) listData.push(d);
-        } catch(e){}
-      }
-    }
-  }
+  if(jenisAktif === 'anekdot') listData = [...cacheData.anekdot];
+  else if(jenisAktif === 'observasi') listData = [...cacheData.observasi];
+  else listData = [...cacheData.penilaian];
 
   // Filter berdasarkan bulan
   if(periodeAktif) {
@@ -728,7 +755,7 @@ function renderDetailTabel() {
   if(user.role === 'guru') {
     const namaSaya = normalisasiNama(user.nama);
     listData = listData.filter(d => {
-      const namaGuru = jenisAktif === 'penilaian' ? d.guruNama : d.guru;
+      const namaGuru = jenisAktif === 'penilaian' ? (d.guru_nama || d.guruNama) : d.guru;
       return normalisasiNama(namaGuru).includes(namaSaya);
     });
   }
@@ -737,20 +764,16 @@ function renderDetailTabel() {
   listData.sort((a,b) => (b.tanggal||'').localeCompare(a.tanggal||''));
 
   let judul = '';
-  let classWarna = '';
   let icon = '';
   
   if(jenisAktif === 'anekdot') {
     judul = 'Tabel Catatan Anekdot';
-    classWarna = 'anekdot';
     icon = '📔';
   } else if(jenisAktif === 'observasi') {
     judul = 'Tabel Observasi Harian';
-    classWarna = 'observasi';
     icon = '👀';
   } else {
     judul = 'Tabel Penilaian KBC';
-    classWarna = 'penilaian';
     icon = '⭐';
   }
 
@@ -783,7 +806,6 @@ function renderDetailTabel() {
     html += `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div>Belum ada data laporan pada periode ini.</div></td></tr>`;
   } else {
     listData.forEach((item, index) => {
-      // Ambil nama anak dan guru berdasarkan jenis
       let namaAnak = '-';
       let namaGuru = '-';
       
@@ -794,15 +816,17 @@ function renderDetailTabel() {
         namaAnak = item.anak || '-';
         namaGuru = item.guru || '-';
       } else {
-        namaAnak = item.namaAnak || '-';
-        namaGuru = item.guruNama || '-';
+        // Penilaian: kolom di Supabase adalah nama_anak dan guru_nama
+        namaAnak = item.nama_anak || item.namaAnak || '-';
+        namaGuru = item.guru_nama || item.guruNama || '-';
       }
 
       const inisial = namaAnak.charAt(0).toUpperCase();
       const tgl = formatTanggalPanjang(item.tanggal);
       
-      // Key unik untuk verifikasi per laporan
-      const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + (item.id || item.tanggal + '_' + namaAnak);
+      // Key unik untuk verifikasi per laporan (pakai id Supabase jika ada)
+      const idUnik = item.id || (item.tanggal + '_' + namaAnak);
+      const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + idUnik;
       const statusVerifikasi = localStorage.getItem(keyVerifikasi) || 'belum';
       
       const classBtn = statusVerifikasi === 'sudah' ? 'sudah' : 'belum';
@@ -832,44 +856,14 @@ function renderDetailTabel() {
   html += `</tbody></table></div></div>`;
   wadah.innerHTML = html;
 
-  // Update angka statistik di card
-  let totalAnekdot = 0;
-  let totalObservasi = 0;
-  let totalPenilaian = 0;
+  // Update angka statistik di card (total keseluruhan per periode)
+  let totalAnekdot = cacheData.anekdot.length;
+  let totalObservasi = cacheData.observasi.length;
+  let totalPenilaian = cacheData.penilaian.length;
 
-  if(periodeAnekdot) {
-    totalAnekdot = loadData('ra_anekdot').filter(d => (d.tanggal||'').substring(0,7) === periodeAnekdot).length;
-  } else {
-    totalAnekdot = loadData('ra_anekdot').length;
-  }
-
-  if(periodeObservasi) {
-    totalObservasi = loadData('ra_observasi_kbc').filter(d => (d.tanggal||'').substring(0,7) === periodeObservasi).length;
-  } else {
-    totalObservasi = loadData('ra_observasi_kbc').length;
-  }
-
-  if(periodePenilaian) {
-    for(let i=0; i<localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if(k && k.startsWith('ra_penilaian_kbc_')) {
-        try {
-          const d = JSON.parse(localStorage.getItem(k));
-          if(d && (d.tanggal||'').substring(0,7) === periodePenilaian) totalPenilaian++;
-        } catch(e){}
-      }
-    }
-  } else {
-    for(let i=0; i<localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if(k && k.startsWith('ra_penilaian_kbc_')) {
-        try {
-          const d = JSON.parse(localStorage.getItem(k));
-          if(d) totalPenilaian++;
-        } catch(e){}
-      }
-    }
-  }
+  if(periodeAnekdot) totalAnekdot = cacheData.anekdot.filter(d => (d.tanggal||'').substring(0,7) === periodeAnekdot).length;
+  if(periodeObservasi) totalObservasi = cacheData.observasi.filter(d => (d.tanggal||'').substring(0,7) === periodeObservasi).length;
+  if(periodePenilaian) totalPenilaian = cacheData.penilaian.filter(d => (d.tanggal||'').substring(0,7) === periodePenilaian).length;
 
   document.getElementById('totalAnekdot').textContent = totalAnekdot;
   document.getElementById('totalObservasi').textContent = totalObservasi;
@@ -905,6 +899,7 @@ function logout(){
    ============================================================ */
 const todayMonth = getTodayISO().substring(0,7);
 
+// Set input hidden untuk filter
 const dummyInput = document.createElement('input');
 dummyInput.type = 'hidden';
 dummyInput.id = 'periodeAnekdot';
@@ -923,9 +918,13 @@ dummyInput3.id = 'periodePenilaian';
 dummyInput3.value = todayMonth;
 document.body.appendChild(dummyInput3);
 
-pilihCard('anekdot');
+// Jalankan sinkronisasi data terlebih dahulu, lalu render
+(async () => {
+  await muatDataDariSupabase();
+  pilihCard('anekdot');
+})();
 
-console.log('✅ monitoring-adm-guru.html loaded (Rincian per Laporan)');
+console.log('✅ monitoring-adm-guru.html loaded (Data dari Supabase)');
 </script>
 
 <script src="../auto-update.js"></script>
