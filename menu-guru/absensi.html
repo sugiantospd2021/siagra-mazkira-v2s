@@ -582,6 +582,7 @@ function updateJamBerjalan(){
   const valMasuk = document.getElementById('fJamMasuk').value;
   const valPulang = document.getElementById('fJamPulang').value;
   
+  // Hanya jalankan jam real-time JIKA belum ada nilai masuk/pulang yang dikunci
   if(elMasuk && !valMasuk) elMasuk.textContent = jamSekarang;
   if(elPulang && !valPulang) elPulang.textContent = jamSekarang;
 }
@@ -1346,6 +1347,66 @@ async function bersihkanDuplikat(){
 }
 
 /* ============================================================
+   PERBAIKAN UTAMA: CEK KUNCIAN JAM SAAT HALAMAN DIMUAT
+   ============================================================ */
+async function cekStatusAbsenHariIni() {
+  if (typeof sb === 'undefined') return;
+  const tanggalHariIni = getTodayISO();
+  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+
+  try {
+    const { data, error } = await sb
+      .from('absensi')
+      .select('*')
+      .eq('nama_guru', namaSaya)
+      .eq('tanggal', tanggalHariIni)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    // Jika data ditemukan dan statusnya HADIR serta sudah ada jam masuk
+    if (data && data.jam_masuk && data.status === 'hadir') {
+      // 1. Kunci Tampilan Tanggal ke Hari Ini
+      document.getElementById('fTanggal').value = data.tanggal;
+      
+      // 2. Pilih Status HADIR secara otomatis
+      pilihStatus('hadir');
+      
+      // 3. Set Nilai Jam Masuk (Kuncian)
+      document.getElementById('fJamMasuk').value = data.jam_masuk;
+      document.getElementById('displayJamMasuk').textContent = data.jam_masuk + ':00';
+      
+      // 4. Matikan Tombol Absen Masuk
+      const btnMasuk = document.getElementById('btnAbsenMasuk');
+      btnMasuk.disabled = true;
+      btnMasuk.innerHTML = '✅ Masuk Terkunci';
+      
+      // 5. Aktifkan Tombol Absen Pulang
+      document.getElementById('btnAbsenPulang').disabled = false;
+
+      // 6. Jika sudah ada jam pulang, kunci juga tombol pulang dan aktifkan simpan
+      if (data.jam_pulang) {
+        document.getElementById('fJamPulang').value = data.jam_pulang;
+        document.getElementById('displayJamPulang').textContent = data.jam_pulang + ':00';
+        
+        const btnPulang = document.getElementById('btnAbsenPulang');
+        btnPulang.disabled = true;
+        btnPulang.innerHTML = '✅ Pulang Terkunci';
+        
+        document.getElementById('btnSimpan').disabled = false;
+      }
+
+      // 7. Tampilkan analisis keterlambatan (jika ada)
+      analisisJamAbsensi();
+      
+      showToast('ℹ️ Sesi absen masuk Anda dilanjutkan dari database.', 'info');
+    }
+  } catch (err) {
+    console.error('Gagal mengecek status absen hari ini:', err);
+  }
+}
+
+/* ============================================================
    LOGOUT
    ============================================================ */
 function logout(){ if(confirm('Keluar?')){ localStorage.removeItem('user'); window.location.href = '../index.html'; } }
@@ -1354,11 +1415,24 @@ function logout(){ if(confirm('Keluar?')){ localStorage.removeItem('user'); wind
    INIT
    ============================================================ */
 async function init(){
-  applyRoleColors(); await muatData(); setHeaderTitle(); resetForm();
+  applyRoleColors(); 
+  await muatData(); 
+  setHeaderTitle(); 
+  resetForm();
+  
+  // Set tanggal rekap bulanan ke bulan ini
   document.getElementById('fRekapBulan').value = getTodayISO().substring(0,7);
-  updateCountBadge(); renderRiwayat(); renderStatistikBackup();
-  console.log('✅ absensi.html loaded — SIAGRA v.2.s (Supabase Ready)');
+  
+  // Panggil fungsi perbaikan untuk mengunci jam jika sudah absen hari ini
+  await cekStatusAbsenHariIni();
+
+  updateCountBadge(); 
+  renderRiwayat(); 
+  renderStatistikBackup();
+  console.log('✅ absensi.html loaded — SIAGRA v.2.s (Kuncian Jam Diperbaiki)');
 }
+
+// Jalankan inisialisasi setelah semua fungsi dideklarasikan
 init();
 
 if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('../service-worker.js').catch(() => {}); }); }
