@@ -172,6 +172,17 @@
     border-color:#3B82F6;transform:translateY(-2px);
     box-shadow:0 0 20px rgba(59,130,246,.55);
   }
+  .btn-refresh {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: #fff; border: none; padding: 10px 20px; border-radius: 10px;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    transition: all .25s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+  .btn-refresh:hover {
+    background: linear-gradient(135deg, #34D399, #10B981);
+    transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.6);
+  }
 
   /* DASHBOARD CARDS (Clickable) */
   .stats-grid {
@@ -322,7 +333,7 @@
     .header-left,.header-center,.header-right{flex:1 1 100%;justify-content:center;text-align:center}
     .wrapper{padding:16px 12px}
     .form-header-inline{flex-direction:column;align-items:stretch}
-    .btn-back-inline{justify-content:center}
+    .btn-back-inline,.btn-refresh{justify-content:center}
     .table-toolbar { flex-direction: column; align-items: flex-start; }
   }
 </style>
@@ -369,7 +380,10 @@
     <!-- HEADER INLINE -->
     <div class="form-header-inline">
       <div class="form-title-text"><span class="emoji">📊</span><span>Dashboard Administrasi Guru</span></div>
-      <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-refresh" onclick="refreshData()">🔄 Refresh Data</button>
+        <a class="btn-back-inline" href="../kepsek.html" id="btnKembali">← Kembali ke Menu</a>
+      </div>
     </div>
 
     <!-- KARTU STATISTIK (KLIK UNTUK DETAIL) -->
@@ -673,6 +687,9 @@ async function muatDataDariSupabase() {
     return;
   }
 
+  // Tampilkan loading di tabel
+  document.getElementById('wadahTabel').innerHTML = `<div class="table-wrap"><div class="empty-state"><div class="icon">⏳</div>Memuat data dari server...</div></div>`;
+
   try {
     // 1. Ambil Anekdot
     const { data: dataAnekdot, error: errAnekdot } = await sb
@@ -730,7 +747,6 @@ function pilihCard(jenis) {
 function renderDetailTabel() {
   const wadah = document.getElementById('wadahTabel');
   
-  // Ambil nilai filter bulan dari hidden input
   const periodeAnekdot = document.getElementById('periodeAnekdot').value;
   const periodeObservasi = document.getElementById('periodeObservasi').value;
   const periodePenilaian = document.getElementById('periodePenilaian').value;
@@ -740,7 +756,6 @@ function renderDetailTabel() {
   else if(jenisAktif === 'observasi') periodeAktif = periodeObservasi;
   else periodeAktif = periodePenilaian;
 
-  // Ambil dari cache (data Supabase)
   let listData = [];
   if(jenisAktif === 'anekdot') listData = [...cacheData.anekdot];
   else if(jenisAktif === 'observasi') listData = [...cacheData.observasi];
@@ -751,7 +766,7 @@ function renderDetailTabel() {
     listData = listData.filter(d => (d.tanggal||'').substring(0,7) === periodeAktif);
   }
 
-  // Filter berdasarkan role (jika guru, hanya lihat datanya sendiri)
+  // Filter berdasarkan role
   if(user.role === 'guru') {
     const namaSaya = normalisasiNama(user.nama);
     listData = listData.filter(d => {
@@ -803,7 +818,7 @@ function renderDetailTabel() {
   `;
 
   if(listData.length === 0) {
-    html += `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div>Belum ada data laporan pada periode ini.</div></td></tr>`;
+    html += `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div>Belum ada data laporan pada periode ini.<br><small style="font-size:11px;opacity:0.7;margin-top:5px;display:block">(Pastikan guru sudah menyimpan data ke server)</small></div></td></tr>`;
   } else {
     listData.forEach((item, index) => {
       let namaAnak = '-';
@@ -816,7 +831,6 @@ function renderDetailTabel() {
         namaAnak = item.anak || '-';
         namaGuru = item.guru || '-';
       } else {
-        // Penilaian: kolom di Supabase adalah nama_anak dan guru_nama
         namaAnak = item.nama_anak || item.namaAnak || '-';
         namaGuru = item.guru_nama || item.guruNama || '-';
       }
@@ -824,7 +838,6 @@ function renderDetailTabel() {
       const inisial = namaAnak.charAt(0).toUpperCase();
       const tgl = formatTanggalPanjang(item.tanggal);
       
-      // Key unik untuk verifikasi per laporan (pakai id Supabase jika ada)
       const idUnik = item.id || (item.tanggal + '_' + namaAnak);
       const keyVerifikasi = 'verifikasi_' + jenisAktif + '_' + idUnik;
       const statusVerifikasi = localStorage.getItem(keyVerifikasi) || 'belum';
@@ -856,7 +869,6 @@ function renderDetailTabel() {
   html += `</tbody></table></div></div>`;
   wadah.innerHTML = html;
 
-  // Update angka statistik di card (total keseluruhan per periode)
   let totalAnekdot = cacheData.anekdot.length;
   let totalObservasi = cacheData.observasi.length;
   let totalPenilaian = cacheData.penilaian.length;
@@ -887,6 +899,13 @@ function toggleVerifikasi(keyVerifikasi) {
   renderDetailTabel();
 }
 
+async function refreshData() {
+  showToast('⏳ Memuat ulang data dari server...', 'info');
+  await muatDataDariSupabase();
+  renderDetailTabel();
+  showToast('✅ Data berhasil diperbarui', 'success');
+}
+
 function logout(){
   if(confirm('Yakin ingin keluar?')){
     localStorage.removeItem('user');
@@ -899,7 +918,6 @@ function logout(){
    ============================================================ */
 const todayMonth = getTodayISO().substring(0,7);
 
-// Set input hidden untuk filter
 const dummyInput = document.createElement('input');
 dummyInput.type = 'hidden';
 dummyInput.id = 'periodeAnekdot';
