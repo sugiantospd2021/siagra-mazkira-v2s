@@ -1337,25 +1337,39 @@ async function hapusRiwayatAbsensi(){
 
 async function hapusRekapBulanan(){
   if(typeof sb === 'undefined') return;
-  const bulan = document.getElementById('fRekapBulan').value || getTodayISO().substring(0,7);
-  const [thn, blnNum] = bulan.split('-');
+  
+  // Ambil bulan default (bulan saat ini)
+  const bulanDefault = getTodayISO().substring(0,7);
+  
+  // Minta konfirmasi bulan mana yang ingin dihapus
+  const inputBulan = prompt(`⚠️ PERINGATAN KERAS!\n\nKetik bulan yang ingin dihapus dengan format TAHUN-BULAN (contoh: 2026-11).\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nBulan yang akan dihapus:`, bulanDefault);
+  
+  if(!inputBulan) return; // Batal jika dikosongkan
+  
+  // Validasi format (YYYY-MM)
+  if(!/^\d{4}-\d{2}$/.test(inputBulan)) {
+    return showToast('❌ Format bulan salah. Gunakan format YYYY-MM (contoh: 2026-11)', 'error');
+  }
+
+  const [thn, blnNum] = inputBulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
 
-  if(!confirm(`⚠️ PERINGATAN KERAS!\n\nAnda akan MENGHAPUS SEMUA data absensi untuk periode ${namaBulan}.\nData yang dihapus TIDAK DAPAT DIKEMBALIKAN.\n\nLanjutkan?`)) return;
-  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
+  const ketik = prompt(`Ketik "HAPUS" untuk mengonfirmasi penghapusan data bulan ${namaBulan}:`);
   if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
   
-  showToast('⏳ Menghapus rekap bulan ini...', 'info');
+  showToast('⏳ Menghapus rekap bulan ' + namaBulan + '...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
 
-  const awalBulan = bulan + '-01';
-  const akhirBulan = new Date(bulan + '-01');
+  // Tentukan tanggal awal dan akhir bulan
+  const awalBulan = inputBulan + '-01';
+  const akhirBulan = new Date(inputBulan + '-01T00:00:00');
   akhirBulan.setMonth(akhirBulan.getMonth() + 1);
   akhirBulan.setDate(0);
   const tglAkhir = akhirBulan.getFullYear() + '-' + 
     String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
     String(akhirBulan.getDate()).padStart(2,'0');
 
+  // Hapus dari Supabase berdasarkan rentang tanggal
   const { error } = await sb.from('absensi')
     .delete()
     .ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`)
@@ -1364,13 +1378,14 @@ async function hapusRekapBulanan(){
 
   if(error) return showToast('❌ Gagal: ' + error.message, 'error');
 
-  // Hapus dari LocalStorage juga untuk bulan tersebut
+  // Hapus dari LocalStorage juga
   let dataLokal = load(KEY_ABSEN, []) || [];
   dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
   save(KEY_ABSEN, dataLokal);
 
   showToast(`🗑️ Data absensi bulan ${namaBulan} berhasil dihapus`, 'success');
   
+  // Refresh tampilan Riwayat & Rekap
   renderRekap();           
   renderRiwayat();         
   updateCountBadge();      
