@@ -1287,12 +1287,11 @@ async function konfirmasiHapusData(){
   showToast('⏳ Menghapus data...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
   
-  let queryHapus = sb.from('absensi').delete().eq('nama_guru', namaSaya);
-  let filterLokal = d => normalisasiNama(d.guru) === normalisasiNama(namaSaya);
-
+  // 1. TARIK SEMUA DATA DULU UNTUK MENDAPATKAN ID-NYA
+  let querySelect = sb.from('absensi').select('id, tanggal').eq('nama_guru', namaSaya);
+  
   if (!hapusSemua) {
     const [thn, blnNum] = bulanTarget.split('-');
-    const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
     const awalBulan = bulanTarget + '-01';
     const akhirBulan = new Date(bulanTarget + '-01T00:00:00');
     akhirBulan.setMonth(akhirBulan.getMonth() + 1);
@@ -1301,33 +1300,47 @@ async function konfirmasiHapusData(){
       String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
       String(akhirBulan.getDate()).padStart(2,'0');
 
-    queryHapus = queryHapus.gte('tanggal', awalBulan).lte('tanggal', tglAkhir);
-    filterLokal = d => normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir;
-    
-    showToast('⏳ Menghapus data bulan ' + namaBulan + '...', 'info');
-  } else {
-    showToast('⏳ Menghapus SELURUH data...', 'info');
+    querySelect = querySelect.gte('tanggal', awalBulan).lte('tanggal', tglAkhir);
   }
 
-  // 1. Hapus dari Supabase
-  const { error } = await queryHapus;
-  if(error) return showToast('❌ Gagal dari Supabase: ' + error.message, 'error');
+  const { data: dataDitemukan, error: errCari } = await querySelect;
+  if(errCari) return showToast('❌ Gagal mencari data: ' + errCari.message, 'error');
+  
+  if (!dataDitemukan || dataDitemukan.length === 0) {
+    return showToast('ℹ️ Tidak ada data untuk dihapus pada periode tersebut.', 'info');
+  }
 
-  // 2. Hapus dari LocalStorage
+  // 2. HAPUS DARI SUPABASE BERDASARKAN ID (Satu per satu agar pasti tembus)
+  showToast(`⏳ Menghapus ${dataDitemukan.length} data...`, 'info');
+  for (let i = 0; i < dataDitemukan.length; i++) {
+    await sb.from('absensi').delete().eq('id', dataDitemukan[i].id);
+  }
+
+  // 3. HAPUS DARI PENYIMPANAN LOKAL (LocalStorage)
   let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => !filterLokal(d));
+  const idYangDihapus = dataDitemukan.map(d => d.tanggal); // Kita cocokkan berdasarkan tanggal
+
+  dataLokal = dataLokal.filter(d => {
+    const cocokNama = normalisasiNama(d.guru) === normalisasiNama(namaSaya);
+    if (!cocokNama) return true; // Bukan punya dia, simpan
+    return !idYangDihapus.includes(d.tanggal); // Jika tanggalnya masuk list hapus, buang
+  });
+  
   save(KEY_ABSEN, dataLokal);
 
-  showToast('🗑️ Data berhasil dihapus permanen', 'success');
+  showToast('🗑️ Data berhasil dihapus permanen!', 'success');
   
-  // 3. REFRESH TAMPILAN
+  // 4. PAKSA LAYAR UNTUK MEMPERBARUI TAMPILAN (REFRESH TOTAL)
   if(!hapusSemua && bulanTarget) {
     document.getElementById('fRekapBulan').value = bulanTarget;
   }
   
-  await renderRekap();
-  renderRiwayat();
-  updateCountBadge();
+  // Beri jeda sedikit agar database selesai memproses, lalu render ulang
+  setTimeout(async () => {
+    await renderRekap();
+    renderRiwayat();
+    updateCountBadge();
+  }, 500);
 }
 
 async function bersihkanDuplikat(){
