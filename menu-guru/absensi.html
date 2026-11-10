@@ -444,15 +444,15 @@
           <span>📊</span> <span>Statistik Data Absensi</span>
         </div>
         <div class="stat-grid-backup">
-          <div class="stat-box-backup">
+          <div class="stat-box-backup" onclick="bukaRiwayatDariStatistik()" style="cursor:pointer;" title="Klik untuk lihat riwayat">
             <div class="n" id="statTotal">0</div>
             <div class="l">Total Absen</div>
           </div>
-          <div class="stat-box-backup">
+          <div class="stat-box-backup" onclick="bukaRiwayatDariStatistik()" style="cursor:pointer;" title="Klik untuk lihat riwayat">
             <div class="n" id="statHari">0</div>
             <div class="l">Hari Tercatat</div>
           </div>
-          <div class="stat-box-backup">
+          <div class="stat-box-backup" onclick="bukaRiwayatDariStatistik()" style="cursor:pointer;" title="Klik untuk lihat riwayat">
             <div class="n" id="statPersen">0%</div>
             <div class="l">% Hadir</div>
           </div>
@@ -1314,13 +1314,23 @@ async function hapusSemuaAbsen(){
   
   showToast('⏳ Menghapus...', 'info');
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
+  
+  // Hapus dari Supabase
   const { error } = await sb.from('absensi').delete().ilike('nama_guru', `%${normalisasiNama(namaSaya)}%`);
   if(error) return showToast('❌ Gagal: ' + error.message, 'error');
   
+  // Hapus dari LocalStorage (Cache Offline)
+  let dataLokal = load(KEY_ABSEN, []) || [];
+  dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
+  save(KEY_ABSEN, dataLokal);
+
   showToast('🗑️ Semua data absensi Anda berhasil dihapus', 'success');
-  renderStatistikBackup();
-  renderRiwayat();
-  renderRekap();
+  
+  // Refresh tampilan
+  renderStatistikBackup(); // Angka jadi 0
+  renderRiwayat();         // Riwayat jadi kosong
+  renderRekap();           // Rekap bulanan jadi kosong
+  updateCountBadge();      // Badge angka riwayat jadi 0
 }
 
 async function bersihkanDuplikat(){
@@ -1357,6 +1367,12 @@ async function bersihkanDuplikat(){
   renderStatistikBackup();
   renderRiwayat();
   renderRekap();
+}
+
+// Fungsi agar saat card statistik diklik, pindah ke tab riwayat
+function bukaRiwayatDariStatistik() {
+  switchTab('list'); // Pindah ke tab Riwayat
+  window.scrollTo({top: 0, behavior: 'smooth'}); // Scroll ke atas
 }
 
 /* ============================================================
