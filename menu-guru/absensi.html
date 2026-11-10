@@ -169,6 +169,14 @@
   .status-opt[data-status="alpa"]{--status-color:var(--absen-alpa)}
   .status-opt .status-emoji{ font-size:24px;margin-bottom:4px; }
 
+  /* CSS UNTUK KUNCIAN STATUS */
+  .status-opt.locked, .status-opt.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+  }
+
   .jam-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
   .jam-box-mini{ background:var(--role-card-inner);border:1.5px solid var(--role-border); border-radius:10px;padding:14px; }
   .jam-box-mini .jam-lbl{ font-size:11px;font-weight:800;color:var(--sub); text-transform:uppercase;margin-bottom:8px; }
@@ -325,6 +333,12 @@
     <!-- TAB 1: FORM ABSEN -->
     <div id="panelForm">
       <div class="card">
+        
+        <!-- NOTIFIKASI SUDAH ABSEN (WARNA MERAH) -->
+        <div id="infoSudahAbsen" style="display:none; margin-bottom:20px; padding:16px; border-radius:12px; background:rgba(220,38,38,.15); border:2px solid var(--danger); font-size:13.5px; font-weight:700; color:var(--danger); line-height:1.6; text-align:center;">
+          <!-- Teks diinjeksi via JS -->
+        </div>
+
         <div class="form-group full">
           <label>👤 Pengisi Absensi</label>
           <div class="pengisi-info">
@@ -391,10 +405,8 @@
 
         <div class="action-row">
           <button class="btn btn-primary" id="btnSimpan" onclick="simpanAbsen()" disabled>💾 Simpan Absensi</button>
-          
         </div>
 
-        <div id="infoSudahAbsen" style="display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.35);font-size:12.5px;font-weight:700;color:#3B82F6;line-height:1.5"></div>
       </div>
     </div>
 
@@ -827,9 +839,14 @@ function klikAbsenMasuk(){
   document.getElementById('fJamMasuk').value = jamSekarang;
   document.getElementById('displayJamMasuk').textContent = jamSekarang + ':00';
   
+  // KUNCI TOMBOL
   document.getElementById('btnAbsenMasuk').disabled = true;
   document.getElementById('btnAbsenMasuk').innerHTML = '✅ Masuk Terkunci';
   document.getElementById('btnAbsenPulang').disabled = false;
+
+  // KUNCI TANGGAL & STATUS
+  document.getElementById('fTanggal').disabled = true;
+  document.querySelectorAll('#statusGrid .status-opt').forEach(el => el.classList.add('disabled'));
 
   analisisJamAbsensi();
   showToast('✅ Absen masuk berhasil dikunci pada jam ' + jamSekarang, 'success');
@@ -856,6 +873,12 @@ function klikAbsenPulang(){
    FORM INTERAKSI
    ============================================================ */
 function pilihStatus(kode){
+  // CEK APAKAH SUDAH ABSEN, JIKA IYA JANGAN IZINKAN GANTI STATUS
+  if(document.getElementById('fTanggal').disabled && kode !== 'hadir') {
+    showToast('Absensi hari ini sudah terkunci.', 'error');
+    return;
+  }
+
   statusTerpilih = kode;
   document.querySelectorAll('#statusGrid .status-opt').forEach(el => { el.classList.toggle('active', el.dataset.status === kode); });
   document.getElementById('fStatus').value = kode;
@@ -867,17 +890,14 @@ function updateUISetelahPilihStatus(kode){
   const btnMasuk = document.getElementById('btnAbsenMasuk');
   const btnPulang = document.getElementById('btnAbsenPulang');
   const btnSimpan = document.getElementById('btnSimpan');
-  const btnReset = document.getElementById('btnReset');
   const warningBox = document.getElementById('warningBox');
   const jamSection = document.getElementById('jamSection');
-  const actionRow = document.querySelector('.action-row');
 
   warningBox.style.display = 'none'; 
   cutiRangeBox.style.display = 'none';
   btnMasuk.disabled = true; 
   btnPulang.disabled = true; 
   btnSimpan.disabled = true;
-    actionRow.style.display = 'flex';
   
   document.getElementById('fJamMasuk').value = ''; 
   document.getElementById('fJamPulang').value = '';
@@ -893,7 +913,6 @@ function updateUISetelahPilihStatus(kode){
     jamSection.style.display = 'none'; 
     btnSimpan.style.display = 'inline-flex'; 
     btnSimpan.disabled = false; 
-     
     
     warningBox.style.display = 'flex'; 
     warningBox.className = 'warning-box alpa';
@@ -1001,14 +1020,15 @@ function cekSudahAbsen(){
   const semua = load(KEY_ABSEN, []) || [];
   const sudah = semua.find(a => normalisasiNama(a.guru) === normalisasiNama(namaSaya) && a.tanggal === tanggal);
 
-  if(sudah && sudah.jamMasuk){
+  // Hanya tampilkan info merah jika JAM PULANG sudah diisi (artinya sudah selesai/simpan)
+  if(sudah && sudah.jamMasuk && sudah.jamPulang){
     info.style.display = 'block';
-    info.innerHTML = `ℹ️ Anda sudah absen tanggal <b>${formatTanggalPendek(tanggal)}</b> sebagai <b>${sudah.status}</b>${sudah.jamMasuk ? ' • Masuk: ' + sudah.jamMasuk : ''}${sudah.jamPulang ? ' • Pulang: ' + sudah.jamPulang : ''}.`;
+    info.innerHTML = `⛔ Anda sudah menyelesaikan absensi pada hari ini (${formatTanggalPendek(tanggal)}).<br>Data absensi telah tersimpan di server dan tidak dapat diubah lagi.`;
   } else { info.style.display = 'none'; }
 }
 
 /* ============================================================
-   SIMPAN ABSEN (KE SUPABASE)
+   SIMPAN ABSEN (KE SUPABASE) & KUNCI TOTAL
    ============================================================ */
 async function simpanAbsen(){
   const tanggal = document.getElementById('fTanggal').value;
@@ -1055,34 +1075,18 @@ async function simpanAbsen(){
   save(KEY_ABSEN, semua);
 
   showToast('✅ Absensi tersimpan di Server', 'success');
-  resetForm();
-  updateCountBadge();
-  setTimeout(() => switchTab('list'), 700);
-}
-
-function resetForm(){
-  document.getElementById('fTanggal').value = getTodayISO();
-  document.getElementById('fJamMasuk').value = ''; document.getElementById('fJamPulang').value = '';
-  document.getElementById('displayJamMasuk').textContent = getNowHHMMSS(); document.getElementById('displayJamPulang').textContent = getNowHHMMSS();
-  document.getElementById('fCatatan').value = ''; document.getElementById('fCutiDari').value = ''; document.getElementById('fCutiSampai').value = '';
-  statusTerpilih = ''; document.getElementById('fStatus').value = '';
-  document.querySelectorAll('#statusGrid .status-opt').forEach(el => el.classList.remove('active'));
   
-  const btnMasuk = document.getElementById('btnAbsenMasuk');
-  const btnPulang = document.getElementById('btnAbsenPulang');
-  const btnSimpan = document.getElementById('btnSimpan');
-  const btnReset = document.getElementById('btnReset');
-  const actionRow = document.querySelector('.action-row');
-  
-  btnMasuk.disabled = true; btnMasuk.innerHTML = '🖐️ Absen Masuk';
-  btnPulang.disabled = true; btnPulang.innerHTML = '🏃 Absen Pulang';
-  btnSimpan.disabled = true; btnSimpan.style.display = 'inline-flex';
-   actionRow.style.display = 'flex';
-    document.getElementById('keteranganBox').style.display = 'none';
-  document.getElementById('warningBox').style.display = 'none';
-  document.getElementById('cutiRangeBox').style.display = 'none';
-  document.getElementById('jamSection').style.display = 'grid';
+  // Kunci Total UI setelah simpan
   cekSudahAbsen();
+  document.querySelectorAll('.status-opt').forEach(el => el.classList.add('disabled'));
+  document.getElementById('fTanggal').disabled = true;
+  document.getElementById('btnAbsenMasuk').disabled = true;
+  document.getElementById('btnAbsenPulang').disabled = true;
+  document.getElementById('btnSimpan').disabled = true;
+  document.getElementById('fCatatan').disabled = true;
+
+  updateCountBadge();
+  setTimeout(() => switchTab('list'), 1000);
 }
 
 /* ============================================================
@@ -1356,7 +1360,7 @@ async function bersihkanDuplikat(){
 }
 
 /* ============================================================
-   FUNGSI PENGUNCIAN JAM DARI DATABASE
+   FUNGSI PENGUNCIAN JAM DARI DATABASE (LOAD AWAL)
    ============================================================ */
 async function cekStatusAbsenHariIni() {
   if (typeof sb === 'undefined') return;
@@ -1364,11 +1368,9 @@ async function cekStatusAbsenHariIni() {
   const namaSaya = guruProfil ? guruProfil.nama : user.nama;
 
   try {
-    // 1. Cek dari localStorage dulu (jika sebelumnya sempat klik keluar tanpa simpan)
     let dataLokal = load(KEY_ABSEN, []) || [];
     let sudahAbsen = dataLokal.find(a => normalisasiNama(a.guru) === normalisasiNama(namaSaya) && a.tanggal === tanggalHariIni && a.jamMasuk);
 
-    // 2. Cek ke Supabase
     const { data, error } = await sb
       .from('absensi')
       .select('*')
@@ -1378,10 +1380,8 @@ async function cekStatusAbsenHariIni() {
 
     if (error) throw error;
     
-    // Jika di database ternyata ada, utamakan data dari database
     if (data && data.jam_masuk) sudahAbsen = { ...sudahAbsen, ...data };
 
-    // 3. Terapkan Kuncian Tampilan Jika Ditemukan Data Absen Masuk
     if (sudahAbsen && sudahAbsen.jamMasuk) {
       document.getElementById('fTanggal').value = tanggalHariIni;
       document.getElementById('fTanggal').disabled = true; 
@@ -1400,7 +1400,7 @@ async function cekStatusAbsenHariIni() {
       // Buka Jam Pulang
       document.getElementById('btnAbsenPulang').disabled = false;
 
-      // Jika sudah ada jam pulang, kunci semuanya
+      // Jika sudah ada jam pulang, kunci semuanya dan tampilkan notifikasi merah
       if (sudahAbsen.jamPulang) {
         document.getElementById('fJamPulang').value = sudahAbsen.jamPulang;
         document.getElementById('displayJamPulang').textContent = sudahAbsen.jamPulang + ':00';
@@ -1409,11 +1409,13 @@ async function cekStatusAbsenHariIni() {
         btnPulang.disabled = true;
         btnPulang.innerHTML = '✅ Pulang Terkunci';
         
-        document.getElementById('btnSimpan').disabled = false;
+        document.getElementById('btnSimpan').disabled = true;
+        document.getElementById('fCatatan').disabled = true;
+
+        cekSudahAbsen(); // Panggil notifikasi merah
       }
 
       analisisJamAbsensi();
-      showToast('ℹ️ Sesi absen Anda dilanjutkan.', 'info');
     }
   } catch (err) {
     console.error('Gagal mengecek status:', err);
@@ -1425,7 +1427,6 @@ async function cekStatusAbsenHariIni() {
    ============================================================ */
 function logout(){ 
   if(confirm('Keluar?')){ 
-    // Simpan otomatis sementara ke cache sebelum logout
     prosesKeluar(null);
     localStorage.removeItem('user'); 
     window.location.href = '../index.html'; 
