@@ -1151,7 +1151,7 @@ async function renderRekap(){
 }
 
 /* ============================================================
-   FUNGSI HAPUS REKAP BULANAN (DARI TAB REKAP)
+   FUNGSI HAPUS REKAP BULANAN (TANPA RELOAD)
    ============================================================ */
 async function hapusRekapBulanAktif(){
   if(typeof sb === 'undefined') return;
@@ -1192,10 +1192,19 @@ async function hapusRekapBulanAktif(){
   dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
   save(KEY_ABSEN, dataLokal);
 
-  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
+  // PAKSA TAMPILAN MENJADI KOSONG TANPA RELOAD
+  document.getElementById('rekapContent').innerHTML = `
+    <div class="card" style="text-align:center; padding: 40px 20px;">
+      <h2 style="font-size: 40px; margin-bottom: 10px;">🗑️</h2>
+      <h3 style="color: var(--text); margin-bottom: 8px;">Data Berhasil Dihapus</h3>
+      <p style="color: var(--sub); font-size: 13px;">Data absensi untuk bulan <b>${namaBulan}</b> telah dibersihkan secara permanen dari sistem.</p>
+    </div>
+  `;
+
+  updateCountBadge();
+  renderRiwayat();
   
-  // Gunakan hard reload agar PWA/Browser benar-benar memuat ulang datanya
-  window.location.href = window.location.pathname + '?t=' + new Date().getTime();
+  showToast('✅ Data rekap berhasil dihapus permanen!', 'success');
 }
 
 /* ============================================================
