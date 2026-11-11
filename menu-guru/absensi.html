@@ -227,18 +227,6 @@
   .status-pill[data-s="cuti"]{ color:var(--absen-cuti); border-color:var(--absen-cuti); }
   .status-pill[data-s="alpa"]{ color:var(--absen-alpa); border-color:var(--absen-alpa); }
 
-  .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  @media (max-width: 600px) { .backup-grid { grid-template-columns: 1fr; } }
-  .backup-card { background: var(--role-card-inner); border: 2px dashed var(--role-border); border-radius: 14px; padding: 20px; text-align: center; }
-  .backup-card .icon { font-size: 40px; margin-bottom: 10px; }
-  .backup-card h4 { margin-bottom: 8px; font-size: 15px; }
-  .backup-card p { font-size: 12px; color: var(--sub); margin-bottom: 14px; line-height: 1.5; }
-  .backup-card .btn { width: 100%; justify-content: center; }
-  .backup-card.danger { border-color: var(--danger); }
-  .backup-card.danger h4 { color: var(--danger); }
-  .backup-card.warn { border-color: var(--warning); }
-  .backup-card.warn h4 { color: var(--warning); }
-  
   @media (max-width: 900px) {
     .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
     .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
@@ -320,7 +308,6 @@
       <a class="tab-btn active" id="tabForm" href="#absen-hari-ini" onclick="tanganiTabClick(event,'form')">✍️ Absen Hari Ini</a>
       <a class="tab-btn" id="tabList" href="#riwayat" onclick="tanganiTabClick(event,'list')">📚 Riwayat <span id="countBadge" style="opacity:.85">(0)</span></a>
       <a class="tab-btn" id="tabRekap" href="#rekap-bulanan" onclick="tanganiTabClick(event,'rekap')">📊 Rekap Bulanan</a>
-      <a class="tab-btn" id="tabBackup" href="#backup" onclick="tanganiTabClick(event,'backup')">☁️ Backup</a>
     </div>
 
     <!-- TAB 1: FORM ABSEN -->
@@ -424,7 +411,7 @@
       </div>
       <div id="rekapContent"></div>
       
-      <!-- TOMBOL HAPUS REKAP BULANAN (BARU) -->
+      <!-- TOMBOL HAPUS REKAP BULANAN -->
       <div style="margin-top: 20px; text-align: right;">
         <button class="btn btn-danger" onclick="hapusRekapBulanAktif()" style="width: 100%;">
           🗑️ Hapus Data Rekap Bulan Ini
@@ -436,63 +423,13 @@
 
     </div>
 
-    <!-- TAB 4: BACKUP -->
-    <div id="panelBackup" style="display:none">
-      
-      <div class="card">
-        <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-          <span>☁️</span> <span>Backup & Restore</span>
-        </div>
-        
-        <div class="backup-grid">
-          <div class="backup-card">
-            <div class="icon">📥</div>
-            <h4>Backup Data</h4>
-            <p>Unduh seluruh data absensi Anda sebagai file .json untuk disimpan di komputer/flashdisk.</p>
-            <button class="btn btn-primary" onclick="backupJSON()">📥 Download Backup</button>
-          </div>
-          
-          <div class="backup-card">
-            <div class="icon">📤</div>
-            <h4>Restore Data</h4>
-            <p>Unggah file .json hasil backup sebelumnya untuk mengembalikan data.</p>
-            <button class="btn btn-info" onclick="bukaFileRestore()">📤 Pilih File</button>
-            <input type="file" id="fileRestore" style="display:none" accept=".json" onchange="restoreJSON(event)">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title" style="font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-          <span>⚠️</span> <span style="color:var(--danger)">Zona Hapus Data</span>
-        </div>
-        
-        <div class="backup-grid">
-          <!-- HAPUS SEMUA -->
-          <div class="backup-card danger">
-            <div class="icon">🗑️</div>
-            <h4>Hapus Semua Data</h4>
-            <p>Hapus permanen semua data absensi Anda dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
-            <button class="btn btn-danger" onclick="hapusSemuaAbsen()">🗑️ Hapus Semua</button>
-          </div>
-          
-          <!-- BERSIHKAN DUPLIKAT -->
-          <div class="backup-card warn">
-            <div class="icon">🧹</div>
-            <h4>Bersihkan Duplikat</h4>
-            <p>Hapus data absensi dengan tanggal yang sama untuk mencegah penumpukan data.</p>
-            <button class="btn btn-warn" onclick="bersihkanDuplikat()">🧹 Bersihkan</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div style="text-align:center;padding:20px 12px;color:var(--sub);font-size:12.5px;">~ <strong>SIAGRA v.2.s</strong> — © Sugianto, S.Pd., Gr. ~</div>
   </div>
 </div>
 
 <div class="toast" id="toast">✨</div>
 
+<!-- MODUL BERSAMA -->
 <script src="../panggilan.js"></script>
 <link rel="stylesheet" href="../menu-context.css">
 <script src="../menu-context.js"></script>
@@ -774,8 +711,8 @@ async function isiRombelOtomatis() {
    TAB SWITCHER
    ============================================================ */
 function switchTab(tab){
-  const panels = { form:document.getElementById('panelForm'), list:document.getElementById('panelList'), rekap:document.getElementById('panelRekap'), backup:document.getElementById('panelBackup') };
-  const tabs = { form:document.getElementById('tabForm'), list:document.getElementById('tabList'), rekap:document.getElementById('tabRekap'), backup:document.getElementById('tabBackup') };
+  const panels = { form:document.getElementById('panelForm'), list:document.getElementById('panelList'), rekap:document.getElementById('panelRekap') };
+  const tabs = { form:document.getElementById('tabForm'), list:document.getElementById('tabList'), rekap:document.getElementById('tabRekap') };
   Object.keys(panels).forEach(k => { if(panels[k]) panels[k].style.display = (k === tab) ? '' : 'none'; if(tabs[k]) tabs[k].classList.toggle('active', k === tab); });
   if(tab === 'list') renderRiwayat(); else if(tab === 'rekap') renderRekap();
 }
@@ -1211,125 +1148,6 @@ async function renderRekap(){
   }
 
   cont.innerHTML = html;
-}
-
-/* ============================================================
-   BACKUP & RESTORE
-   ============================================================ */
-async function backupJSON(){
-  if(typeof sb === 'undefined') return showToast('Koneksi terputus', 'error');
-  showToast('⏳ Mengambil data...', 'info');
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  
-  const { data, error } = await sb.from('absensi').select('*').eq('nama_guru', namaSaya);
-  if(error) return showToast('❌ Gagal backup: ' + error.message, 'error');
-  
-  const d = new Date();
-  const tglFile = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  downloadFile('Backup_Absensi_' + namaKeFile(namaSaya) + '_' + tglFile + '.json', JSON.stringify(data, null, 2), 'application/json');
-  showToast('✅ Backup berhasil diunduh', 'success');
-}
-
-function bukaFileRestore(){
-  document.getElementById('fileRestore').click();
-}
-
-function restoreJSON(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async function(e){
-    try{
-      const data = JSON.parse(e.target.result);
-      if(!Array.isArray(data)) throw new Error("Format tidak valid (harus berupa Array)");
-      if(!confirm(`⚠️ KONFIRMASI RESTORE\n\nAnda akan menambahkan/menimpa ${data.length} data absensi ke Supabase.\n\nLanjutkan?`)) return;
-      
-      showToast('⏳ Memproses restore...', 'info');
-      
-      const payload = data.map(d => {
-        delete d.id; // Hapus ID lama agar di-generate baru oleh database
-        return d;
-      });
-
-      const { error } = await sb.from('absensi').upsert(payload, { onConflict: 'nama_guru, tanggal' });
-      
-      if(error) {
-        console.warn("Upsert gagal, mencoba insert biasa...", error);
-        const { error: errIns } = await sb.from('absensi').insert(payload);
-        if(errIns) throw new Error(errIns.message);
-      }
-      
-      showToast('✅ Restore berhasil!', 'success');
-      renderRiwayat();
-      renderRekap();
-    }catch(err){
-      showToast('❌ Gagal restore: ' + err.message, 'error');
-    }finally{
-      event.target.value = '';
-    }
-  };
-  reader.readAsText(file);
-}
-
-async function hapusSemuaAbsen(){
-  if(typeof sb === 'undefined') return;
-  if(!confirm('⚠️ HATI-HATI!\n\nAnda akan MENGHAPUS SEMUA data absensi milik Anda dari database Supabase.\nTindakan ini tidak dapat dibatalkan.\n\nLanjutkan?')) return;
-  const ketik = prompt('Ketik "HAPUS" untuk konfirmasi:');
-  if(ketik !== 'HAPUS') return showToast('❌ Dibatalkan', 'warn');
-  
-  showToast('⏳ Menghapus...', 'info');
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  
-  // Hapus dari Supabase
-  const { error } = await sb.from('absensi').delete().eq('nama_guru', namaSaya);
-  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
-  
-  // Hapus dari LocalStorage (Cache Offline)
-  let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => normalisasiNama(d.guru) !== normalisasiNama(namaSaya));
-  save(KEY_ABSEN, dataLokal);
-
-  showToast('🗑️ Semua data absensi Anda berhasil dihapus', 'success');
-  
-  // Refresh tampilan
-  renderRiwayat();         
-  renderRekap();           
-  updateCountBadge();      
-}
-
-async function bersihkanDuplikat(){
-  if(typeof sb === 'undefined') return;
-  if(!confirm('🧹 Fitur ini akan menghapus data ganda (berdasarkan Tanggal yang sama) milik Anda.\n\nLanjutkan?')) return;
-  
-  showToast('⏳ Memeriksa duplikat...', 'info');
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-  
-  const { data, error } = await sb.from('absensi').select('*').eq('nama_guru', namaSaya).order('created_at', { ascending: true });
-  if(error) return showToast('❌ Gagal', 'error');
-  
-  const map = {};
-  const idsToDelete = [];
-  
-  data.forEach(d => {
-    const key = d.tanggal;
-    if(map[key]){
-      idsToDelete.push(d.id);
-    } else {
-      map[key] = true;
-    }
-  });
-  
-  if(idsToDelete.length === 0){
-    return showToast('✅ Tidak ada data duplikat', 'info');
-  }
-  
-  showToast(`⏳ Menghapus ${idsToDelete.length} data duplikat...`, 'info');
-  const { error: errDel } = await sb.from('absensi').delete().in('id', idsToDelete);
-  
-  if(errDel) return showToast('❌ Gagal: ' + errDel.message, 'error');
-  showToast(`✅ ${idsToDelete.length} data duplikat dibersihkan`, 'success');
-  renderRiwayat();
-  renderRekap();
 }
 
 /* ============================================================
