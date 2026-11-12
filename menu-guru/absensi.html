@@ -227,7 +227,7 @@
   .status-pill[data-s="cuti"]{ color:var(--absen-cuti); border-color:var(--absen-cuti); }
   .status-pill[data-s="alpa"]{ color:var(--absen-alpa); border-color:var(--absen-alpa); }
 
-  @media (max-width: 900px) {
+    @media (max-width: 900px) {
     .wrapper { display: flex !important; flex-direction: column !important; padding: 12px !important; }
     .col-profil { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 20px; }
     .profile-card { max-width: 100% !important; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -236,6 +236,50 @@
     .tabs{ flex-wrap: wrap !important; justify-content: center; }
     .tab-btn{ flex: 1 1 45% !important; font-size: 12px !important; }
     #jamSection[style*="display: none"] { display: none !important; }
+
+    /* ============================================================
+       PERBAIKAN KHUSUS TAMPILAN REKAP BULANAN DI HP (ANTI MELEBAR)
+       ============================================================ */
+    
+    /* 1. Kartu Statistik (Hadir, Sakit, dll) jadi 3 kolom rapi */
+    .rekap-stat-mini { 
+      grid-template-columns: repeat(3, 1fr) !important; 
+      gap: 6px !important; 
+    }
+    .rekap-stat-mini .rmini { padding: 8px 4px !important; }
+    .rekap-stat-mini .rmini .n { font-size: 16px !important; }
+    .rekap-stat-mini .rmini .l { font-size: 8px !important; }
+
+    /* 2. Judul & tombol bulan (November 2026) disusun atas-bawah */
+    .bulan-picker-card { 
+      flex-direction: column !important; 
+      align-items: stretch !important; 
+      text-align: center !important; 
+      padding: 16px !important; 
+    }
+    .bulan-picker-input { margin-top: 10px !important; }
+    .bulan-picker-input input { width: 100% !important; }
+
+    /* 3. Tabel Rekap Bulanan agar bisa di-scroll ke samping (tidak memaksa layar lebar) */
+    .rekap-tabel { 
+      min-width: 500px !important; 
+      font-size: 10px !important; 
+    }
+    .rekap-tabel th, .rekap-tabel td { padding: 6px 4px !important; }
+    
+    /* 4. Teks keterangan di dalam tabel jangan terlalu panjang */
+    .rekap-tabel td:nth-child(5) { 
+      max-width: 120px !important; 
+      white-space: normal !important; 
+      word-wrap: break-word !important;
+      line-height: 1.3 !important;
+    }
+
+    /* 5. Tombol Hapus Rekap disesuaikan ukurannya */
+    #rekapContent > div:last-child button {
+      font-size: 12px !important;
+      padding: 10px !important;
+    }
   }
 </style>
 </head>
