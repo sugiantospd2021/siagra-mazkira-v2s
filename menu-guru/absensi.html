@@ -1178,7 +1178,7 @@ async function hapusRekapBulanAktif(){
     String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
     String(akhirBulan.getDate()).padStart(2,'0');
 
-  // Hapus dari Supabase
+  // 1. Hapus dari Supabase Database
   const { error } = await sb.from('absensi')
     .delete()
     .eq('nama_guru', namaSaya)
@@ -1187,12 +1187,12 @@ async function hapusRekapBulanAktif(){
 
   if(error) return showToast('❌ Gagal: ' + error.message, 'error');
 
-  // Hapus dari LocalStorage
+  // 2. BERSIHKAN MEMORI CACHE LOKAL (KUNCI UTAMANYA DI SINI)
   let dataLokal = load(KEY_ABSEN, []) || [];
   dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
   save(KEY_ABSEN, dataLokal);
 
-  // PAKSA TAMPILAN MENJADI KOSONG TANPA RELOAD
+  // 3. PAKSA TAMPILAN MENJADI KOSONG TANPA RELOAD
   document.getElementById('rekapContent').innerHTML = `
     <div class="card" style="text-align:center; padding: 40px 20px;">
       <h2 style="font-size: 40px; margin-bottom: 10px;">🗑️</h2>
