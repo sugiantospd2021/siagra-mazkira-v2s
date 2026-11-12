@@ -1039,12 +1039,15 @@
                 <th>Nama Guru</th>
                 <th style="width:130px">Jabatan</th>
                 <th style="width:120px">Tanggal</th>
-                <th style="width:120px">Status</th>
+                <!-- TAMBAHAN KOLOM MASUK & PULANG -->
+                <th style="width:80px">Masuk</th>
+                <th style="width:80px">Pulang</th>
+                <th>Keterangan</th>
                 <th style="width:90px">Aksi</th>
               </tr>
             </thead>
             <tbody id="tbodyMonitoring">
-              <tr><td colspan="6" class="empty">Memuat data dari Supabase…</td></tr>
+              <tr><td colspan="8" class="empty">Memuat data dari Supabase…</td></tr>
             </tbody>
           </table>
         </div>
@@ -1772,7 +1775,7 @@ async function loadMonitoring(){
     updateProgress([]);
     const tbody = document.getElementById('tbodyMonitoring');
     if(tbody){
-      tbody.innerHTML = `<tr><td colspan="6" class="empty">
+      tbody.innerHTML = `<tr><td colspan="8" class="empty">
         ❌ Tidak ada data guru/tendik.<br>
         <small>Error: ${escapeHtml(LOAD_ERR || 'tabel guru & tendik kosong / RLS memblokir')}</small><br><br>
         <button class="btn btn-primary btn-sm" onclick="loadMonitoring()">🔄 Coba Lagi</button>
@@ -1826,20 +1829,25 @@ function renderTabel(data){
   if(rowCount) rowCount.textContent = data.length + ' baris';
 
   if(data.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" class="empty">Belum ada data absensi.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">Belum ada data absensi.</td></tr>';
     return;
   }
 
   tbody.innerHTML = data.map((d, i) => {
     const badgeClass = d.status === 'belum' ? 'belum' : 'sudah';
     const badgeText  = d.status === 'belum' ? '⏳ Belum Absen' : '✅ Sudah Absen';
+    const ket = d.keterangan || d.catatan || '-';
     return `
       <tr>
         <td>${i+1}</td>
         <td><b>${escapeHtml(d.nama)}</b></td>
         <td>${escapeHtml(d.jabatan)}</td>
         <td>${escapeHtml(fmtTanggalPendek(d.tanggal))}</td>
-        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+        <!-- TAMBAHAN KOLOM MASUK & PULANG -->
+        <td style="text-align:center">${d.jamMasuk || '-'}</td>
+        <td style="text-align:center">${d.jamPulang || '-'}</td>
+        <!-- TAMBAHAN KOLOM KETERANGAN -->
+        <td style="font-size:11px;line-height:1.4">${escapeHtml(ket)}</td>
         <td>
           <button class="btn btn-ghost btn-sm" onclick="openModal('${d.id}')" title="Lihat detail">👁 Detail</button>
         </td>
@@ -1889,7 +1897,6 @@ const STATUS_INFO = {
   alpa:  { emoji: '❌', nama: 'Alpa' },
   belum: { emoji: '⏳', nama: 'Belum Absen' }
 };
-</script>
 
 <script>
 /* ============================================================
