@@ -1151,7 +1151,7 @@ async function renderRekap(){
 }
 
 /* ============================================================
-   FUNGSI HAPUS REKAP BULANAN (DARI TAB REKAP)
+   FUNGSI HAPUS REKAP BULANAN (DIPERBAIKI TOTAL)
    ============================================================ */
 async function hapusRekapBulanAktif(){
   if(typeof sb === 'undefined') return;
@@ -1178,7 +1178,7 @@ async function hapusRekapBulanAktif(){
     String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
     String(akhirBulan.getDate()).padStart(2,'0');
 
-  // Hapus dari Supabase
+  // 1. Hapus dari Supabase
   const { error } = await sb.from('absensi')
     .delete()
     .eq('nama_guru', namaSaya)
@@ -1187,78 +1187,17 @@ async function hapusRekapBulanAktif(){
 
   if(error) return showToast('❌ Gagal: ' + error.message, 'error');
 
-  // Hapus dari LocalStorage
+  // 2. Hapus dari LocalStorage (Bersihkan total data di bulan tersebut)
   let dataLokal = load(KEY_ABSEN, []) || [];
   dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
   save(KEY_ABSEN, dataLokal);
 
-  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
+  showToast('✅ Data berhasil dihapus permanen!', 'success');
   
-  // Gunakan hard reload agar PWA/Browser benar-benar memuat ulang datanya
-  window.location.href = window.location.pathname + '?t=' + new Date().getTime();
-}
-
-/* ============================================================
-   FUNGSI PENGUNCIAN JAM DARI DATABASE (LOAD AWAL)
-   ============================================================ */
-async function cekStatusAbsenHariIni() {
-  if (typeof sb === 'undefined') return;
-  const tanggalHariIni = getTodayISO();
-  const namaSaya = guruProfil ? guruProfil.nama : user.nama;
-
-  try {
-    let dataLokal = load(KEY_ABSEN, []) || [];
-    let sudahAbsen = dataLokal.find(a => normalisasiNama(a.guru) === normalisasiNama(namaSaya) && a.tanggal === tanggalHariIni && a.jamMasuk);
-
-    const { data, error } = await sb
-      .from('absensi')
-      .select('*')
-      .eq('nama_guru', namaSaya)
-      .eq('tanggal', tanggalHariIni)
-      .maybeSingle();
-
-    if (error) throw error;
-    
-    if (data && data.jam_masuk) sudahAbsen = { ...sudahAbsen, ...data };
-
-    if (sudahAbsen && sudahAbsen.jamMasuk) {
-      document.getElementById('fTanggal').value = tanggalHariIni;
-      document.getElementById('fTanggal').disabled = true; 
-      
-      pilihStatus('hadir');
-      document.querySelectorAll('#statusGrid .status-opt').forEach(el => el.classList.add('disabled'));
-
-      // Kunci Jam Masuk
-      document.getElementById('fJamMasuk').value = sudahAbsen.jamMasuk;
-      document.getElementById('displayJamMasuk').textContent = sudahAbsen.jamMasuk + ':00';
-      
-      const btnMasuk = document.getElementById('btnAbsenMasuk');
-      btnMasuk.disabled = true;
-      btnMasuk.innerHTML = '✅ Masuk Terkunci';
-      
-      // Buka Jam Pulang
-      document.getElementById('btnAbsenPulang').disabled = false;
-
-      // Jika sudah ada jam pulang, kunci semuanya dan tampilkan notifikasi merah
-      if (sudahAbsen.jamPulang) {
-        document.getElementById('fJamPulang').value = sudahAbsen.jamPulang;
-        document.getElementById('displayJamPulang').textContent = sudahAbsen.jamPulang + ':00';
-        
-        const btnPulang = document.getElementById('btnAbsenPulang');
-        btnPulang.disabled = true;
-        btnPulang.innerHTML = '✅ Pulang Terkunci';
-        
-        document.getElementById('btnSimpan').disabled = true;
-        document.getElementById('fCatatan').disabled = true;
-
-        cekSudahAbsen(); // Panggil notifikasi merah
-      }
-
-      analisisJamAbsensi();
-    }
-  } catch (err) {
-    console.error('Gagal mengecek status:', err);
-  }
+  // 3. Render Ulang Tabel & Badge Langsung (Tanpa Refresh Halaman!)
+  await renderRekap();
+  updateCountBadge();
+  renderRiwayat();
 }
 
 /* ============================================================
