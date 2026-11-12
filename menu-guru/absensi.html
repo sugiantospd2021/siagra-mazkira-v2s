@@ -1187,17 +1187,20 @@ async function hapusRekapBulanAktif(){
 
   if(error) return showToast('❌ Gagal: ' + error.message, 'error');
 
-  // 2. Hapus dari LocalStorage (Bersihkan total data di bulan tersebut)
+  // 2. HAPUS TOTAL DARI LOCALSTORAGE (Bersihkan data memori browser)
   let dataLokal = load(KEY_ABSEN, []) || [];
-  dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
+  dataLokal = dataLokal.filter(d => {
+    const isNamaSama = normalisasiNama(d.guru) === normalisasiNama(namaSaya);
+    const isTanggalCocok = (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir;
+    // Jika nama sama DAN tanggal cocok, JANGAN masukkan ke array baru (artinya dihapus)
+    return !(isNamaSama && isTanggalCocok);
+  });
   save(KEY_ABSEN, dataLokal);
 
-  showToast('✅ Data berhasil dihapus permanen!', 'success');
-  
-  // 3. Render Ulang Tabel & Badge Langsung (Tanpa Refresh Halaman!)
-  await renderRekap();
-  updateCountBadge();
-  renderRiwayat();
+  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
+
+  // 3. HARD RELOAD: Memaksa browser memuat ulang tanpa mengambil dari cache (menghindari data hantu)
+  window.location.href = window.location.pathname + '?t=' + new Date().getTime();
 }
 
 /* ============================================================
