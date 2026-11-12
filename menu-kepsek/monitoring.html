@@ -781,7 +781,6 @@
     .tab-btn{font-size:11.5px;padding:10px 8px;min-width:130px}
   }
 
-  /* ✨ FIX: Media query dipindah dari <script> ke sini ✨ */
   @media(max-width:768px){
     .wrapper{grid-template-columns:1fr; padding:12px}
     .col-profil{position:static; height:auto; margin-bottom:16px}
@@ -800,7 +799,6 @@
   }
   #debugPanel.show{display:block}
 
-  /* ✨ CSS TAMBAHAN UNTUK TAB BACKUP ✨ */
   .backup-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -956,7 +954,6 @@
               <option value="Wali Kelas">Wali Kelas</option>
               <option value="Guru Pendamping">Guru Pendamping</option>
              <option value="Tenaga Kependidikan">Tenaga Kependidikan</option>
-              <option value="Admin">Admin</option>
                          </select>
           </div>
           <div class="toolbar-item">
@@ -1222,7 +1219,7 @@
 <script>
 /* ============================================================
    SIAGRA — monitoring.html (Script #1)
-   Version: 2.s (Perbaikan Logika Jabatan & Tab Backup)
+   Version: 2.s (Perbaikan Logika Jabatan & Filter Admin)
    ============================================================ */
 
 const STORAGE = {
@@ -1631,12 +1628,22 @@ async function loadDataOrang(){
 
   let gabung = [];
 
+  // --- FILTER ADMIN (PERBAIKAN BUG ANTO) ---
+  const bukanAdmin = (orang) => {
+    const jab = String(orang.jabatan || '').toLowerCase();
+    const nama = String(orang.nama || '').toLowerCase();
+    // Jika jabatannya mengandung kata admin, ATAU namanya persis "anto", abaikan!
+    return !jab.includes('admin') && nama !== 'anto';
+  };
+
   // --- GURU ---
   try{
     const { data: guruList, error: eG } = await sb.from('guru').select('*');
     if(eG) dbg('❌ guru error:', eG.message, eG);
     else dbg('✅ guru rows:', (guruList || []).length);
-    (guruList || []).forEach(g => {
+    
+    // Tambahkan .filter(bukanAdmin)
+    (guruList || []).filter(bukanAdmin).forEach(g => {
       gabung.push({ ...g, _sumber: 'guru' });
     });
   }catch(e){ dbg('❌ exception guru:', e.message); }
@@ -1646,7 +1653,9 @@ async function loadDataOrang(){
     const { data: tendikList, error: eT } = await sb.from('tendik').select('*');
     if(eT) dbg('❌ tendik error:', eT.message, eT);
     else dbg('✅ tendik rows:', (tendikList || []).length);
-    (tendikList || []).forEach(t => {
+    
+    // Tambahkan .filter(bukanAdmin)
+    (tendikList || []).filter(bukanAdmin).forEach(t => {
       gabung.push({ ...t, _sumber: 'tendik', jabatan: t.jabatan || 'Tenaga Kependidikan' });
     });
   }catch(e){ dbg('❌ exception tendik:', e.message); }
@@ -1677,8 +1686,10 @@ async function loadDataOrang(){
 
   // Fallback: pastikan kepsek & tendik muncul
   FALLBACK_ORANG.forEach(f => {
-    const ada = gabung.some(g => namaCocok(g.nama, f.nama));
-    if(!ada) gabung.push({ ...f, jabatanTampil: f.jabatan });
+    if (bukanAdmin(f)) {
+      const ada = gabung.some(g => namaCocok(g.nama, f.nama));
+      if(!ada) gabung.push({ ...f, jabatanTampil: f.jabatan });
+    }
   });
 
   // Sort A-Z
