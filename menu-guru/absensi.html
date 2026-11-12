@@ -539,17 +539,17 @@
 
         </div>
     </div>
-
-    <!-- SCRIPT LOGIKA -->
+	
+	    <!-- SCRIPT LOGIKA -->
     <script>
         // ==========================================
         // 1. INISIALISASI & KONFIGURASI GLOBAL
         // ==========================================
-        // Menggunakan variabel `sb` dari supabase-config.js
-        const db = window.sb; 
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // Menggunakan ANON_KEY dari config
         
         const KEY_USER = 'siagra_user';
-        const KEY_ABSEN = 'siagra_absensi_data'; // Cache lokal sementara (hanya untuk anti-kehilangan data saat klik keluar)
+        const KEY_ABSEN = 'siagra_absensi_data'; // Cache lokal
         
         let currentUser = null;
         let currentStatus = '';
@@ -590,8 +590,8 @@
         function normalisasiNama(nama) {
             if (!nama) return '';
             return nama.toLowerCase()
-                .replace(/(,.*|\(.*|s\.pd|m\.pd|s\.si|s\.kom|m\.m|s\.e)/gi, '') 
-                .replace(/\s+/g, ' ') 
+                .replace(/(,.*|\(.*|s\.pd|m\.pd|s\.si|s\.kom|m\.m|s\.e)/gi, '') // Hapus gelar umum
+                .replace(/\s+/g, ' ') // Spasi ganda jadi satu
                 .trim();
         }
 
@@ -659,7 +659,7 @@
             elInputTanggal.disabled = true;
             document.querySelectorAll('.status-btn').forEach(btn => btn.disabled = true);
             
-            // Simpan diam-diam ke localStorage (Hanya untuk jaga-jaga jika klik keluar sebelum simpan DB)
+            // Simpan diam-diam ke localStorage (Anti kehilangan data)
             simpanKeLocalSementara();
         }
 
@@ -677,7 +677,6 @@
             simpanKeLocalSementara();
         }
 
-        // Fungsi ini HANYA untuk menyimpan state sementara jika guru tidak sengaja klik "Keluar" sebelum simpan ke DB
         function simpanKeLocalSementara() {
             if (!currentUser) return;
             
@@ -691,17 +690,15 @@
                 is_locked: true
             };
             
+            // Simpan berdasarkan nama guru
             let cache = JSON.parse(localStorage.getItem(KEY_ABSEN) || '{}');
             cache[normalisasiNama(currentUser.nama)] = dataSementara;
             localStorage.setItem(KEY_ABSEN, JSON.stringify(cache));
         }
 
-        // Fungsi saat klik tombol "Keluar" sebelum simpan ke DB
+        // Fungsi saat klik tombol "Keluar" (DIPERBAIKI: Rute 404 dihilangkan)
         function prosesKeluar() {
-            // Hanya simpan ke lokal JIKA data belum disimpan ke database hari ini
-            if (jamMasukTemp && !elBtnSimpan.disabled) {
-                simpanKeLocalSementara();
-            }
+            simpanKeLocalSementara();
             window.location.href = currentUser.role === 'guru' ? 'guru.html' : 
                                   (currentUser.role === 'tendik' ? 'tendik.html' : 'kepsek.html');
         }
@@ -734,7 +731,7 @@
             };
 
             try {
-                // Cek dulu apakah data hari ini sudah ada di Supabase
+                // Cek dulu apakah data hari ini sudah ada
                 const { data: cekData, error: cekError } = await db
                     .from('absensi')
                     .select('id')
@@ -749,13 +746,13 @@
                     return;
                 }
 
-                // Insert data baru ke Supabase
+                // Insert data baru
                 const { error } = await db.from('absensi').insert([payload]);
                 if (error) throw error;
 
                 alert('Absensi berhasil disimpan!');
                 
-                // Hapus data dari cache lokal karena sudah sukses masuk Supabase
+                // Hapus dari cache lokal sementara karena sudah masuk DB
                 let cache = JSON.parse(localStorage.getItem(KEY_ABSEN) || '{}');
                 delete cache[normalisasiNama(currentUser.nama)];
                 localStorage.setItem(KEY_ABSEN, JSON.stringify(cache));
@@ -770,9 +767,10 @@
             } catch (err) {
                 console.error(err);
                 alert('Gagal menyimpan: ' + err.message);
+            } finally {
                 elBtnSimpan.disabled = false;
                 elBtnSimpan.innerText = 'Simpan Data Absensi';
-            } 
+            }
         }
 
         function kunciFormTotal() {
@@ -786,7 +784,7 @@
         }
 
         // ==========================================
-        // 5. REKAP BULANAN (MURNI DARI SUPABASE)
+        // 5. REKAP BULANAN & HAPUS DATA (DIPERBAIKI TOTAL)
         // ==========================================
         
         async function muatRekapBulanan() {
@@ -799,7 +797,7 @@
             const endDate = `${bulanDipilih}-31`;
 
             try {
-                // MURNI MENGAMBIL DARI SUPABASE (Tanpa fallback ke localStorage)
+                // Selalu ambil data utama dari Supabase
                 const { data, error } = await db
                     .from('absensi')
                     .select('*')
@@ -811,11 +809,18 @@
                 if (error) throw error;
 
                 renderTabelRekap(data);
+                
+                // Update cache lokal (sebagai backup offline)
+                let cacheRekap = JSON.parse(localStorage.getItem(KEY_ABSEN + '_rekap') || '{}');
+                cacheRekap[normalisasiNama(currentUser.nama) + '_' + bulanDipilih] = data;
+                localStorage.setItem(KEY_ABSEN + '_rekap', JSON.stringify(cacheRekap));
 
             } catch (err) {
-                console.error('Gagal ambil dari Supabase:', err);
-                // JIKA GAGAL, TAMPILKAN PESAN ERROR (Tidak menampilkan data dari localStorage)
-                elTbodyRekap.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #dc3545;">Gagal memuat data. Periksa koneksi internet Anda.</td></tr>';
+                console.warn('Gagal ambil dari Supabase, coba dari cache:', err);
+                // Fallback ke localStorage jika offline
+                let cacheRekap = JSON.parse(localStorage.getItem(KEY_ABSEN + '_rekap') || '{}');
+                let cachedData = cacheRekap[normalisasiNama(currentUser.nama) + '_' + bulanDipilih] || [];
+                renderTabelRekap(cachedData);
             }
         }
 
@@ -843,10 +848,7 @@
             elTbodyRekap.innerHTML = html;
         }
 
-        // ==========================================
-        // 6. FUNGSI HAPUS REKAP (MURNI SUPABASE)
-        // ==========================================
-        
+        // FUNGSI HAPUS REKAP: Menghapus di Supabase DAN Membersihkan Cache Lokal
         async function hapusRekapBulanan() {
             if (!currentUser || !elInputRekapBulan.value) return;
             
@@ -855,6 +857,7 @@
             
             if (!konfirmasi) return;
 
+            // Ubah teks tombol jadi loading
             const btnHapus = document.querySelector('.btn-hapus-rekap');
             const originalText = btnHapus.innerHTML;
             btnHapus.innerHTML = '⏳ Menghapus...';
@@ -864,7 +867,7 @@
             const endDate = `${bulanDipilih}-31`;
 
             try {
-                // 1. Hapus di Supabase
+                // 1. Hapus di Supabase (Filter: Nama Guru + Rentang Tanggal)
                 const { error } = await db
                     .from('absensi')
                     .delete()
@@ -874,7 +877,13 @@
 
                 if (error) throw error;
 
-                // 2. Hapus data dari cache localStorage agar benar-benar bersih (jika ada)
+                // 2. Hapus di localStorage (Presisi berdasarkan nama & bulan)
+                // Hapus data rekap cache
+                let cacheRekap = JSON.parse(localStorage.getItem(KEY_ABSEN + '_rekap') || '{}');
+                delete cacheRekap[normalisasiNama(currentUser.nama) + '_' + bulanDipilih];
+                localStorage.setItem(KEY_ABSEN + '_rekap', JSON.stringify(cacheRekap));
+
+                // Cek juga apakah ada "data hantu" di cache utama yang tanggalnya cocok dengan bulan ini, lalu hapus.
                 let cacheUtama = JSON.parse(localStorage.getItem(KEY_ABSEN) || '{}');
                 const keyUser = normalisasiNama(currentUser.nama);
                 if (cacheUtama[keyUser] && cacheUtama[keyUser].tanggal.startsWith(bulanDipilih)) {
@@ -884,7 +893,7 @@
 
                 alert('Data rekap bulan ini berhasil dihapus permanen.');
                 
-                // 3. Re-render tabel (akan memanggil Supabase lagi dan menampilkan 0 data)
+                // 3. Re-render tabel tanpa refresh halaman
                 muatRekapBulanan();
 
             } catch (err) {
@@ -929,7 +938,7 @@
                 document.documentElement.style.setProperty('--role-primary', '#ff9800'); // Kuning/Oranye
             }
 
-            // Isi Profil Sidebar
+            // Isi Profil Sidebar (Sesuaikan dengan data dari login)
             document.getElementById('namaProfil').innerText = currentUser.nama || '-';
             document.getElementById('jabatanProfil').innerText = currentUser.jabatan || currentUser.role || '-';
             if (currentUser.nip) document.getElementById('infoNip').innerText = currentUser.nip;
@@ -964,7 +973,7 @@
                     pilihStatus(currentStatus);
                     kunciFormTotal();
                 } else {
-                    // Cek di cache lokal (jika sebelumnya sempat klik keluar sebelum simpan DB)
+                    // Cek di cache lokal (jika sebelumnya sempat klik keluar)
                     let cache = JSON.parse(localStorage.getItem(KEY_ABSEN) || '{}');
                     let dataLokal = cache[normalisasiNama(currentUser.nama)];
                     
