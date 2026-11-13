@@ -839,6 +839,28 @@
   }
   .stat-box-backup .n { font-size: 22px; font-weight: 900; color: var(--primary); }
   .stat-box-backup .l { font-size: 10px; font-weight: 700; color: var(--sub); margin-top: 4px; text-transform: uppercase; }
+
+  /* ============================================================
+     STYLE TAMBAHAN UNTUK TAB RIWAYAT (BARU)
+     ============================================================ */
+  .riwayat-list { display: flex; flex-direction: column; gap: 12px; }
+  .riwayat-item {
+    background: var(--card-inner);
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    border-left: 6px solid var(--status-color, var(--border));
+    padding: 14px;
+    transition: transform 0.2s;
+  }
+  .riwayat-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+  .riwayat-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .riwayat-tanggal { font-weight: 800; font-size: 14.5px; color: var(--text); }
+  .riwayat-status-badge {
+    padding: 4px 11px; border-radius: 100px; font-size: 11px; font-weight: 800;
+    background: var(--card); color: var(--status-color); border: 1px solid var(--status-color);
+  }
+  .riwayat-meta { font-size: 11.5px; color: var(--sub); display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .riwayat-ket { font-size: 11.5px; color: var(--text); line-height: 1.5; padding-top: 8px; border-top: 1px dashed var(--border); }
 </style>
 </head>
 
@@ -918,11 +940,15 @@
       </a>
     </div>
 
-    <!-- SUB-TAB: HARIAN / REKAP BULANAN / BACKUP -->
+    <!-- SUB-TAB: HARIAN / REKAP BULANAN / BACKUP / RIWAYAT -->
     <div class="tabs">
       <a class="tab-btn active" id="tabHarian" href="#harian"
          onclick="tanganiTabClick(event,'harian')">
         📋 Status Harian
+      </a>
+      <a class="tab-btn" id="tabRiwayat" href="#riwayat"
+         onclick="tanganiTabClick(event,'riwayat')">
+        📚 Riwayat
       </a>
       <a class="tab-btn" id="tabRekap" href="#rekap-bulanan"
          onclick="tanganiTabClick(event,'rekap')">
@@ -1053,6 +1079,46 @@
       </div>
 
     </div><!-- /panelHarian -->
+
+    <!-- ============================================================
+         PANEL RIWAYAT (BARU)
+         ============================================================ -->
+    <div id="panelRiwayat" style="display:none">
+      
+      <!-- FILTER RIWAYAT -->
+      <div class="card">
+        <div class="card-title">
+          <span class="emoji">🔍</span>
+          <span>Filter Riwayat</span>
+        </div>
+        <div class="toolbar" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="toolbar-item">
+            <label for="fRiwayatGuru">👤 Pilih Guru</label>
+            <select id="fRiwayatGuru" onchange="renderRiwayat()">
+              <option value="">-- Semua Guru --</option>
+            </select>
+          </div>
+          <div class="toolbar-item">
+            <label for="fRiwayatDari">📅 Dari</label>
+            <input type="date" id="fRiwayatDari" onchange="renderRiwayat()">
+          </div>
+          <div class="toolbar-item">
+            <label for="fRiwayatSampai">📅 Sampai</label>
+            <input type="date" id="fRiwayatSampai" onchange="renderRiwayat()">
+          </div>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn btn-primary" onclick="renderRiwayat()">🔍 Terapkan Filter</button>
+          <button class="btn btn-ghost" onclick="resetFilterRiwayat()">↻ Reset</button>
+        </div>
+      </div>
+
+      <!-- KONTEN RIWAYAT -->
+      <div class="riwayat-list" id="riwayatContent">
+        <div class="card" style="text-align:center; color:var(--sub);">Pilih filter untuk melihat riwayat absensi.</div>
+      </div>
+
+    </div><!-- /panelRiwayat -->
 
     <!-- ============================================================
          PANEL REKAP BULANAN
@@ -1221,7 +1287,7 @@
 <script>
 /* ============================================================
    SIAGRA — monitoring.html (Script #1)
-   Version: 2.s (Perbaikan Logika Jabatan, Filter Admin, & Kolom Status)
+   Version: 2.s (Perbaikan Filter Admin, Kolom Status, & Tab Riwayat)
    ============================================================ */
 
 const STORAGE = {
@@ -1699,6 +1765,11 @@ async function loadDataOrang(){
 
   DATA_ORANG = gabung;
   dbg('📊 Total DATA_ORANG:', DATA_ORANG.length);
+  
+  // Setelah DATA_ORANG termuat, isi dropdown di Tab Riwayat & Rekap
+  isiDropdownGuruRiwayat();
+  isiDropdownGuruRekap();
+
   return DATA_ORANG;
 }
 
@@ -1760,7 +1831,7 @@ async function buildMonitoringTanggal(tanggal){
       jabatan: o.jabatanTampil || '',
       tanggal: tanggal,
       status: rec ? 'sudah' : 'belum',
-      statusAbsen: rec ? (rec.status || '') : '', // TAMBAHAN: Ambil status asli (hadir/sakit/dll)
+      statusAbsen: rec ? (rec.status || '') : '', // Ambil status asli (hadir/sakit/dll)
       jamMasuk: rec ? (rec.jam_masuk || rec.jamMasuk || '') : '',
       jamPulang: rec ? (rec.jam_pulang || rec.jamPulang || '') : '',
       keterangan: rec ? (rec.keterangan || '') : '',
@@ -1918,6 +1989,114 @@ async function resetFilter(){
 }
 
 /* ============================================================
+   ✨ RENDER TAB RIWAYAT (BARU) ✨
+   ============================================================ */
+async function renderRiwayat() {
+  if (typeof sb === 'undefined') {
+    document.getElementById('riwayatContent').innerHTML = `<div class="card" style="text-align:center; color:var(--danger);">❌ Koneksi terputus.</div>`;
+    return;
+  }
+
+  const selGuru = document.getElementById('fRiwayatGuru').value;
+  const dari = document.getElementById('fRiwayatDari').value;
+  const sampai = document.getElementById('fRiwayatSampai').value;
+  const cont = document.getElementById('riwayatContent');
+
+  cont.innerHTML = `<div class="card" style="text-align:center;">⏳ Memuat data riwayat...</div>`;
+
+  try {
+    let query = sb.from('absensi').select('*');
+
+    // Filter berdasarkan nama guru
+    if (selGuru) {
+      query = query.eq('nama_guru', selGuru);
+    } else {
+      // Jika tidak pilih guru spesifik, ambil semua KECUALI Admin
+      // (Saring admin agar tidak muncul di riwayat keseluruhan)
+      // Supabase tidak punya NOT ILIKE secara native tanpa RPC, jadi kita filter di JS setelah fetch.
+    }
+
+    // Filter tanggal
+    if (dari) query = query.gte('tanggal', dari);
+    if (sampai) query = query.lte('tanggal', sampai);
+
+    // Urutkan dari terbaru
+    query = query.order('tanggal', { ascending: false });
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    let list = data || [];
+
+    // Saring admin dari hasil jika tidak memilih guru spesifik
+    if (!selGuru) {
+      list = list.filter(d => {
+        const jab = String(d.guru_jabatan || '').toLowerCase();
+        const nama = String(d.nama_guru || '').toLowerCase();
+        return !jab.includes('admin') && nama !== 'anto';
+      });
+    }
+
+    if (list.length === 0) {
+      cont.innerHTML = `<div class="card" style="text-align:center; font-style:italic; color:var(--sub);">Belum ada data riwayat untuk filter ini.</div>`;
+      return;
+    }
+
+    cont.innerHTML = list.map(d => {
+      const info = STATUS_INFO[d.status] || { emoji: '❓', nama: d.status || 'Alpa' };
+      const ketRaw = d.keterangan || d.catatan || '';
+      const ketHtml = ketRaw ? keteranganMultiBaris(ketRaw) : '';
+
+      return `
+        <div class="riwayat-item" style="--status-color:var(--absen-${d.status || 'alpa'})">
+          <div class="riwayat-head">
+            <div>
+              <div class="riwayat-tanggal">📅 ${fmtTanggalPendek(d.tanggal)}</div>
+              <div style="font-size:11px; color:var(--sub); margin-top:2px;">👤 ${escapeHtml(d.nama_guru)}</div>
+            </div>
+            <div class="riwayat-status-badge">${info.emoji} ${info.nama}</div>
+          </div>
+          
+          <div class="riwayat-meta">
+            ${d.jam_masuk ? `<span>⏰ Masuk: <b>${d.jam_masuk}</b></span>` : ''}
+            ${d.jam_pulang ? `<span>🏠 Pulang: <b>${d.jam_pulang}</b></span>` : ''}
+            ${!d.jam_masuk && !d.jam_pulang ? `<span style="font-style:italic;">Tidak ada catatan jam</span>` : ''}
+          </div>
+
+          ${ketHtml ? `<div class="riwayat-ket">${ketHtml}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error(err);
+    cont.innerHTML = `<div class="card" style="text-align:center; color:var(--danger);">❌ Gagal memuat riwayat: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function resetFilterRiwayat() {
+  document.getElementById('fRiwayatGuru').value = '';
+  document.getElementById('fRiwayatDari').value = '';
+  document.getElementById('fRiwayatSampai').value = '';
+  renderRiwayat();
+}
+
+function isiDropdownGuruRiwayat() {
+  const sel = document.getElementById('fRiwayatGuru');
+  if (!sel) return;
+  const sorted = [...DATA_ORANG].sort((a, b) => (a.nama || '').localeCompare(b.nama || '', 'id', { sensitivity: 'base' }));
+  const currentVal = sel.value;
+  let html = '<option value="">-- Semua Guru --</option>';
+  sorted.forEach(g => {
+    if (!g.nama) return;
+    html += `<option value="${escapeHtml(g.nama)}">${escapeHtml(g.nama)}</option>`;
+  });
+  sel.innerHTML = html;
+  sel.value = currentVal;
+}
+
+/* ============================================================
    STATUS INFO
    ============================================================ */
 const STATUS_INFO = {
@@ -1932,56 +2111,59 @@ const STATUS_INFO = {
 
 <script>
 /* ============================================================
-   SUB-TAB — HARIAN ↔ REKAP BULANAN ↔ BACKUP
+   SUB-TAB — HARIAN ↔ RIWAYAT ↔ REKAP BULANAN ↔ BACKUP
    ============================================================ */
 const HASH_KE_TAB = {
   '#harian'        : 'harian',
   '#monitoring'    : 'harian',
+  '#riwayat'       : 'riwayat',
   '#rekap-bulanan' : 'rekap',
   '#rekap'         : 'rekap',
   '#backup'        : 'backup'
 };
 
 function switchTab(tab){
-  const panelHarian = document.getElementById('panelHarian');
-  const panelRekap  = document.getElementById('panelRekap');
-  const panelBackup = document.getElementById('panelBackup');
+  const panelHarian  = document.getElementById('panelHarian');
+  const panelRiwayat = document.getElementById('panelRiwayat');
+  const panelRekap   = document.getElementById('panelRekap');
+  const panelBackup  = document.getElementById('panelBackup');
   
   const tabHarian   = document.getElementById('tabHarian');
+  const tabRiwayat  = document.getElementById('tabRiwayat');
   const tabRekap    = document.getElementById('tabRekap');
   const tabBackup   = document.getElementById('tabBackup');
 
+  // Sembunyikan semua panel
+  if(panelHarian)  panelHarian.style.display  = 'none';
+  if(panelRiwayat) panelRiwayat.style.display = 'none';
+  if(panelRekap)   panelRekap.style.display   = 'none';
+  if(panelBackup)  panelBackup.style.display  = 'none';
+  
+  // Hapus class active dari semua tab
+  if(tabHarian)   tabHarian.classList.remove('active');
+  if(tabRiwayat)  tabRiwayat.classList.remove('active');
+  if(tabRekap)    tabRekap.classList.remove('active');
+  if(tabBackup)   tabBackup.classList.remove('active');
+
+  // Tampilkan panel dan tab yang dipilih
   if(tab === 'rekap'){
-    if(panelHarian) panelHarian.style.display = 'none';
     if(panelRekap)  panelRekap.style.display  = '';
-    if(panelBackup) panelBackup.style.display = 'none';
-    
-    if(tabHarian)   tabHarian.classList.remove('active');
     if(tabRekap)    tabRekap.classList.add('active');
-    if(tabBackup)   tabBackup.classList.remove('active');
     
-    isiDropdownGuruRekap();
     const rkBulan = document.getElementById('rkBulan');
     if(rkBulan && !rkBulan.value) rkBulan.value = getTodayISO().substring(0,7);
     renderRekapBulanan();
   } else if(tab === 'backup'){
-    if(panelHarian) panelHarian.style.display = 'none';
-    if(panelRekap)  panelRekap.style.display  = 'none';
     if(panelBackup) panelBackup.style.display = '';
-    
-    if(tabHarian)   tabHarian.classList.remove('active');
-    if(tabRekap)    tabRekap.classList.remove('active');
     if(tabBackup)   tabBackup.classList.add('active');
-    
     renderStatistikBackup();
+  } else if(tab === 'riwayat'){
+    if(panelRiwayat) panelRiwayat.style.display = '';
+    if(tabRiwayat)   tabRiwayat.classList.add('active');
+    renderRiwayat();
   } else {
     if(panelHarian) panelHarian.style.display = '';
-    if(panelRekap)  panelRekap.style.display  = 'none';
-    if(panelBackup) panelBackup.style.display = 'none';
-    
     if(tabHarian)   tabHarian.classList.add('active');
-    if(tabRekap)    tabRekap.classList.remove('active');
-    if(tabBackup)   tabBackup.classList.remove('active');
   }
 }
 
@@ -1989,7 +2171,8 @@ function tanganiTabClick(e, tab){
   if(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
   switchTab(tab);
-  if(history.replaceState) history.replaceState(null, '', '#' + (tab === 'rekap' ? 'rekap-bulanan' : tab));
+  const hash = tab === 'rekap' ? 'rekap-bulanan' : tab;
+  if(history.replaceState) history.replaceState(null, '', '#' + hash);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -2039,6 +2222,14 @@ async function renderRekapBulanan(){
     return;
   }
   let dataBulan = absenBulan || [];
+  
+  // FILTER ADMIN
+  dataBulan = dataBulan.filter(d => {
+    const jab = String(d.guru_jabatan || '').toLowerCase();
+    const nama = String(d.nama_guru || '').toLowerCase();
+    return !jab.includes('admin') && nama !== 'anto';
+  });
+
   dbg('Rekap bulan', bulan, 'rows:', dataBulan.length);
 
   let orangTampil;
@@ -2346,6 +2537,14 @@ async function exportRekapBulananWord(){
     .lte('tanggal', tglAkhir);
 
   let dataBulan = absenBulan || [];
+  
+  // Filter Admin
+  dataBulan = dataBulan.filter(d => {
+    const jab = String(d.guru_jabatan || '').toLowerCase();
+    const nama = String(d.nama_guru || '').toLowerCase();
+    return !jab.includes('admin') && nama !== 'anto';
+  });
+
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
   let orangTampil = guruFilter ? DATA_ORANG.filter(g => g.nama === guruFilter) : [...DATA_ORANG].sort((a,b) => (a.nama||'').localeCompare(b.nama||'', 'id', { sensitivity: 'base' }));
@@ -2499,6 +2698,14 @@ async function cetakRekapBulanan(){
     .lte('tanggal', tglAkhir);
 
   let dataBulan = absenBulan || [];
+  
+  // Filter Admin
+  dataBulan = dataBulan.filter(d => {
+    const jab = String(d.guru_jabatan || '').toLowerCase();
+    const nama = String(d.nama_guru || '').toLowerCase();
+    return !jab.includes('admin') && nama !== 'anto';
+  });
+
   const [thn, blnNum] = bulan.split('-');
   const namaBulan = NAMA_BULAN_ID[parseInt(blnNum) - 1] + ' ' + thn;
   let orangTampil = guruFilter ? DATA_ORANG.filter(g => g.nama === guruFilter) : [...DATA_ORANG].sort((a,b) => (a.nama||'').localeCompare(b.nama||'', 'id', { sensitivity: 'base' }));
@@ -2637,9 +2844,16 @@ async function renderStatistikBackup(){
   const { data: absenAll } = await sb.from('absensi').select('*');
   if(!absenAll) return;
   
-  const total = absenAll.length;
-  const hari = new Set(absenAll.map(d => d.tanggal)).size;
-  const hadir = absenAll.filter(d => d.status === 'hadir').length;
+  // Filter Admin
+  const dataBersih = absenAll.filter(d => {
+    const jab = String(d.guru_jabatan || '').toLowerCase();
+    const nama = String(d.nama_guru || '').toLowerCase();
+    return !jab.includes('admin') && nama !== 'anto';
+  });
+
+  const total = dataBersih.length;
+  const hari = new Set(dataBersih.map(d => d.tanggal)).size;
+  const hadir = dataBersih.filter(d => d.status === 'hadir').length;
   const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
 
   const elTotal = document.getElementById('statTotal');
