@@ -1190,39 +1190,29 @@ async function hapusRekapBulanAktif(){
     String(akhirBulan.getMonth()+1).padStart(2,'0') + '-' + 
     String(akhirBulan.getDate()).padStart(2,'0');
 
-  try {
-    // 1. Hapus dari Supabase Database
-    const { error } = await sb.from('absensi')
-      .delete()
-      .eq('nama_guru', namaSaya)
-      .gte('tanggal', awalBulan)
-      .lte('tanggal', tglAkhir);
+  // 1. Hapus dari Supabase
+  const { error } = await sb.from('absensi')
+    .delete()
+    .eq('nama_guru', namaSaya)
+    .gte('tanggal', awalBulan)
+    .lte('tanggal', tglAkhir);
 
-    if (error) throw error;
+  if(error) return showToast('❌ Gagal: ' + error.message, 'error');
 
-    // 2. Hapus dari localStorage (memori HP)
-    let dataLokal = load(KEY_ABSEN, []) || [];
-    dataLokal = dataLokal.filter(d => !(normalisasiNama(d.guru) === normalisasiNama(namaSaya) && (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir));
-    save(KEY_ABSEN, dataLokal);
+  // 2. HAPUS TOTAL DARI LOCALSTORAGE (Bersihkan data memori browser)
+  let dataLokal = load(KEY_ABSEN, []) || [];
+  dataLokal = dataLokal.filter(d => {
+    const isNamaSama = normalisasiNama(d.guru) === normalisasiNama(namaSaya);
+    const isTanggalCocok = (d.tanggal || '') >= awalBulan && (d.tanggal || '') <= tglAkhir;
+    // Jika nama sama DAN tanggal cocok, JANGAN masukkan ke array baru (artinya dihapus)
+    return !(isNamaSama && isTanggalCocok);
+  });
+  save(KEY_ABSEN, dataLokal);
 
-    // 3. PAKSA LAYAR MENJADI KOSONG SAAT ITU JUGA (Tanpa Reload)
-    document.getElementById('rekapContent').innerHTML = `
-      <div class="card" style="text-align:center; padding: 40px 20px;">
-        <h2 style="font-size: 40px; margin-bottom: 10px;">🗑️</h2>
-        <h3 style="color: var(--text); margin-bottom: 8px;">Data Berhasil Dihapus</h3>
-        <p style="color: var(--sub); font-size: 13px;">Data absensi untuk bulan <b>${namaBulan}</b> telah dibersihkan secara permanen dari sistem.</p>
-      </div>
-    `;
+  alert('✅ Data berhasil dihapus permanen! Halaman akan dimuat ulang untuk membersihkan sisa cache.');
 
-    updateCountBadge();
-    renderRiwayat();
-    
-    showToast('✅ Data rekap berhasil dihapus permanen!', 'success');
-
-  } catch (err) {
-    console.error(err);
-    showToast('❌ Gagal menghapus: ' + err.message, 'error');
-  }
+  // 3. HARD RELOAD: Memaksa browser memuat ulang tanpa mengambil dari cache (menghindari data hantu)
+  window.location.href = window.location.pathname + '?t=' + new Date().getTime();
 }
 
 /* ============================================================
