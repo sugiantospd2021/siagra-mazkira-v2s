@@ -1036,15 +1036,17 @@
                 <th>Nama Guru</th>
                 <th style="width:130px">Jabatan</th>
                 <th style="width:120px">Tanggal</th>
+                <!-- TAMBAHAN KOLOM STATUS -->
+                <th style="width:100px; text-align:center">Status</th>
                 <!-- TAMBAHAN KOLOM MASUK & PULANG -->
-                <th style="width:80px">Masuk</th>
-                <th style="width:80px">Pulang</th>
+                <th style="width:80px; text-align:center">Masuk</th>
+                <th style="width:80px; text-align:center">Pulang</th>
                 <th>Keterangan</th>
                 <th style="width:90px">Aksi</th>
               </tr>
             </thead>
             <tbody id="tbodyMonitoring">
-              <tr><td colspan="8" class="empty">Memuat data dari Supabase…</td></tr>
+              <tr><td colspan="9" class="empty">Memuat data dari Supabase…</td></tr>
             </tbody>
           </table>
         </div>
@@ -1219,7 +1221,7 @@
 <script>
 /* ============================================================
    SIAGRA — monitoring.html (Script #1)
-   Version: 2.s (Perbaikan Logika Jabatan & Filter Admin)
+   Version: 2.s (Perbaikan Logika Jabatan, Filter Admin, & Kolom Status)
    ============================================================ */
 
 const STORAGE = {
@@ -1758,7 +1760,7 @@ async function buildMonitoringTanggal(tanggal){
       jabatan: o.jabatanTampil || '',
       tanggal: tanggal,
       status: rec ? 'sudah' : 'belum',
-      statusAbsen: rec ? (rec.status || rec.keterangan) : '',
+      statusAbsen: rec ? (rec.status || '') : '', // TAMBAHAN: Ambil status asli (hadir/sakit/dll)
       jamMasuk: rec ? (rec.jam_masuk || rec.jamMasuk || '') : '',
       jamPulang: rec ? (rec.jam_pulang || rec.jamPulang || '') : '',
       keterangan: rec ? (rec.keterangan || '') : '',
@@ -1786,7 +1788,7 @@ async function loadMonitoring(){
     updateProgress([]);
     const tbody = document.getElementById('tbodyMonitoring');
     if(tbody){
-      tbody.innerHTML = `<tr><td colspan="8" class="empty">
+      tbody.innerHTML = `<tr><td colspan="9" class="empty">
         ❌ Tidak ada data guru/tendik.<br>
         <small>Error: ${escapeHtml(LOAD_ERR || 'tabel guru & tendik kosong / RLS memblokir')}</small><br><br>
         <button class="btn btn-primary btn-sm" onclick="loadMonitoring()">🔄 Coba Lagi</button>
@@ -1840,7 +1842,7 @@ function renderTabel(data){
   if(rowCount) rowCount.textContent = data.length + ' baris';
 
   if(data.length === 0){
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">Belum ada data absensi.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">Belum ada data absensi.</td></tr>';
     return;
   }
 
@@ -1848,16 +1850,34 @@ function renderTabel(data){
     const badgeClass = d.status === 'belum' ? 'belum' : 'sudah';
     const badgeText  = d.status === 'belum' ? '⏳ Belum Absen' : '✅ Sudah Absen';
     const ket = d.keterangan || d.catatan || '-';
+
+    // LOGIKA TAMPILAN STATUS (HADIR/SAKIT/IZIN/CUTI/ALPA)
+    let statusHtml = '-';
+    if (d.status === 'sudah' && d.statusAbsen) {
+      const info = STATUS_INFO[d.statusAbsen];
+      if (info) {
+        statusHtml = `<span class="status-pill" data-s="${d.statusAbsen}">${info.emoji} ${info.nama}</span>`;
+      } else {
+        statusHtml = `<span class="status-pill" data-s="${d.statusAbsen}">${d.statusAbsen}</span>`;
+      }
+    } else if (d.status === 'belum') {
+      statusHtml = `<span class="status-pill" data-s="belum">⏳ Belum</span>`;
+    }
+
     return `
       <tr>
         <td>${i+1}</td>
         <td><b>${escapeHtml(d.nama)}</b></td>
         <td>${escapeHtml(d.jabatan)}</td>
         <td>${escapeHtml(fmtTanggalPendek(d.tanggal))}</td>
-        <!-- TAMBAHAN KOLOM MASUK & PULANG -->
+        
+        <!-- KOLOM STATUS BARU -->
+        <td style="text-align:center">${statusHtml}</td>
+
+        <!-- KOLOM MASUK & PULANG -->
         <td style="text-align:center">${d.jamMasuk || '-'}</td>
         <td style="text-align:center">${d.jamPulang || '-'}</td>
-        <!-- TAMBAHAN KOLOM KETERANGAN -->
+        
         <td style="font-size:11px;line-height:1.4">${escapeHtml(ket)}</td>
         <td>
           <button class="btn btn-ghost btn-sm" onclick="openModal('${d.id}')" title="Lihat detail">👁 Detail</button>
@@ -2234,12 +2254,14 @@ function exportMonitoring(){
   let rows = '';
   data.forEach((d, i) => {
     const badge = d.status === 'belum' ? 'Belum Absen' : 'Sudah Absen';
+    const statusAbs = d.statusAbsen ? (STATUS_INFO[d.statusAbsen]?.nama || d.statusAbsen) : '-';
     rows += `<tr>
       <td style="text-align:center">${i+1}</td>
       <td>${escapeHtml(d.nama)}</td>
       <td style="text-align:center">${escapeHtml(d.jabatan)}</td>
       <td style="text-align:center">${escapeHtml(fmtTanggal(d.tanggal))}</td>
       <td style="text-align:center">${escapeHtml(badge)}</td>
+      <td style="text-align:center">${escapeHtml(statusAbs)}</td>
     </tr>`;
   });
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Monitoring Absensi Harian</title>
@@ -2284,7 +2306,7 @@ function exportMonitoring(){
   </tr></table>
   <table class="data"><thead><tr>
     <th style="width:30px">No</th><th>Nama Guru</th><th style="width:90px">Jabatan</th>
-    <th style="width:110px">Tanggal</th><th style="width:100px">Status</th>
+    <th style="width:110px">Tanggal</th><th style="width:100px">Kehadiran</th><th style="width:80px">Status</th>
   </tr></thead><tbody>${rows}</tbody></table>
   <table class="ttd"><tr>
     <td><div class="ttd-label">Mengetahui,<br>Kepala RA Mazkira Imani</div>
