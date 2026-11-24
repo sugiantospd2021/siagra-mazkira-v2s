@@ -2843,61 +2843,6 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('../service-worker.js').catch(() => {});
   });
 }
-/* ============================================================
-   ⚡ FITUR TAMBAHAN: REALTIME & PENYELESAIAN (SIAGRA)
-   ============================================================ */
-let realtimeChannelMonitor = null;
-let pollingTimerMonitor = null;
-
-// 1. Fungsi Realtime
-function subscribeRealtimeMonitoring() {
-  if (typeof sb === 'undefined') return;
-  try {
-    realtimeChannelMonitor = sb.channel('monitoring-absensi-realtime')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'absensi' }, 
-        (payload) => {
-          const tglDilihat = document.getElementById('fTanggal') ? document.getElementById('fTanggal').value : getTodayISO();
-          const tglBerubah = payload.new ? payload.new.tanggal : (payload.old ? payload.old.tanggal : null);
-          
-          if (tglBerubah === tglDilihat) {
-            if (payload.eventType === 'INSERT' && payload.new) {
-              showToast('📥 Absen masuk baru: ' + (payload.new.nama_guru || 'Guru'), 'info');
-            }
-            if (typeof loadMonitoring === 'function') loadMonitoring();
-          }
-        }
-      )
-      .subscribe();
-  } catch (e) {
-    console.warn('Realtime gagal, menggunakan mode polling.');
-  }
-}
-
-// 2. Fungsi Polling (Cadangan jika realtime mati)
-function startPollingMonitoring() {
-  if (pollingTimerMonitor) clearInterval(pollingTimerMonitor);
-  pollingTimerMonitor = setInterval(() => {
-    const panelHarian = document.getElementById('panelHarian');
-    if (panelHarian && panelHarian.style.display !== 'none') {
-      if (typeof loadMonitoring === 'function') loadMonitoring(); 
-    }
-  }, 15000);
-}
-
-// 3. Jalankan saat halaman dimuat
-document.addEventListener('DOMContentLoaded', () => {
-  subscribeRealtimeMonitoring();
-  startPollingMonitoring();
-});
-
-// 4. Bersihkan channel saat keluar
-window.addEventListener('beforeunload', () => {
-  if (realtimeChannelMonitor && typeof sb !== 'undefined') {
-    try { sb.removeChannel(realtimeChannelMonitor); } catch(e){}
-  }
-  if (pollingTimerMonitor) clearInterval(pollingTimerMonitor);
-});
 </script>
 <script src="../auto-update.js"></script>
 </body>
